@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		798E361D2D96F53B00EDCF49 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 798E361C2D96F53B00EDCF49 /* .gitignore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		798E36042D96F51600EDCF49 /* Mucket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mucket.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		798E361C2D96F53B00EDCF49 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -45,6 +50,7 @@
 		798E35FB2D96F51600EDCF49 = {
 			isa = PBXGroup;
 			children = (
+				798E361C2D96F53B00EDCF49 /* .gitignore */,
 				798E36062D96F51600EDCF49 /* Mucket */,
 				798E36052D96F51600EDCF49 /* Products */,
 			);
@@ -122,6 +128,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				798E361D2D96F53B00EDCF49 /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
