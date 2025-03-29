@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class TrendingViewController: UIViewController {
+final class TrendingViewController: BaseViewController {
     
     private let testLabel: UILabel = {
         let label = UILabel()
@@ -26,8 +26,6 @@ class TrendingViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        view.backgroundColor = .brown
         
         view.addSubview(testLabel)
         view.addSubview(testImageView)

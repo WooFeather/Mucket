@@ -9,6 +9,12 @@
 /* Begin PBXBuildFile section */
 		798E361D2D96F53B00EDCF49 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 798E361C2D96F53B00EDCF49 /* .gitignore */; };
 		798E364E2D97076600EDCF49 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 798E364D2D97076600EDCF49 /* SnapKit */; };
+		798E36C42D97A82200EDCF49 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 798E36C32D97A82200EDCF49 /* RxCocoa */; };
+		798E36C62D97A82200EDCF49 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 798E36C52D97A82200EDCF49 /* RxSwift */; };
+		798E36C92D97A8D900EDCF49 /* ReactorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 798E36C82D97A8D900EDCF49 /* ReactorKit */; };
+		798E36CC2D97A93C00EDCF49 /* Differentiator in Frameworks */ = {isa = PBXBuildFile; productRef = 798E36CB2D97A93C00EDCF49 /* Differentiator */; };
+		798E36CE2D97A93C00EDCF49 /* RxDataSources in Frameworks */ = {isa = PBXBuildFile; productRef = 798E36CD2D97A93C00EDCF49 /* RxDataSources */; };
+		798E36D12D97ACCA00EDCF49 /* KakaoMapsSDK-SPM in Frameworks */ = {isa = PBXBuildFile; productRef = 798E36D02D97ACCA00EDCF49 /* KakaoMapsSDK-SPM */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,7 +48,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				798E36C62D97A82200EDCF49 /* RxSwift in Frameworks */,
+				798E36CC2D97A93C00EDCF49 /* Differentiator in Frameworks */,
+				798E36C42D97A82200EDCF49 /* RxCocoa in Frameworks */,
+				798E36CE2D97A93C00EDCF49 /* RxDataSources in Frameworks */,
+				798E36C92D97A8D900EDCF49 /* ReactorKit in Frameworks */,
 				798E364E2D97076600EDCF49 /* SnapKit in Frameworks */,
+				798E36D12D97ACCA00EDCF49 /* KakaoMapsSDK-SPM in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -87,6 +99,12 @@
 			name = Mucket;
 			packageProductDependencies = (
 				798E364D2D97076600EDCF49 /* SnapKit */,
+				798E36C32D97A82200EDCF49 /* RxCocoa */,
+				798E36C52D97A82200EDCF49 /* RxSwift */,
+				798E36C82D97A8D900EDCF49 /* ReactorKit */,
+				798E36CB2D97A93C00EDCF49 /* Differentiator */,
+				798E36CD2D97A93C00EDCF49 /* RxDataSources */,
+				798E36D02D97ACCA00EDCF49 /* KakaoMapsSDK-SPM */,
 			);
 			productName = Mucket;
 			productReference = 798E36042D96F51600EDCF49 /* Mucket.app */;
@@ -118,6 +136,10 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				798E364C2D97076600EDCF49 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				798E36C22D97A82200EDCF49 /* XCRemoteSwiftPackageReference "RxSwift" */,
+				798E36C72D97A8D900EDCF49 /* XCRemoteSwiftPackageReference "ReactorKit" */,
+				798E36CA2D97A93C00EDCF49 /* XCRemoteSwiftPackageReference "RxDataSources" */,
+				798E36CF2D97ACCA00EDCF49 /* XCRemoteSwiftPackageReference "KakaoMapsSDK-SPM" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 798E36052D96F51600EDCF49 /* Products */;
@@ -368,6 +390,38 @@
 				minimumVersion = 5.7.1;
 			};
 		};
+		798E36C22D97A82200EDCF49 /* XCRemoteSwiftPackageReference "RxSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ReactiveX/RxSwift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.9.0;
+			};
+		};
+		798E36C72D97A8D900EDCF49 /* XCRemoteSwiftPackageReference "ReactorKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ReactorKit/ReactorKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.2.0;
+			};
+		};
+		798E36CA2D97A93C00EDCF49 /* XCRemoteSwiftPackageReference "RxDataSources" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RxSwiftCommunity/RxDataSources.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.2;
+			};
+		};
+		798E36CF2D97ACCA00EDCF49 /* XCRemoteSwiftPackageReference "KakaoMapsSDK-SPM" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kakao-mapsSDK/KakaoMapsSDK-SPM.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.12.5;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -375,6 +429,36 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 798E364C2D97076600EDCF49 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		798E36C32D97A82200EDCF49 /* RxCocoa */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 798E36C22D97A82200EDCF49 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxCocoa;
+		};
+		798E36C52D97A82200EDCF49 /* RxSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 798E36C22D97A82200EDCF49 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxSwift;
+		};
+		798E36C82D97A8D900EDCF49 /* ReactorKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 798E36C72D97A8D900EDCF49 /* XCRemoteSwiftPackageReference "ReactorKit" */;
+			productName = ReactorKit;
+		};
+		798E36CB2D97A93C00EDCF49 /* Differentiator */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 798E36CA2D97A93C00EDCF49 /* XCRemoteSwiftPackageReference "RxDataSources" */;
+			productName = Differentiator;
+		};
+		798E36CD2D97A93C00EDCF49 /* RxDataSources */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 798E36CA2D97A93C00EDCF49 /* XCRemoteSwiftPackageReference "RxDataSources" */;
+			productName = RxDataSources;
+		};
+		798E36D02D97ACCA00EDCF49 /* KakaoMapsSDK-SPM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 798E36CF2D97ACCA00EDCF49 /* XCRemoteSwiftPackageReference "KakaoMapsSDK-SPM" */;
+			productName = "KakaoMapsSDK-SPM";
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
