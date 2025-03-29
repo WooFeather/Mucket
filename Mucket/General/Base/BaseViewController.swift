@@ -19,7 +19,7 @@ class BaseViewController: UIViewController {
     }
     
     func configureView() {
-        view.backgroundColor = .backgroundPrimary
+        view.backgroundColor = .themePrimary
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
