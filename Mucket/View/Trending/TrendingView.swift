@@ -11,11 +11,11 @@ import SnapKit
 final class TrendingView: BaseView {
     private let logoImageView = UIImageView()
     private let titleImageView = UIImageView()
-    private let searchView = RoundedTextView()
     private let roundedBackgroundView = UIView()
     private let recommendFoodHeader = UILabel()
     private let themeFoodHeader = UILabel()
-    private let themeButton = UIButton()
+    let searchView = RoundedTextView()
+    let themeButton = UIButton()
     
     lazy var recommendCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
     lazy var themeCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
@@ -103,7 +103,7 @@ final class TrendingView: BaseView {
 
         themeButton.setTitle("국&찌개", for: .normal)
         themeButton.setTitleColor(.textSecondary, for: .normal)
-        themeButton.setImage(.arrowtriangleDownFill, for: .normal)
+        themeButton.setImage(.arrowtriangleDownFill?.resizedAndTemplated(to: CGSize(width: 10, height: 10)), for: .normal)
         themeButton.tintColor = .textSecondary
         themeButton.semanticContentAttribute = .forceRightToLeft
         themeButton.contentHorizontalAlignment = .leading
@@ -116,26 +116,25 @@ final class TrendingView: BaseView {
         roundedBackgroundView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         roundedBackgroundView.layer.masksToBounds = true
         
-        recommendCollectionView.backgroundColor = .lightGray
-        
-        themeCollectionView.backgroundColor = .lightGray
+        recommendCollectionView.backgroundColor = .backgroundPrimary
+        themeCollectionView.backgroundColor = .backgroundPrimary
     }
 }
 
 extension TrendingView {
     private func createLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewCompositionalLayout { sectionIndex, _ in
-            let itemSize = NSCollectionLayoutSize(widthDimension: .absolute(160), heightDimension: .fractionalHeight(1.0))
+            let itemSize = NSCollectionLayoutSize(widthDimension: .absolute(180), heightDimension: .fractionalHeight(1.0))
             
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
-            item.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 0)
+            item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 8)
             
-            let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(160), heightDimension: .absolute(200))
+            let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(180), heightDimension: .absolute(200))
             
             let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
             
             let section = NSCollectionLayoutSection(group: group)
-            section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16)
+            section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 8)
             section.orthogonalScrollingBehavior = .continuous
             
             return section
