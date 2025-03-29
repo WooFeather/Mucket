@@ -44,11 +44,11 @@ final class TrendingCollectionViewCell: BaseCollectionViewCell, ReusableIdentifi
     }
     
     // TODO: 실제 모델 적용
-    func configureRecommend() {
+    func configureRecommendData() {
         
     }
     
-    func configureTheme() {
+    func configureThemeData() {
         
     }
 }

@@ -66,7 +66,10 @@ final class SearchView: BaseView {
         backButton.tintColor = .textPrimary
         backButton.contentMode = .scaleAspectFill
         
+        searchBar.textField.returnKeyType = .search
+        
         searchTableView.backgroundColor = .backgroundPrimary
+        searchTableView.isHidden = true
         
         emptyResultImageView.image = .placeholder
         emptyResultImageView.contentMode = .scaleAspectFit
@@ -76,5 +79,10 @@ final class SearchView: BaseView {
         emptyResultLabel.textColor = .textSecondary
         emptyResultLabel.textAlignment = .center
         emptyResultLabel.numberOfLines = 2
+        
+        // TODO: 검색결과가 없을때 false
+        [emptyResultImageView, emptyResultLabel].forEach {
+            $0.isHidden = true
+        }
     }
 }

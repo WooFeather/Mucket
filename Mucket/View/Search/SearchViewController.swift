@@ -33,8 +33,15 @@ final class SearchViewController: BaseViewController {
     override func loadView() {
         view = searchView
     }
+    
+    override func configureData() {
+        searchView.searchTableView.register(SearchTableViewCell.self, forCellReuseIdentifier: SearchTableViewCell.id)
+        searchView.searchTableView.delegate = self
+        searchView.searchTableView.dataSource = self
+    }
 }
 
+// MARK: - Reactor
 extension SearchViewController: View {
     func bind(reactor: SearchReactor) {
         bindAction(reactor)
@@ -57,5 +64,18 @@ extension SearchViewController: View {
                 owner.navigationController?.popViewController(animated: true)
             }
             .disposed(by: disposeBag)
+    }
+}
+
+// TODO: Rx로 구현
+extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 10
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: SearchTableViewCell.id, for: indexPath) as? SearchTableViewCell else { return UITableViewCell() }
+        
+        return cell
     }
 }
