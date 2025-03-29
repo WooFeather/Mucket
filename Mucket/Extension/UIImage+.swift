@@ -23,4 +23,17 @@ extension UIImage {
     static let arrowtriangleDownFill = UIImage(systemName: "arrowtriangle.down.fill")
     static let bookClosed = UIImage(systemName: "book.closed")
     static let squareOnSquare = UIImage(systemName: "square.on.square")
+    
+    /// 버튼 안의 이미지 크기 조절
+    func resize(to size: CGSize) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
+        draw(in: CGRect(origin: .zero, size: size))
+        let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return resizedImage ?? self
+    }
+    
+    func resizedAndTemplated(to size: CGSize) -> UIImage {
+        return self.resize(to: size).withRenderingMode(.alwaysTemplate)
+    }
 }

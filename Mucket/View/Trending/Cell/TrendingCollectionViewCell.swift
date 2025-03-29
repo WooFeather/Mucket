@@ -21,7 +21,7 @@ final class TrendingCollectionViewCell: BaseCollectionViewCell, ReusableIdentifi
     override func configureLayout() {
         thumbImageView.snp.makeConstraints { make in
             make.top.horizontalEdges.equalToSuperview()
-            make.size.equalTo(160)
+            make.height.equalTo(160)
         }
         
         nameLabel.snp.makeConstraints { make in
@@ -34,6 +34,8 @@ final class TrendingCollectionViewCell: BaseCollectionViewCell, ReusableIdentifi
     override func configureView() {
         thumbImageView.backgroundColor = .backgroundSecondary
         thumbImageView.layer.cornerRadius = 6
+        thumbImageView.image = .placeholderSmall
+        thumbImageView.contentMode = .scaleAspectFit
         thumbImageView.clipsToBounds = true
         
         nameLabel.text = "닭가슴살 스테이크"

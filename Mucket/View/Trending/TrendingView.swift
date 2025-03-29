@@ -11,7 +11,7 @@ import SnapKit
 final class TrendingView: BaseView {
     private let logoImageView = UIImageView()
     private let titleImageView = UIImageView()
-    private let roundedBackgroundView = UIView()
+    private let roundedBackgroundView = RoundedBackgroundView()
     private let recommendFoodHeader = UILabel()
     private let themeFoodHeader = UILabel()
     let searchView = RoundedTextView()
@@ -40,8 +40,8 @@ final class TrendingView: BaseView {
         titleImageView.snp.makeConstraints {
             $0.centerY.equalTo(logoImageView)
             $0.leading.equalTo(logoImageView.snp.trailing).offset(8)
-            $0.height.equalTo(40)
-            $0.width.equalTo(100)
+            $0.height.equalTo(30)
+            $0.width.equalTo(80)
         }
 
         searchView.snp.makeConstraints {
@@ -84,12 +84,11 @@ final class TrendingView: BaseView {
     }
     
     override func configureView() {
-        logoImageView.backgroundColor = .lightGray
-        DispatchQueue.main.async { [weak self] in
-            self?.logoImageView.layer.cornerRadius = (self?.logoImageView.frame.width ?? 0) / 2
-        }
+        logoImageView.image = .symbol
+        logoImageView.contentMode = .scaleAspectFit
         
-        titleImageView.backgroundColor = .lightGray
+        titleImageView.image = .logo
+        titleImageView.contentMode = .scaleAspectFit
         
         searchView.layer.cornerRadius = 30
         
@@ -111,13 +110,10 @@ final class TrendingView: BaseView {
         themeButton.titleEdgeInsets = .zero
         themeButton.titleLabel?.font = .Body.body2
         
-        roundedBackgroundView.backgroundColor = .backgroundPrimary
-        roundedBackgroundView.layer.cornerRadius = 20
-        roundedBackgroundView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        roundedBackgroundView.layer.masksToBounds = true
-        
         recommendCollectionView.backgroundColor = .backgroundPrimary
+        recommendCollectionView.isScrollEnabled = false
         themeCollectionView.backgroundColor = .backgroundPrimary
+        themeCollectionView.isScrollEnabled = false
     }
 }
 

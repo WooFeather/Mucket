@@ -13,6 +13,12 @@ final class RoundedTextView: BaseView {
     private let magnifyingGlassImageView = UIImageView()
     private let placeholderLabel = UILabel()
 
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        isUserInteractionEnabled = true
+    }
+    
     override func configureHierarchy() {
         addSubview(roundedBackground)
         roundedBackground.addSubview(magnifyingGlassImageView)
@@ -37,7 +43,6 @@ final class RoundedTextView: BaseView {
     }
     
     override func configureView() {
-        self.isUserInteractionEnabled = true
         self.backgroundColor = .backgroundPrimary
         
         roundedBackground.layer.cornerRadius = 22
