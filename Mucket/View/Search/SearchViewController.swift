@@ -53,6 +53,11 @@ extension SearchViewController: View {
             .map { SearchReactor.Action.backButtonTapped }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
+        
+        searchView.searchBar.textField.rx.controlEvent(.editingDidEndOnExit)
+            .map { SearchReactor.Action.searchButtonTapped }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     }
     
     private func bindState(_ rector: SearchReactor) {
@@ -62,6 +67,18 @@ extension SearchViewController: View {
             .filter { $0 }
             .bind(with: self) { owner, _ in
                 owner.navigationController?.popViewController(animated: true)
+            }
+            .disposed(by: disposeBag)
+        
+        rector.state
+            .map { $0.isSearchTableViewHidden }
+            .distinctUntilChanged()
+            .subscribe(with: self) { owner, isHidden in
+                owner.searchView.searchTableView.isHidden = isHidden
+                
+                if !isHidden {
+                    owner.searchView.searchBar.textField.resignFirstResponder()
+                }
             }
             .disposed(by: disposeBag)
     }

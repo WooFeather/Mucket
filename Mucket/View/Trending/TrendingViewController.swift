@@ -63,6 +63,7 @@ extension TrendingViewController: View {
             .observe(on: MainScheduler.asyncInstance)
             .bind(with: self) { owner, _ in
                 let vc = SearchViewController(reactor: SearchReactor())
+                vc.hidesBottomBarWhenPushed = true
                 owner.navigationController?.pushViewController(vc, animated: true)
                 owner.reactor?.action.onNext(.clearRouting) // 다시 push가 되지 않게 clear
             }
