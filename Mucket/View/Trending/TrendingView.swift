@@ -15,7 +15,7 @@ final class TrendingView: BaseView {
     private let recommendFoodHeader = UILabel()
     private let themeFoodHeader = UILabel()
     let searchView = RoundedTextView()
-    let themeButton = UIButton()
+    let themeButton = DropdownButton(title: "국&찌개")
     
     lazy var recommendCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
     lazy var themeCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
@@ -26,7 +26,7 @@ final class TrendingView: BaseView {
         }
         
         [recommendFoodHeader, themeFoodHeader, themeButton, recommendCollectionView, themeCollectionView].forEach {
-            addSubview($0)
+            roundedBackgroundView.addSubview($0)
         }
     }
     
@@ -56,8 +56,7 @@ final class TrendingView: BaseView {
         }
 
         recommendFoodHeader.snp.makeConstraints {
-            $0.top.equalTo(roundedBackgroundView.snp.top).offset(16)
-            $0.leading.equalToSuperview().offset(16)
+            $0.top.leading.equalToSuperview().offset(16)
         }
 
         recommendCollectionView.snp.makeConstraints {
@@ -99,16 +98,6 @@ final class TrendingView: BaseView {
             $0.textColor = .textPrimary
             $0.font = .Head.head2
         }
-
-        themeButton.setTitle("국&찌개", for: .normal)
-        themeButton.setTitleColor(.textSecondary, for: .normal)
-        themeButton.setImage(.arrowtriangleDownFill?.resizedAndTemplated(to: CGSize(width: 10, height: 10)), for: .normal)
-        themeButton.tintColor = .textSecondary
-        themeButton.semanticContentAttribute = .forceRightToLeft
-        themeButton.contentHorizontalAlignment = .leading
-        themeButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -4)
-        themeButton.titleEdgeInsets = .zero
-        themeButton.titleLabel?.font = .Body.body2
         
         recommendCollectionView.backgroundColor = .backgroundPrimary
         recommendCollectionView.isScrollEnabled = false

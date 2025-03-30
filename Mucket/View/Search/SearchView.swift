@@ -13,12 +13,11 @@ final class SearchView: BaseView {
     let backButton = UIButton()
     let searchBar = UnderlineTextField()
     let searchTableView = UITableView()
-    let emptyResultImageView = UIImageView()
-    let emptyResultLabel = UILabel()
+    let emptyStateView = EmptyStateView(message: "검색 결과가 없습니다. 검색어를 다시 확인해주세요.")
     
     override func configureHierarchy() {
         addSubview(roundedBackgroundView)
-        [backButton, searchBar, searchTableView, emptyResultImageView, emptyResultLabel].forEach {
+        [backButton, searchBar, searchTableView, emptyStateView].forEach {
             roundedBackgroundView.addSubview($0)
         }
     }
@@ -47,17 +46,10 @@ final class SearchView: BaseView {
             $0.leading.trailing.bottom.equalToSuperview()
         }
 
-        emptyResultImageView.snp.makeConstraints {
+        emptyStateView.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.centerY.equalToSuperview().offset(-40)
-            $0.width.height.equalTo(80)
-        }
-
-        emptyResultLabel.snp.makeConstraints {
-            $0.top.equalTo(emptyResultImageView.snp.bottom).offset(12)
-            $0.centerX.equalToSuperview()
-            $0.height.equalTo(40)
-            $0.width.equalTo(180)
+            $0.width.height.equalTo(200)
         }
     }
 
@@ -71,18 +63,6 @@ final class SearchView: BaseView {
         searchTableView.backgroundColor = .backgroundPrimary
         searchTableView.isHidden = true
         
-        emptyResultImageView.image = .placeholder
-        emptyResultImageView.contentMode = .scaleAspectFit
-        
-        emptyResultLabel.text = "검색 결과가 없습니다. 검색어를 다시 확인해주세요."
-        emptyResultLabel.font = .Body.body2
-        emptyResultLabel.textColor = .textSecondary
-        emptyResultLabel.textAlignment = .center
-        emptyResultLabel.numberOfLines = 2
-        
-        // TODO: 검색결과가 없을때 false
-        [emptyResultImageView, emptyResultLabel].forEach {
-            $0.isHidden = true
-        }
+        // TODO: 검색결과가 없을때 emptyStateView isHidden = false
     }
 }
