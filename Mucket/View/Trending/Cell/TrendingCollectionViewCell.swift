@@ -25,7 +25,7 @@ final class TrendingCollectionViewCell: BaseCollectionViewCell, ReusableIdentifi
         }
         
         nameLabel.snp.makeConstraints { make in
-            make.top.equalTo(thumbImageView.snp.bottom).offset(16)
+            make.top.equalTo(thumbImageView.snp.bottom).offset(8)
             make.leading.equalTo(thumbImageView.snp.leading)
             make.height.equalTo(15)
         }

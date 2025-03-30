@@ -42,7 +42,7 @@ final class CookingView: BaseView {
         
         myCookingCollectionView.snp.makeConstraints { make in
             make.top.equalTo(myCookingHeader.snp.bottom).offset(16)
-            make.horizontalEdges.bottom.equalToSuperview()
+            make.horizontalEdges.bottom.equalTo(safeAreaLayoutGuide)
         }
         
         emptyStateView.snp.makeConstraints {
@@ -58,10 +58,10 @@ final class CookingView: BaseView {
         myCookingHeader.font = .Head.head2
         
         myCookingCollectionView.backgroundColor = .backgroundPrimary
-        // myCookingCollectionView.isHidden = true
+//         myCookingCollectionView.isHidden = true
         
         // TODO: 데이터가 있을때 emptyStateView isHidden = true
-        // emptyStateView.isHidden = true
+         emptyStateView.isHidden = true
     }
 }
 
