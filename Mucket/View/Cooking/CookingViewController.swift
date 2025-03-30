@@ -6,9 +6,21 @@
 //
 
 import UIKit
+import ReactorKit
+import RxCocoa
 
 final class CookingViewController: BaseViewController {
     private let cookingView = CookingView()
+    var disposeBag = DisposeBag()
+    
+    init(reactor: CookingReactor) {
+        super.init(nibName: nil, bundle: nil)
+        self.reactor = reactor
+    }
+    
+    @MainActor required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func loadView() {
         view = cookingView
@@ -21,6 +33,22 @@ final class CookingViewController: BaseViewController {
     }
 }
 
+extension CookingViewController: View {
+    func bind(reactor: CookingReactor) {
+        bindAction(reactor)
+        bindState(reactor)
+    }
+    
+    private func bindAction(_ reactor: CookingReactor) {
+        
+    }
+    
+    private func bindState(_ reactor: CookingReactor) {
+        
+    }
+}
+
+// TODO: Rx로 구현
 extension CookingViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 20

@@ -1,0 +1,163 @@
+//
+//  CookingDetailView.swift
+//  Mucket
+//
+//  Created by 조우현 on 3/31/25.
+//
+
+import UIKit
+import SnapKit
+
+final class CookingDetailView: BaseView {
+    private let ratingHeaderLabel = UILabel()
+    private let memoHeaderLabel = UILabel()
+    private let videoHeaderLabel = UILabel()
+    private let emptyVideoBackground = UIView()
+    private let emptyVideoLabel = UILabel()
+    private let memoBackground = UIView()
+    
+    private let navigationStackView = UIStackView()
+    let backButton = UIButton()
+    let naviTitleLabel = UILabel()
+    let editButton = UIButton()
+    
+    let thumbImageView = UIImageView() // TODO: pageControl 들어갈 예정
+    let ratingView = UIView() // TODO: CosmosView로 들어갈 예정
+    let memoTextView = UITextView()
+    let videoView = UIView() // TODO: YoutubeView로 변경 예정
+    
+    override func configureHierarchy() {
+        [navigationStackView, thumbImageView, ratingHeaderLabel, ratingView, memoHeaderLabel, memoBackground, videoHeaderLabel, videoView, emptyVideoBackground].forEach {
+            addSubview($0)
+        }
+        
+        memoBackground.addSubview(memoTextView)
+        emptyVideoBackground.addSubview(emptyVideoLabel)
+        
+        [backButton, naviTitleLabel, editButton].forEach {
+            navigationStackView.addArrangedSubview($0)
+        }
+    }
+    
+    override func configureLayout() {
+        navigationStackView.snp.makeConstraints {
+            $0.top.equalTo(safeAreaLayoutGuide).offset(8)
+            $0.leading.trailing.equalToSuperview().inset(16)
+            $0.height.equalTo(40)
+        }
+
+        thumbImageView.snp.makeConstraints {
+            $0.top.equalTo(navigationStackView.snp.bottom).offset(16)
+            $0.leading.trailing.equalToSuperview().inset(16)
+            $0.height.equalTo(200)
+        }
+
+        ratingHeaderLabel.snp.makeConstraints {
+            $0.top.equalTo(thumbImageView.snp.bottom).offset(24)
+            $0.leading.equalToSuperview().inset(16)
+            $0.height.equalTo(18)
+        }
+
+        ratingView.snp.makeConstraints {
+            $0.centerY.equalTo(ratingHeaderLabel)
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(38)
+            $0.width.equalTo(200)
+        }
+
+        memoHeaderLabel.snp.makeConstraints {
+            $0.top.equalTo(ratingView.snp.bottom).offset(16)
+            $0.leading.equalToSuperview().inset(16)
+            $0.height.equalTo(18)
+        }
+
+        memoBackground.snp.makeConstraints {
+            $0.top.equalTo(memoHeaderLabel.snp.bottom).offset(8)
+            $0.leading.trailing.equalToSuperview().inset(16)
+            $0.height.equalTo(120)
+        }
+
+        memoTextView.snp.makeConstraints {
+            $0.edges.equalToSuperview().inset(12)
+        }
+
+        videoHeaderLabel.snp.makeConstraints {
+            $0.top.equalTo(memoBackground.snp.bottom).offset(24)
+            $0.leading.equalToSuperview().inset(16)
+            $0.height.equalTo(18)
+        }
+
+        videoView.snp.makeConstraints {
+            $0.top.equalTo(videoHeaderLabel.snp.bottom).offset(8)
+            $0.leading.trailing.equalToSuperview().inset(16)
+            $0.height.equalTo(180)
+        }
+        
+        emptyVideoBackground.snp.makeConstraints {
+            $0.top.equalTo(videoHeaderLabel.snp.bottom).offset(8)
+            $0.leading.trailing.equalToSuperview().inset(16)
+            $0.height.equalTo(180)
+        }
+        
+        emptyVideoLabel.snp.makeConstraints {
+            $0.center.equalToSuperview()
+            $0.width.equalTo(200)
+            $0.height.equalTo(50)
+        }
+    }
+
+    // TODO: 이전 뷰에서 전달받은 값 넣을 예정
+    override func configureView() {
+        navigationStackView.axis = .horizontal
+        navigationStackView.alignment = .center
+        navigationStackView.distribution = .equalSpacing
+
+        backButton.setImage(.chevronLeft, for: .normal)
+        backButton.tintColor = .textPrimary
+
+        naviTitleLabel.text = "빽쌤 유튜브 짜장면"
+        naviTitleLabel.font = .Head.head4
+        naviTitleLabel.textColor = .textPrimary
+
+        editButton.setImage(.pencil, for: .normal)
+        editButton.tintColor = .textPrimary
+
+        thumbImageView.image = .placeholderSmall
+        thumbImageView.contentMode = .scaleAspectFill
+        thumbImageView.clipsToBounds = true
+        thumbImageView.layer.cornerRadius = 6
+
+        ratingHeaderLabel.text = "별점"
+        memoHeaderLabel.text = "요리 기록"
+        videoHeaderLabel.text = "레시피 영상"
+
+        [ratingHeaderLabel, memoHeaderLabel, videoHeaderLabel].forEach {
+            $0.font = .Body.body2
+            $0.textColor = .textSecondary
+        }
+        
+        ratingView.backgroundColor = .lightGray
+
+        [memoBackground, emptyVideoBackground].forEach {
+            $0.backgroundColor = .backgroundSecondary
+            $0.layer.cornerRadius = 6
+        }
+        
+        emptyVideoLabel.text = """
+        영상 링크가 없습니다.
+        편집 버튼을 눌러 추가해보세요.
+        """
+        emptyVideoLabel.numberOfLines = 2
+        emptyVideoLabel.textColor = .textSecondary
+        emptyVideoLabel.font = .Body.body4
+        emptyVideoLabel.textAlignment = .center
+
+        memoTextView.isEditable = false
+        memoTextView.isScrollEnabled = true
+        memoTextView.font = .Body.body4
+        memoTextView.textColor = .textPrimary
+        memoTextView.backgroundColor = .clear
+        memoTextView.text = "불조절이 너무 어려웠다!! 특히 볶을 때말이지!! 다음부터는 중불로 하기~~~~~불조절이 너무 어려웠다!! 특히 볶을 때말이지!! 다음부터는 중불로 하기~~~~~불조절이 너무 어려웠다!! 특히 볶을 때말이지!! 다음부터는 중불로 하기~~~~~불조절이 너무 어려웠다!! 특히 볶을 때말이지!! 다음부터는 중불로 하기~~~~~불조절이 너무 어려웠다!! 특히 볶을 때말이지!! 다음부터는 중불로 하기~~~~~불조절이 너무 어려웠다!! 특히 볶을 때말이지!! 다음부터는 중불로 하기~~~~~"
+    }
+
+}

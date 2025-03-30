@@ -19,7 +19,7 @@ final class TabBarController: UITabBarController {
     
     private func configureTabBarController() {
         let trendingVC = TrendingViewController(reactor: TrendingReactor())
-        let cookingVC = CookingViewController()
+        let cookingVC = CookingViewController(reactor: CookingReactor())
         let placeholderVC = UIViewController()
         let restaurantMapVC = RestaurantMapViewController()
         let bookmarkVC = BookmarkViewController()
