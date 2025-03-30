@@ -19,24 +19,24 @@ final class TabBarController: UITabBarController {
     
     private func configureTabBarController() {
         let trendingVC = TrendingViewController(reactor: TrendingReactor())
-        let recipeVC = RecipeDetailViewController()
+        let cookingVC = CookingViewController()
         let placeholderVC = UIViewController()
         let restaurantMapVC = RestaurantMapViewController()
         let bookmarkVC = BookmarkViewController()
         
         trendingVC.tabBarItem.image = .forkKnife
-        recipeVC.tabBarItem.image = .bookClosed
+        cookingVC.tabBarItem.image = .bookClosed
         placeholderVC.tabBarItem.image = .plusCircle
         restaurantMapVC.tabBarItem.image = .map
         bookmarkVC.tabBarItem.image = .bookmark
         
         let trendingNav = UINavigationController(rootViewController: trendingVC)
-        let recipeNav = UINavigationController(rootViewController: recipeVC)
+        let cookingNav = UINavigationController(rootViewController: cookingVC)
         let placeholderNav = UINavigationController(rootViewController: placeholderVC)
         let restaurantMapNav = UINavigationController(rootViewController: restaurantMapVC)
         let bookmarkNav = UINavigationController(rootViewController: bookmarkVC)
         
-        setViewControllers([trendingNav, recipeNav, placeholderNav, restaurantMapNav, bookmarkNav], animated: true)
+        setViewControllers([trendingNav, cookingNav, placeholderNav, restaurantMapNav, bookmarkNav], animated: true)
     }
     
     private func setupTabBarAppearance() {
