@@ -28,7 +28,6 @@ final class SearchReactor: Reactor {
     
 }
 
-
 extension SearchReactor {
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {

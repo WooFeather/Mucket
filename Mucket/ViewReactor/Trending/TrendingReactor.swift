@@ -32,7 +32,6 @@ final class TrendingReactor: Reactor {
     }
 }
 
-
 extension TrendingReactor {
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {

@@ -7,6 +7,6 @@
 
 import Foundation
 
-final class RecipeViewController: BaseViewController {
+final class CookingViewController: BaseViewController {
     
 }
