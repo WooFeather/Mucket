@@ -14,8 +14,8 @@
 		798E36C92D97A8D900EDCF49 /* ReactorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 798E36C82D97A8D900EDCF49 /* ReactorKit */; };
 		798E36CC2D97A93C00EDCF49 /* Differentiator in Frameworks */ = {isa = PBXBuildFile; productRef = 798E36CB2D97A93C00EDCF49 /* Differentiator */; };
 		798E36CE2D97A93C00EDCF49 /* RxDataSources in Frameworks */ = {isa = PBXBuildFile; productRef = 798E36CD2D97A93C00EDCF49 /* RxDataSources */; };
-		798E36D12D97ACCA00EDCF49 /* KakaoMapsSDK-SPM in Frameworks */ = {isa = PBXBuildFile; productRef = 798E36D02D97ACCA00EDCF49 /* KakaoMapsSDK-SPM */; };
 		798E37F12D97D2AC00EDCF49 /* RxGesture in Frameworks */ = {isa = PBXBuildFile; productRef = 798E37F02D97D2AC00EDCF49 /* RxGesture */; };
+		798E38A32D9A941800EDCF49 /* KakaoMapsSDK-SPM in Frameworks */ = {isa = PBXBuildFile; productRef = 798E38A22D9A941800EDCF49 /* KakaoMapsSDK-SPM */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,7 +56,7 @@
 				798E36CE2D97A93C00EDCF49 /* RxDataSources in Frameworks */,
 				798E36C92D97A8D900EDCF49 /* ReactorKit in Frameworks */,
 				798E364E2D97076600EDCF49 /* SnapKit in Frameworks */,
-				798E36D12D97ACCA00EDCF49 /* KakaoMapsSDK-SPM in Frameworks */,
+				798E38A32D9A941800EDCF49 /* KakaoMapsSDK-SPM in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -106,8 +106,8 @@
 				798E36C82D97A8D900EDCF49 /* ReactorKit */,
 				798E36CB2D97A93C00EDCF49 /* Differentiator */,
 				798E36CD2D97A93C00EDCF49 /* RxDataSources */,
-				798E36D02D97ACCA00EDCF49 /* KakaoMapsSDK-SPM */,
 				798E37F02D97D2AC00EDCF49 /* RxGesture */,
+				798E38A22D9A941800EDCF49 /* KakaoMapsSDK-SPM */,
 			);
 			productName = Mucket;
 			productReference = 798E36042D96F51600EDCF49 /* Mucket.app */;
@@ -142,8 +142,8 @@
 				798E36C22D97A82200EDCF49 /* XCRemoteSwiftPackageReference "RxSwift" */,
 				798E36C72D97A8D900EDCF49 /* XCRemoteSwiftPackageReference "ReactorKit" */,
 				798E36CA2D97A93C00EDCF49 /* XCRemoteSwiftPackageReference "RxDataSources" */,
-				798E36CF2D97ACCA00EDCF49 /* XCRemoteSwiftPackageReference "KakaoMapsSDK-SPM" */,
 				798E37EF2D97D2AC00EDCF49 /* XCRemoteSwiftPackageReference "RxGesture" */,
+				798E38A12D9A941800EDCF49 /* XCRemoteSwiftPackageReference "KakaoMapsSDK-SPM" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 798E36052D96F51600EDCF49 /* Products */;
@@ -418,20 +418,20 @@
 				minimumVersion = 5.0.2;
 			};
 		};
-		798E36CF2D97ACCA00EDCF49 /* XCRemoteSwiftPackageReference "KakaoMapsSDK-SPM" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/kakao-mapsSDK/KakaoMapsSDK-SPM.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.12.5;
-			};
-		};
 		798E37EF2D97D2AC00EDCF49 /* XCRemoteSwiftPackageReference "RxGesture" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/RxSwiftCommunity/RxGesture";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 4.0.4;
+			};
+		};
+		798E38A12D9A941800EDCF49 /* XCRemoteSwiftPackageReference "KakaoMapsSDK-SPM" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kakao-mapsSDK/KakaoMapsSDK-SPM";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.12.5;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -467,15 +467,15 @@
 			package = 798E36CA2D97A93C00EDCF49 /* XCRemoteSwiftPackageReference "RxDataSources" */;
 			productName = RxDataSources;
 		};
-		798E36D02D97ACCA00EDCF49 /* KakaoMapsSDK-SPM */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 798E36CF2D97ACCA00EDCF49 /* XCRemoteSwiftPackageReference "KakaoMapsSDK-SPM" */;
-			productName = "KakaoMapsSDK-SPM";
-		};
 		798E37F02D97D2AC00EDCF49 /* RxGesture */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 798E37EF2D97D2AC00EDCF49 /* XCRemoteSwiftPackageReference "RxGesture" */;
 			productName = RxGesture;
+		};
+		798E38A22D9A941800EDCF49 /* KakaoMapsSDK-SPM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 798E38A12D9A941800EDCF49 /* XCRemoteSwiftPackageReference "KakaoMapsSDK-SPM" */;
+			productName = "KakaoMapsSDK-SPM";
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

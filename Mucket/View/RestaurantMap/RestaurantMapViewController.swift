@@ -8,5 +8,9 @@
 import Foundation
 
 final class RestaurantMapViewController: BaseViewController {
+    private let restaurantMapView = RestaurantMapView()
     
+    override func loadView() {
+        view = restaurantMapView
+    }
 }

@@ -36,8 +36,7 @@ final class BookmarkView: BaseView {
         searchBar.snp.makeConstraints {
             $0.top.equalTo(naviTitleLabel.snp.bottom).offset(12)
             $0.centerX.equalToSuperview()
-            $0.leading.equalToSuperview().offset(28)
-            $0.trailing.equalToSuperview().offset(-16)
+            $0.leading.equalToSuperview().inset(16)
             $0.height.equalTo(36)
         }
         
