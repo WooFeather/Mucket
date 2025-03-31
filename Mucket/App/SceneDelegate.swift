@@ -16,7 +16,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         
-        let initialViewController = CookingDetailViewController(reactor: CookingDetailReactor())
+        let initialViewController = TabBarController()
         window?.rootViewController = initialViewController
         window?.makeKeyAndVisible()
     }

@@ -59,6 +59,7 @@ final class SearchView: BaseView {
         backButton.contentMode = .scaleAspectFill
         
         searchBar.textField.returnKeyType = .search
+        searchBar.textField.placeholder = "재료를 검색해 보세요."
         
         searchTableView.backgroundColor = .backgroundPrimary
         searchTableView.isHidden = true

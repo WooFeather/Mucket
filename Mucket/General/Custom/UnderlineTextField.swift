@@ -41,7 +41,6 @@ final class UnderlineTextField: BaseView {
     }
     
     override func configureView() {
-        textField.placeholder = "재료를 검색해 보세요."
         textField.tintColor = .textPrimary
         textField.textColor = .textPrimary
         

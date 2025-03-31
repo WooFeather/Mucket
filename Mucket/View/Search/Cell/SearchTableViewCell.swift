@@ -69,7 +69,11 @@ final class SearchTableViewCell: BaseTableViewCell, ReusableIdentifier {
     }
     
     // TODO: 실제 모델 적용
-    func configureData() {
+    func configureSearchData() {
+        
+    }
+    
+    func configureBookmarkData() {
         
     }
 }

@@ -37,7 +37,7 @@ final class EmptyStateView: BaseView {
         messageLabel.snp.makeConstraints {
             $0.top.equalTo(imageView.snp.bottom).offset(12)
             $0.centerX.equalToSuperview()
-            $0.width.equalTo(180)
+            $0.width.equalTo(200)
             $0.height.equalTo(40)
         }
     }
