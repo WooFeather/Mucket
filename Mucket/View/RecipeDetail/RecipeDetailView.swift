@@ -21,8 +21,8 @@ final class RecipeDetailView: BaseView {
     let naviTitleLabel = UILabel()
     let bookmarkButton = UIButton()
     
-    let ingredientBackground = UIView()
-    let ingredientLabel = UILabel()
+    lazy var ingredientView = BackgroundContentView(contentView: ingredientTextView)
+    let ingredientTextView = UITextView()
     let thumbImageView = UIImageView()
     
     private let infoStackView = UIStackView()
@@ -39,11 +39,9 @@ final class RecipeDetailView: BaseView {
         scrollView.addSubview(contentView)
 
         [thumbImageView, nutritionHeaderLabel, infoStackView, ingredientHeaderLabel,
-         ingredientBackground, makingHeaderLabel, makingTableView].forEach {
+         ingredientView, makingHeaderLabel, makingTableView].forEach {
             contentView.addSubview($0)
         }
-
-        ingredientBackground.addSubview(ingredientLabel)
 
         [backButton, naviTitleLabel, bookmarkButton].forEach {
             navigationStackView.addArrangedSubview($0)
@@ -93,17 +91,14 @@ final class RecipeDetailView: BaseView {
             make.leading.equalToSuperview().inset(16)
         }
 
-        ingredientBackground.snp.makeConstraints { make in
+        ingredientView.snp.makeConstraints { make in
             make.top.equalTo(ingredientHeaderLabel.snp.bottom).offset(8)
             make.leading.trailing.equalToSuperview().inset(16)
-        }
-
-        ingredientLabel.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(12)
+            make.height.equalTo(120)
         }
 
         makingHeaderLabel.snp.makeConstraints { make in
-            make.top.equalTo(ingredientBackground.snp.bottom).offset(24)
+            make.top.equalTo(ingredientView.snp.bottom).offset(24)
             make.leading.equalToSuperview().inset(16)
         }
 
@@ -151,13 +146,12 @@ final class RecipeDetailView: BaseView {
         infoStackView.spacing = 16
         infoStackView.distribution = .fillEqually
         
-        ingredientBackground.backgroundColor = .backgroundSecondary
-        ingredientBackground.layer.cornerRadius = 6
-        
-        ingredientLabel.numberOfLines = 0
-        ingredientLabel.font = .Body.body4
-        ingredientLabel.textColor = .textPrimary
-        ingredientLabel.text = "닭고기(1마리), 가시오가피(10g), 대파(20g), 다시마(10g), 건새우(20g), 실곤약(100g), 비트(30g), 치자가루(10g), 마늘(20g), 소금(0.3g), 후춧가루(0.01g), 양파(50g),오이(50g), 겨자가루(10g), 식초(20g), 설탕(20g)"
+        ingredientTextView.isEditable = false
+        ingredientTextView.isScrollEnabled = true
+        ingredientTextView.font = .Body.body4
+        ingredientTextView.textColor = .textPrimary
+        ingredientTextView.backgroundColor = .clear
+        ingredientTextView.text = "닭고기(1마리), 가시오가피(10g), 대파(20g), 다시마(10g), 건새우(20g), 실곤약(100g), 비트(30g), 치자가루(10g), 마늘(20g), 소금(0.3g), 후춧가루(0.01g), 양파(50g),오이(50g), 겨자가루(10g), 식초(20g), 설탕(20g)"
         
         makingTableView.backgroundColor = .backgroundPrimary
         makingTableView.isScrollEnabled = false

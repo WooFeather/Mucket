@@ -8,8 +8,24 @@
 import UIKit
 
 final class AddCookingViewController: BaseViewController {
+    private let addCookingView = AddCookingView()
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        enableKeyboardHandling(for: addCookingView.scrollView)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        disableKeyboardHandling()
+    }
+    
+    override func loadView() {
+        view = addCookingView
+    }
+    
     override func configureView() {
         super.configureView()
-        view.backgroundColor = .orange
+        view.backgroundColor = .backgroundPrimary
     }
 }

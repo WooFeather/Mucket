@@ -13,7 +13,7 @@ final class AddContentsView: BaseView {
     let cancelButton = UIButton()
     let saveButton = UIButton()
     
-    let segmentedControl = UnderlineSegmentedControl(items: ["나의 요리", "맛집"])
+    let segmentedControl = UnderlineSegmentedControl(items: ["요리 추가", "맛집 추가"])
     let pageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal)
     
     override func configureHierarchy() {

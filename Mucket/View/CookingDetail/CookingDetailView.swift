@@ -14,7 +14,7 @@ final class CookingDetailView: BaseView {
     private let videoHeaderLabel = UILabel()
     private let emptyVideoBackground = UIView()
     private let emptyVideoLabel = UILabel()
-    private let memoBackground = UIView()
+    private lazy var memoView = BackgroundContentView(contentView: memoTextView)
     
     private let navigationStackView = UIStackView()
     let backButton = UIButton()
@@ -27,11 +27,10 @@ final class CookingDetailView: BaseView {
     let videoView = UIView() // TODO: YoutubeView로 변경 예정
     
     override func configureHierarchy() {
-        [navigationStackView, thumbImageView, ratingHeaderLabel, ratingView, memoHeaderLabel, memoBackground, videoHeaderLabel, videoView, emptyVideoBackground].forEach {
+        [navigationStackView, thumbImageView, ratingHeaderLabel, ratingView, memoHeaderLabel, memoView, videoHeaderLabel, videoView, emptyVideoBackground].forEach {
             addSubview($0)
         }
         
-        memoBackground.addSubview(memoTextView)
         emptyVideoBackground.addSubview(emptyVideoLabel)
         
         [backButton, naviTitleLabel, editButton].forEach {
@@ -71,7 +70,7 @@ final class CookingDetailView: BaseView {
             $0.height.equalTo(18)
         }
 
-        memoBackground.snp.makeConstraints {
+        memoView.snp.makeConstraints {
             $0.top.equalTo(memoHeaderLabel.snp.bottom).offset(8)
             $0.leading.trailing.equalToSuperview().inset(16)
             $0.height.equalTo(120)
@@ -82,7 +81,7 @@ final class CookingDetailView: BaseView {
         }
 
         videoHeaderLabel.snp.makeConstraints {
-            $0.top.equalTo(memoBackground.snp.bottom).offset(24)
+            $0.top.equalTo(memoView.snp.bottom).offset(24)
             $0.leading.equalToSuperview().inset(16)
             $0.height.equalTo(18)
         }
@@ -137,11 +136,9 @@ final class CookingDetailView: BaseView {
         }
         
         ratingView.backgroundColor = .lightGray
-
-        [memoBackground, emptyVideoBackground].forEach {
-            $0.backgroundColor = .backgroundSecondary
-            $0.layer.cornerRadius = 6
-        }
+        
+        emptyVideoBackground.backgroundColor = .backgroundSecondary
+        emptyVideoBackground.layer.cornerRadius = 6
         
         emptyVideoLabel.text = """
         영상 링크가 없습니다.

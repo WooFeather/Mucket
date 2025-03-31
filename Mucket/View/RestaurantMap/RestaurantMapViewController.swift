@@ -13,4 +13,8 @@ final class RestaurantMapViewController: BaseViewController {
     override func loadView() {
         view = restaurantMapView
     }
+    
+    override func configureView() {
+        view.backgroundColor = .backgroundPrimary
+    }
 }
