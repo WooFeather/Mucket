@@ -12,6 +12,7 @@ struct RecipeEntity {
     let name: String
     let imageURL: String?
     let ingredients: String
+    let type: String?
     let carbs: String?
     let protein: String?
     let fat: String?
@@ -67,11 +68,167 @@ extension RecipeDetailDTO {
             name: rcpNm ?? "제목 없음",
             imageURL: attFileNoMain,
             ingredients: rcpPartsDtls ?? "",
+            type: rcpPat2,
             carbs: infoCar,
             protein: infoPro,
             fat: infoFat,
             sodium: infoNa,
             manualSteps: steps
         )
+    }
+}
+
+extension RecipeEntity {
+    static var mockList: [RecipeEntity] {
+        return [
+            RecipeEntity(
+                id: "1",
+                name: "간단 카레 레시피",
+                imageURL: "https://www.foodsafetykorea.go.kr/uploadimg/cook/10_00037_2.png",
+                ingredients: "감자, 당근, 양파, 카레가루, 소고기",
+                type: "국&찌개",
+                carbs: "30.5",
+                protein: "15.4",
+                fat: "17.7",
+                sodium: "57.8",
+                manualSteps: [
+                    .init(order: 1, description: "감자를 깍둑썰기하고 팬에 볶는다.", imageURL: nil),
+                    .init(order: 2, description: "카레가루를 넣고 물과 함께 끓인다.", imageURL: nil),
+                    .init(order: 3, description: "다 익으면 그릇에 담아 완성한다.", imageURL: nil)
+                ]
+            ),
+            RecipeEntity(
+                id: "2",
+                name: "된장국",
+                imageURL: nil,
+                ingredients: "두부, 감자, 애호박, 된장, 대파",
+                type: "국&찌개",
+                carbs: "7.3",
+                protein: "5.4",
+                fat: "3.1",
+                sodium: "320",
+                manualSteps: [
+                    .init(order: 1, description: "냄비에 물과 된장을 푼다.", imageURL: nil),
+                    .init(order: 2, description: "재료들을 썰어 넣고 끓인다.", imageURL: nil),
+                    .init(order: 3, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 4, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 5, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 6, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 7, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 8, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 9, description: "냄비에 물과 된장을 푼다.", imageURL: nil),
+                    .init(order: 10, description: "재료들을 썰어 넣고 끓인다.", imageURL: nil),
+                    .init(order: 11, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 12, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 13, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 14, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 15, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 16, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 17, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 18, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 19, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 20, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil)
+                ]
+            ),
+            RecipeEntity(
+                id: "2",
+                name: "된장국",
+                imageURL: nil,
+                ingredients: "두부, 감자, 애호박, 된장, 대파",
+                type: "반찬",
+                carbs: "7.3",
+                protein: "5.4",
+                fat: "3.1",
+                sodium: "320",
+                manualSteps: [
+                    .init(order: 1, description: "냄비에 물과 된장을 푼다.", imageURL: nil),
+                    .init(order: 2, description: "재료들을 썰어 넣고 끓인다.", imageURL: nil),
+                    .init(order: 3, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 4, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 5, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 6, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 7, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 8, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 9, description: "냄비에 물과 된장을 푼다.", imageURL: nil),
+                    .init(order: 10, description: "재료들을 썰어 넣고 끓인다.", imageURL: nil),
+                    .init(order: 11, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 12, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 13, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 14, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 15, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 16, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 17, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 18, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 19, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 20, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil)
+                ]
+            ),
+            RecipeEntity(
+                id: "2",
+                name: "된장국",
+                imageURL: nil,
+                ingredients: "두부, 감자, 애호박, 된장, 대파",
+                type: "일품",
+                carbs: "7.3",
+                protein: "5.4",
+                fat: "3.1",
+                sodium: "320",
+                manualSteps: [
+                    .init(order: 1, description: "냄비에 물과 된장을 푼다.", imageURL: nil),
+                    .init(order: 2, description: "재료들을 썰어 넣고 끓인다.", imageURL: nil),
+                    .init(order: 3, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 4, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 5, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 6, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 7, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 8, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 9, description: "냄비에 물과 된장을 푼다.", imageURL: nil),
+                    .init(order: 10, description: "재료들을 썰어 넣고 끓인다.", imageURL: nil),
+                    .init(order: 11, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 12, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 13, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 14, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 15, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 16, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 17, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 18, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 19, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 20, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil)
+                ]
+            ),
+            RecipeEntity(
+                id: "2",
+                name: "된장국",
+                imageURL: nil,
+                ingredients: "두부, 감자, 애호박, 된장, 대파",
+                type: "기타",
+                carbs: "7.3",
+                protein: "5.4",
+                fat: "3.1",
+                sodium: "320",
+                manualSteps: [
+                    .init(order: 1, description: "냄비에 물과 된장을 푼다.", imageURL: nil),
+                    .init(order: 2, description: "재료들을 썰어 넣고 끓인다.", imageURL: nil),
+                    .init(order: 3, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 4, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 5, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 6, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 7, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 8, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 9, description: "냄비에 물과 된장을 푼다.", imageURL: nil),
+                    .init(order: 10, description: "재료들을 썰어 넣고 끓인다.", imageURL: nil),
+                    .init(order: 11, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 12, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 13, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 14, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 15, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 16, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 17, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 18, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 19, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil),
+                    .init(order: 20, description: "대파를 마지막에 넣고 마무리한다.", imageURL: nil)
+                ]
+            )
+        ]
     }
 }

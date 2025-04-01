@@ -26,7 +26,7 @@ final class TrendingCollectionViewCell: BaseCollectionViewCell, ReusableIdentifi
         
         nameLabel.snp.makeConstraints { make in
             make.top.equalTo(thumbImageView.snp.bottom).offset(8)
-            make.leading.equalTo(thumbImageView.snp.leading)
+            make.horizontalEdges.equalTo(thumbImageView.snp.horizontalEdges)
             make.height.equalTo(15)
         }
     }
@@ -34,21 +34,30 @@ final class TrendingCollectionViewCell: BaseCollectionViewCell, ReusableIdentifi
     override func configureView() {
         thumbImageView.backgroundColor = .backgroundSecondary
         thumbImageView.layer.cornerRadius = 6
-        thumbImageView.image = .placeholderSmall
-        thumbImageView.contentMode = .scaleAspectFit
+        thumbImageView.contentMode = .scaleAspectFill
         thumbImageView.clipsToBounds = true
         
-        nameLabel.text = "닭가슴살 스테이크"
-        nameLabel.font = .Body.body5
+        nameLabel.font = .Body.body2
         nameLabel.textColor = .textSecondary
     }
     
     // TODO: 실제 모델 적용
-    func configureRecommendData() {
+    func configureData(entity: RecipeEntity) {
+        if let httpsURL = entity.imageURL?.replacingOccurrences(of: "http://", with: "https://") {
+            let imageURL = URL(string: httpsURL)
+            Task {
+                do {
+                    let image = try await ImageCacheManager.shared.load(url: imageURL, saveOption: .onlyMemory)
+                    thumbImageView.image = image
+                } catch {
+                    print("이미지 로드 실패")
+                    thumbImageView.image = .placeholderSmall
+                }
+            }
+        } else {
+            thumbImageView.image = .placeholderSmall
+        }
         
-    }
-    
-    func configureThemeData() {
-        
+        nameLabel.text = entity.name
     }
 }
