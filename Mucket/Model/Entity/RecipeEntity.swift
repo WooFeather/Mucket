@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct RecipeEntity {
+struct RecipeEntity: Equatable {
     let id: String
     let name: String
     let imageURL: String?
@@ -20,7 +20,7 @@ struct RecipeEntity {
     let manualSteps: [RecipeManualStep]
 }
 
-struct RecipeManualStep {
+struct RecipeManualStep: Equatable {
     let order: Int
     let description: String
     let imageURL: String?

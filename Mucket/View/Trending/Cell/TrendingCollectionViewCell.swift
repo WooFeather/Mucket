@@ -41,7 +41,6 @@ final class TrendingCollectionViewCell: BaseCollectionViewCell, ReusableIdentifi
         nameLabel.textColor = .textSecondary
     }
     
-    // TODO: 실제 모델 적용
     func configureData(entity: RecipeEntity) {
         if let httpsURL = entity.imageURL?.replacingOccurrences(of: "http://", with: "https://") {
             let imageURL = URL(string: httpsURL)

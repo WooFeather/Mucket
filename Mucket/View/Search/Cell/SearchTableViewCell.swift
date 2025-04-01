@@ -68,12 +68,23 @@ final class SearchTableViewCell: BaseTableViewCell, ReusableIdentifier {
         chevronImageView.contentMode = .scaleAspectFill
     }
     
-    // TODO: 실제 모델 적용
-    func configureSearchData() {
+    func configureData(entity: RecipeEntity) {
+        if let httpsURL = entity.imageURL?.replacingOccurrences(of: "http://", with: "https://") {
+            let imageURL = URL(string: httpsURL)
+            Task {
+                do {
+                    let image = try await ImageCacheManager.shared.load(url: imageURL, saveOption: .onlyMemory)
+                    thumbImageView.image = image
+                } catch {
+                    print("이미지 로드 실패")
+                    thumbImageView.image = .placeholderSmall
+                }
+            }
+        } else {
+            thumbImageView.image = .placeholderSmall
+        }
         
-    }
-    
-    func configureBookmarkData() {
-        
+        nameLabel.text = entity.name
+        ingredientLabel.text = entity.ingredients
     }
 }

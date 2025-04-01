@@ -11,6 +11,7 @@ protocol NetworkManagerType {
     func fetchData<T: Decodable>(_ router: RecipeRouter) async throws -> T
 }
 
+// TODO: 네트워크 에러처리
 final class NetworkManager: NetworkManagerType {
     static let shared: NetworkManagerType = NetworkManager()
     

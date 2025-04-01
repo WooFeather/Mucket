@@ -29,8 +29,8 @@ enum RouterError: Error, LocalizedError {
 
 enum RecipeRouter {
     case fetchAll
-    case searchRecipe(String)
-    case fetchThemedRecipe(String)
+    case searchRecipe(startIndex: Int, count: Int, ingredient: String)
+    case fetchThemedRecipe(type: String)
     
     var baseURL: String {
         "https://openapi.foodsafetykorea.go.kr/api"
@@ -44,8 +44,8 @@ enum RecipeRouter {
         switch self {
         case .fetchAll:
             return "/\(apiKey)/COOKRCP01/json/1/1000"
-        case .searchRecipe(let ingredient):
-            return "/\(apiKey)/COOKRCP01/json/1/1000/RCP_PARTS_DTLS=\(ingredient.urlEncoded)"
+        case .searchRecipe(let startIndex, let count, let ingredient):
+            return "/\(apiKey)/COOKRCP01/json/\(startIndex)/\(count)/RCP_PARTS_DTLS=\(ingredient.urlEncoded)"
         case .fetchThemedRecipe(let type):
             return "/\(apiKey)/COOKRCP01/json/1/1000/RCP_PAT2=\(type.urlEncoded)"
         }

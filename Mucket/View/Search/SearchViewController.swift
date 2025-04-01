@@ -36,8 +36,8 @@ final class SearchViewController: BaseViewController {
     
     override func configureData() {
         searchView.searchTableView.register(SearchTableViewCell.self, forCellReuseIdentifier: SearchTableViewCell.id)
-        searchView.searchTableView.delegate = self
-        searchView.searchTableView.dataSource = self
+//        searchView.searchTableView.delegate = self
+//        searchView.searchTableView.dataSource = self
     }
 }
 
@@ -55,7 +55,8 @@ extension SearchViewController: View {
             .disposed(by: disposeBag)
         
         searchView.searchBar.textField.rx.controlEvent(.editingDidEndOnExit)
-            .map { SearchReactor.Action.searchButtonTapped }
+            .withLatestFrom(searchView.searchBar.textField.rx.text.orEmpty)
+            .map { SearchReactor.Action.searchButtonTapped(query: $0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
     }
@@ -70,29 +71,28 @@ extension SearchViewController: View {
             }
             .disposed(by: disposeBag)
         
-        rector.state
+        reactor?.state
             .map { $0.isSearchTableViewHidden }
             .distinctUntilChanged()
-            .subscribe(with: self) { owner, isHidden in
+            .bind(with: self) { owner, isHidden in
                 owner.searchView.searchTableView.isHidden = isHidden
-                
                 if !isHidden {
                     owner.searchView.searchBar.textField.resignFirstResponder()
                 }
             }
             .disposed(by: disposeBag)
-    }
-}
-
-// TODO: Rx로 구현
-extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: SearchTableViewCell.id, for: indexPath) as? SearchTableViewCell else { return UITableViewCell() }
         
-        return cell
+        // TODO: searchResult가 empty일때 table뷰 숨기고 emptyState뷰 보여주기
+        reactor?.state
+            .map { $0.searchResult }
+            .distinctUntilChanged()
+            .observe(on: MainScheduler.instance)
+            .bind(to: searchView.searchTableView.rx.items(
+                cellIdentifier: SearchTableViewCell.id,
+                cellType: SearchTableViewCell.self
+            )) { row, entity, cell in
+                cell.configureData(entity: entity)
+            }
+            .disposed(by: disposeBag)
     }
 }

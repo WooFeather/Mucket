@@ -9,21 +9,26 @@ import ReactorKit
 
 final class SearchReactor: Reactor {
     
+    private let repository: RecipeRepositoryType = RecipeRepository.shared
+    private var searchList: [RecipeEntity] = []
+    
     var initialState: State = State()
     
     enum Action {
         case backButtonTapped
-        case searchButtonTapped
+        case searchButtonTapped(query: String)
     }
     
     enum Mutation {
         case popToPrevView
-        case fetchSearchResult
+        case setSearchResult([RecipeEntity])
+        case setSearchTableViewHidden(Bool)
     }
     
     struct State {
         var shouldPopToPrevView = false
         var isSearchTableViewHidden = true
+        var searchResult: [RecipeEntity] = []
     }
     
 }
@@ -32,9 +37,16 @@ extension SearchReactor {
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .backButtonTapped:
-                .just(.popToPrevView)
-        case .searchButtonTapped:
-                .just(.fetchSearchResult)
+            return .just(.popToPrevView)
+            
+        case .searchButtonTapped(let query):
+            return fetchSearchData(query: query)
+                .flatMap { result in
+                    Observable.from([
+                        .setSearchResult(result),
+                        .setSearchTableViewHidden(false)
+                    ])
+                }
         }
     }
     
@@ -43,11 +55,30 @@ extension SearchReactor {
         switch mutation {
         case .popToPrevView:
             newState.shouldPopToPrevView = true
-        case .fetchSearchResult:
-            // TODO: 추후에 네트워크 요청 붙일 예정
-            newState.isSearchTableViewHidden = false
+            
+        case .setSearchResult(let result):
+            newState.searchResult = result
+            
+        case .setSearchTableViewHidden(let isHidden):
+            newState.isSearchTableViewHidden = isHidden
         }
-        
         return newState
+    }
+    
+    // TODO: 검색어 유효성 검사 로직 추가
+    private func fetchSearchData(query: String) -> Observable<[RecipeEntity]> {
+        return Observable.create { [weak self] observer in
+            Task {
+                do {
+                    let result = try await self?.repository.search(startIndex: 1, count: 10, byIngredient: query) ?? []
+                    self?.searchList = result
+                    observer.onNext(result)
+                    observer.onCompleted()
+                } catch {
+                    observer.onError(error)
+                }
+            }
+            return Disposables.create()
+        }
     }
 }

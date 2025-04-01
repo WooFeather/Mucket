@@ -9,7 +9,7 @@ import Foundation
 
 protocol RecipeRepositoryType {
     func fetchAll() async throws -> [RecipeEntity]
-    func search(byIngredient: String) async throws -> [RecipeEntity]
+    func search(startIndex: Int, count: Int, byIngredient ingredient: String) async throws -> [RecipeEntity]
     func fetchTheme(type: String) async throws -> [RecipeEntity]
 }
 
@@ -28,9 +28,9 @@ final class RecipeRepository: RecipeRepositoryType {
         }
     }
     
-    func search(byIngredient ingredient: String) async throws -> [RecipeEntity] {
+    func search(startIndex: Int, count: Int, byIngredient ingredient: String) async throws -> [RecipeEntity] {
         do {
-            let result: RecipeDTO = try await networkManager.fetchData(.searchRecipe(ingredient))
+            let result: RecipeDTO = try await networkManager.fetchData(.searchRecipe(startIndex: startIndex, count: count, ingredient: ingredient))
             return result.recipeInfo.row.map { $0.toEntity() }
         } catch {
             throw error
@@ -39,7 +39,7 @@ final class RecipeRepository: RecipeRepositoryType {
     
     func fetchTheme(type: String) async throws -> [RecipeEntity] {
         do {
-            let result: RecipeDTO = try await networkManager.fetchData(.fetchThemedRecipe(type))
+            let result: RecipeDTO = try await networkManager.fetchData(.fetchThemedRecipe(type: type))
             return result.recipeInfo.row.map { $0.toEntity() }
         } catch {
             throw error
