@@ -10,7 +10,7 @@ import SnapKit
 
 final class DropdownButton: BaseView {
     
-    private let button = UIButton(type: .system)
+    let button = UIButton(type: .system)
     
     init(title: String) {
         super.init(frame: .zero)

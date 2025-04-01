@@ -27,14 +27,14 @@ final class ImageCacheManager {
         
         // Memory Cache에 존재하면 바로 반환
         if let cachedImage = memoryCache.loadImage(url: url) {
-            print("💿 Memory Cache에서 로드")
+            // print("💿 Memory Cache에서 로드")
             return cachedImage
         }
         
         // Disk Cache에서 로드 (비동기 처리)
         if let cachedImage = await diskCache.loadImage(url: url) {
             await memoryCache.saveImage(image: cachedImage, url: url, option: saveOption)
-            print("💾 Disk Cache에서 로드")
+            // print("💾 Disk Cache에서 로드")
             return cachedImage
         }
         
@@ -49,7 +49,7 @@ final class ImageCacheManager {
             // 캐시에 저장 (비동기 처리)
             await memoryCache.saveImage(image: image, url: url, option: saveOption)
             await diskCache.saveImage(image: image, url: url, option: saveOption)
-            print("🌐 서버에서 로드", url)
+            // print("🌐 서버에서 로드", url)
             
             return image
         } catch {

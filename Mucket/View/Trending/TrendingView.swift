@@ -14,8 +14,9 @@ final class TrendingView: BaseView {
     private let roundedBackgroundView = RoundedBackgroundView()
     private let recommendFoodHeader = UILabel()
     private let themeFoodHeader = UILabel()
+    private let contextMenu = ["밥", "반찬", "국&찌개", "후식", "일품", "기타"]
     let searchView = RoundedTextView()
-    let themeButton = DropdownButton(title: "국&찌개")
+    lazy var themeButton = DropdownButton(title: contextMenu[0])
     
     lazy var recommendCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
     lazy var themeCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())

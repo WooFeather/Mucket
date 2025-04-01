@@ -48,8 +48,11 @@ final class TrendingViewController: BaseViewController {
             do {
                 let all = try await repository.fetchAll()
                 self.recommendedList = Array(all.shuffled().prefix(10))
-                let theme = try await repository.fetchTheme(type: trendingView.themeButton.description)
+                
+                let type = trendingView.themeButton.button.title(for: .normal) ?? ""
+                let theme = try await repository.fetchTheme(type: type)
                 self.themeList = Array(theme.shuffled().prefix(10))
+                
                 self.trendingView.recommendCollectionView.reloadData()
                 self.trendingView.themeCollectionView.reloadData()
             } catch {

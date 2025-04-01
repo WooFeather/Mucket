@@ -40,40 +40,30 @@ enum RecipeRouter {
         APIKeys.recipeAppKey
     }
     
-    var endpoint: String {
-        return "\(baseURL)/\(apiKey)/COOKRCP01/json/1/1000"
+    var path: String {
+        switch self {
+        case .fetchAll:
+            return "/\(apiKey)/COOKRCP01/json/1/1000"
+        case .searchRecipe(let ingredient):
+            return "/\(apiKey)/COOKRCP01/json/1/1000/RCP_PARTS_DTLS=\(ingredient.urlEncoded)"
+        case .fetchThemedRecipe(let type):
+            return "/\(apiKey)/COOKRCP01/json/1/1000/RCP_PAT2=\(type.urlEncoded)"
+        }
     }
     
     var method: String {
-        return "GET"
+        "GET"
     }
     
     var headers: [String: String] {
         [:]
     }
     
-    var queryItems: [URLQueryItem] {
-        switch self {
-        case .fetchAll:
-            return []
-        case .searchRecipe(let ingredient):
-            return [URLQueryItem(name: "RCP_PARTS_DTLS", value: ingredient)]
-        case .fetchThemedRecipe(let type):
-            return [URLQueryItem(name: "RCP_PAT2", value: type)]
-        }
-    }
-    
     func asURLRequest() throws -> URLRequest {
-        guard var components = URLComponents(string: endpoint) else {
+        guard let url = URL(string: baseURL + path) else {
             throw RouterError.invalidURLError
         }
-        
-        components.queryItems = queryItems
-        
-        guard let url = components.url else {
-            throw RouterError.invalidURLError
-        }
-        
+
         var request = URLRequest(url: url)
         request.httpMethod = method
         headers.forEach { request.setValue($1, forHTTPHeaderField: $0) }

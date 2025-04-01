@@ -37,6 +37,7 @@ final class NetworkManager: NetworkManagerType {
         }
         
         do {
+            print(response.url ?? "")
             return try JSONDecoder().decode(T.self, from: data)
         } catch {
             throw RouterError.encodingError
