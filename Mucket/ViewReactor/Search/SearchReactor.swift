@@ -22,12 +22,16 @@ final class SearchReactor: Reactor {
         case popToPrevView
         case setSearchResult([RecipeEntity])
         case setSearchTableViewHidden(Bool)
+        case setEmptyStateHidden(Bool)
+        case setLoadingIndicator(Bool)
     }
     
     struct State {
         var shouldPopToPrevView = false
         var isSearchTableViewHidden = true
+        var isEmptyStateHidden = true
         var searchResult: [RecipeEntity] = []
+        var isLoading = false
     }
 }
 
@@ -38,13 +42,18 @@ extension SearchReactor {
             return .just(.popToPrevView)
             
         case .searchButtonTapped(let query):
-            return fetchSearchData(query: query)
-                .flatMap { result in
-                    Observable.from([
-                        .setSearchResult(result),
-                        .setSearchTableViewHidden(false)
-                    ])
-                }
+            return .concat([
+                .just(.setLoadingIndicator(true)),
+                fetchSearchData(query: query)
+                    .flatMap { result in
+                        Observable.from([
+                            .setSearchResult(result),
+                            .setEmptyStateHidden(result.isEmpty == false),
+                            .setSearchTableViewHidden(result.isEmpty)
+                        ])
+                    },
+                .just(.setLoadingIndicator(false))
+            ])
         }
     }
     
@@ -53,12 +62,14 @@ extension SearchReactor {
         switch mutation {
         case .popToPrevView:
             newState.shouldPopToPrevView = true
-            
         case .setSearchResult(let result):
             newState.searchResult = result
-            
+        case .setEmptyStateHidden(let hidden):
+            newState.isEmptyStateHidden = hidden
         case .setSearchTableViewHidden(let isHidden):
             newState.isSearchTableViewHidden = isHidden
+        case .setLoadingIndicator(let isLoading):
+            newState.isLoading = isLoading
         }
         return newState
     }
@@ -75,7 +86,9 @@ extension SearchReactor {
                     observer.onNext(result)
                     observer.onCompleted()
                 } catch {
-                    observer.onError(error)
+                    print("❌ 검색 실패: \(error)")
+                    observer.onNext([])
+                    observer.onCompleted()
                 }
             }
             return Disposables.create()

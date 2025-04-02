@@ -20,7 +20,8 @@ final class TrendingReactor: Reactor {
     }
     
     enum Action {
-        case reloadTrigger(type: String)
+        case loadRecommended
+        case loadTheme(type: String)
         case searchViewTapped
         case clearRouting
     }
@@ -30,12 +31,16 @@ final class TrendingReactor: Reactor {
         case clearRoutingFlag
         case setRecommendedList([RecipeEntity])
         case setThemeList([RecipeEntity])
+        case setLoadingRecommended(Bool)
+        case setLoadingTheme(Bool)
     }
     
     struct State {
         var shouldRouteToSearchView: Route = .none
         var recommendedList: [RecipeEntity] = []
         var themeList: [RecipeEntity] = []
+        var isLoadingRecommended = false
+        var isLoadingTheme = false
     }
 }
 
@@ -46,17 +51,19 @@ extension TrendingReactor {
                 return .just(.pushToSearchView)
         case .clearRouting:
                 return .just(.clearRoutingFlag)
-        case .reloadTrigger(let type):
-            return Observable.zip(
-                fetchRecommendedList(),
-                fetchThemeList(type: type)
-            )
-            .flatMap { recommended, theme in
-                return Observable.from([
-                    .setRecommendedList(recommended),
-                    .setThemeList(theme)
-                ])
-            }
+        case .loadRecommended:
+            return .concat([
+                .just(.setLoadingRecommended(true)),
+                fetchRecommendedList().map { .setRecommendedList($0) },
+                .just(.setLoadingRecommended(false))
+                    
+            ])
+        case .loadTheme(let type):
+            return .concat([
+                .just(.setLoadingTheme(true)),
+                fetchThemeList(type: type).map { .setThemeList($0) },
+                .just(.setLoadingTheme(false))
+            ])
         }
     }
     
@@ -71,6 +78,10 @@ extension TrendingReactor {
             newState.recommendedList = list
         case .setThemeList(let list):
             newState.themeList = list
+        case .setLoadingRecommended(let isLoading):
+            newState.isLoadingRecommended = isLoading
+        case .setLoadingTheme(let isLoading):
+            newState.isLoadingTheme = isLoading
         }
         
         return newState

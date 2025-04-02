@@ -12,7 +12,6 @@ protocol NetworkManagerType {
 }
 
 // TODO: 네트워크 에러처리
-// TODO: 인디케이터 처리
 final class NetworkManager: NetworkManagerType {
     static let shared: NetworkManagerType = NetworkManager()
     

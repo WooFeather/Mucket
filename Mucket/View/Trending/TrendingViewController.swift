@@ -43,7 +43,12 @@ extension TrendingViewController: View {
     
     private func bindAction(_ reactor: TrendingReactor) {
         let type = trendingView.themeButton.button.title(for: .normal) ?? "밥"
-        reactor.action.onNext(.reloadTrigger(type: type))
+        reactor.action.onNext(.loadRecommended)
+        reactor.action.onNext(.loadTheme(type: type))
+        
+        trendingView.didSelectTheme = { [weak self] selectedType in
+            self?.reactor?.action.onNext(.loadTheme(type: selectedType == "국&찌개" ? "국" : selectedType))
+        }
         
         trendingView.searchView.rx.tapGesture()
             .when(.recognized)
@@ -70,7 +75,8 @@ extension TrendingViewController: View {
         
         reactor.state
             .map { $0.recommendedList }
-            .distinctUntilChanged()
+            .distinctUntilChanged { $0.map(\.id) == $1.map(\.id) }
+            .observe(on: MainScheduler.instance)
             .bind(to: trendingView.recommendCollectionView.rx.items(
                 cellIdentifier: TrendingCollectionViewCell.id,
                 cellType: TrendingCollectionViewCell.self
@@ -81,12 +87,39 @@ extension TrendingViewController: View {
 
         reactor.state
             .map { $0.themeList }
-            .distinctUntilChanged()
+            .distinctUntilChanged { $0.map(\.id) == $1.map(\.id) }
+            .observe(on: MainScheduler.instance)
             .bind(to: trendingView.themeCollectionView.rx.items(
                 cellIdentifier: TrendingCollectionViewCell.id,
                 cellType: TrendingCollectionViewCell.self
             )) { _, entity, cell in
                 cell.configureData(entity: entity)
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.isLoadingRecommended }
+            .distinctUntilChanged()
+            .observe(on: MainScheduler.instance)
+            .bind(with: self) { owner, isLoading in
+                if isLoading {
+                    owner.trendingView.recommendedLoadingIndicator.startAnimating()
+                } else {
+                    owner.trendingView.recommendedLoadingIndicator.stopAnimating()
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.isLoadingTheme }
+            .distinctUntilChanged()
+            .observe(on: MainScheduler.instance)
+            .bind(with: self) { owner, isLoading in
+                if isLoading {
+                    owner.trendingView.themeLoadingIndicator.startAnimating()
+                } else {
+                    owner.trendingView.themeLoadingIndicator.stopAnimating()
+                }
             }
             .disposed(by: disposeBag)
     }

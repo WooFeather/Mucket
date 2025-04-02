@@ -36,8 +36,6 @@ final class SearchViewController: BaseViewController {
     
     override func configureData() {
         searchView.searchTableView.register(SearchTableViewCell.self, forCellReuseIdentifier: SearchTableViewCell.id)
-//        searchView.searchTableView.delegate = self
-//        searchView.searchTableView.dataSource = self
     }
 }
 
@@ -74,10 +72,25 @@ extension SearchViewController: View {
         reactor?.state
             .map { $0.isSearchTableViewHidden }
             .distinctUntilChanged()
+            .observe(on: MainScheduler.instance)
             .bind(with: self) { owner, isHidden in
                 owner.searchView.searchTableView.isHidden = isHidden
                 if !isHidden {
                     owner.searchView.searchBar.textField.resignFirstResponder()
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        rector.state
+            .map { $0.isEmptyStateHidden }
+            .distinctUntilChanged()
+            .observe(on: MainScheduler.instance)
+            .bind(with: self) { owner, isHidden in
+                print(isHidden)
+                owner.searchView.emptyStateView.isHidden = isHidden
+                if !isHidden {
+                    print(isHidden)
+                    owner.searchView.searchTableView.isHidden = true
                 }
             }
             .disposed(by: disposeBag)
@@ -92,6 +105,19 @@ extension SearchViewController: View {
                 cellType: SearchTableViewCell.self
             )) { row, entity, cell in
                 cell.configureData(entity: entity)
+            }
+            .disposed(by: disposeBag)
+        
+        reactor?.state
+            .map { $0.isLoading }
+            .distinctUntilChanged()
+            .observe(on: MainScheduler.instance)
+            .bind(with: self) { owner, isLoading in
+                if isLoading {
+                    owner.searchView.loadingIndicator.startAnimating()
+                } else {
+                    owner.searchView.loadingIndicator.stopAnimating()
+                }
             }
             .disposed(by: disposeBag)
     }

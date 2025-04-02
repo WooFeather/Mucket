@@ -9,15 +9,16 @@ import UIKit
 import SnapKit
 
 final class SearchView: BaseView {
-    private let roundedBackgroundView = RoundedBackgroundView()
+    let roundedBackgroundView = RoundedBackgroundView()
     let backButton = UIButton()
     let searchBar = UnderlineTextField()
     let searchTableView = UITableView()
     let emptyStateView = EmptyStateView(message: "검색 결과가 없습니다. 검색어를 다시 확인해주세요.")
+    let loadingIndicator = UIActivityIndicatorView()
     
     override func configureHierarchy() {
         addSubview(roundedBackgroundView)
-        [backButton, searchBar, searchTableView, emptyStateView].forEach {
+        [backButton, searchBar, searchTableView, emptyStateView, loadingIndicator].forEach {
             roundedBackgroundView.addSubview($0)
         }
     }
@@ -45,6 +46,11 @@ final class SearchView: BaseView {
             $0.top.equalTo(searchBar.snp.bottom).offset(16)
             $0.leading.trailing.bottom.equalToSuperview()
         }
+        
+        loadingIndicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.size.equalTo(40)
+        }
 
         emptyStateView.snp.makeConstraints {
             $0.centerX.equalToSuperview()
@@ -63,6 +69,10 @@ final class SearchView: BaseView {
         
         searchTableView.backgroundColor = .backgroundPrimary
         searchTableView.isHidden = true
+        
+        loadingIndicator.style = .medium
+        loadingIndicator.color = .backgroundGray
+        
         
         // TODO: 검색결과가 없을때 emptyStateView isHidden = false
     }

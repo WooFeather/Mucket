@@ -14,9 +14,13 @@ final class TrendingView: BaseView {
     private let roundedBackgroundView = RoundedBackgroundView()
     private let recommendFoodHeader = UILabel()
     private let themeFoodHeader = UILabel()
-    private let contextMenu = ["밥", "반찬", "국&찌개", "후식", "일품", "기타"]
+    private let contextMenuItems = ["밥", "반찬", "국&찌개", "후식", "일품", "기타"]
     let searchView = RoundedTextView()
-    lazy var themeButton = DropdownButton(title: contextMenu[0])
+    lazy var themeButton = DropdownButton(title: contextMenuItems[0])
+    let recommendedLoadingIndicator = UIActivityIndicatorView()
+    let themeLoadingIndicator = UIActivityIndicatorView()
+    
+    var didSelectTheme: ((String) -> Void)?
     
     lazy var recommendCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
     lazy var themeCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
@@ -29,6 +33,9 @@ final class TrendingView: BaseView {
         [recommendFoodHeader, themeFoodHeader, themeButton, recommendCollectionView, themeCollectionView].forEach {
             roundedBackgroundView.addSubview($0)
         }
+        
+        recommendCollectionView.addSubview(recommendedLoadingIndicator)
+        themeCollectionView.addSubview(themeLoadingIndicator)
     }
     
     override func configureLayout() {
@@ -65,6 +72,11 @@ final class TrendingView: BaseView {
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(200)
         }
+        
+        recommendedLoadingIndicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.size.equalTo(40)
+        }
 
         themeFoodHeader.snp.makeConstraints {
             $0.top.equalTo(recommendCollectionView.snp.bottom).offset(24)
@@ -80,6 +92,11 @@ final class TrendingView: BaseView {
             $0.top.equalTo(themeFoodHeader.snp.bottom).offset(12)
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(200)
+        }
+        
+        themeLoadingIndicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.size.equalTo(40)
         }
     }
     
@@ -104,6 +121,25 @@ final class TrendingView: BaseView {
         recommendCollectionView.isScrollEnabled = false
         themeCollectionView.backgroundColor = .backgroundPrimary
         themeCollectionView.isScrollEnabled = false
+        
+        [recommendedLoadingIndicator, themeLoadingIndicator].forEach {
+            $0.style = .medium
+            $0.color = .backgroundGray
+        }
+        
+        configureContextMenu()
+    }
+    
+    private func configureContextMenu() {
+        let actions = contextMenuItems.map { title in
+            UIAction(title: title) { [weak self] _ in
+                self?.themeButton.button.setTitle(title, for: .normal)
+                self?.didSelectTheme?(title)
+            }
+        }
+
+        themeButton.button.menu = UIMenu(title: "요리 종류 선택", children: actions)
+        themeButton.button.showsMenuAsPrimaryAction = true
     }
 }
 
