@@ -63,7 +63,6 @@ final class BookmarkView: BaseView {
         bookmarkTableView.backgroundColor = .backgroundPrimary
         bookmarkTableView.isHidden = false
         
-        // TODO: 검색결과가 없을때 emptyStateView isHidden = false
         emptyStateView.isHidden = true
     }
 }

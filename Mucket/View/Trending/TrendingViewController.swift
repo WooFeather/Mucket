@@ -43,8 +43,7 @@ extension TrendingViewController: View {
     
     private func bindAction(_ reactor: TrendingReactor) {
         let type = trendingView.themeButton.button.title(for: .normal) ?? "밥"
-        reactor.action.onNext(.loadRecommended)
-        reactor.action.onNext(.loadTheme(type: type))
+        reactor.action.onNext(.loadAll(type: type))
         
         trendingView.didSelectTheme = { [weak self] selectedType in
             self?.reactor?.action.onNext(.loadTheme(type: selectedType == "국&찌개" ? "국" : selectedType))

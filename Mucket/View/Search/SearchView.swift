@@ -72,8 +72,5 @@ final class SearchView: BaseView {
         
         loadingIndicator.style = .medium
         loadingIndicator.color = .backgroundGray
-        
-        
-        // TODO: 검색결과가 없을때 emptyStateView isHidden = false
     }
 }

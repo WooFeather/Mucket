@@ -38,7 +38,7 @@ final class NetworkManager: NetworkManagerType {
         }
         
         do {
-            print(response.url ?? "")
+            print("🌐 요청 URL: \(request.url?.absoluteString ?? "nil")")
             return try JSONDecoder().decode(T.self, from: data)
         } catch {
             throw RouterError.encodingError

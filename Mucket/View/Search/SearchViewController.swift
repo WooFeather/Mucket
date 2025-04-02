@@ -86,16 +86,13 @@ extension SearchViewController: View {
             .distinctUntilChanged()
             .observe(on: MainScheduler.instance)
             .bind(with: self) { owner, isHidden in
-                print(isHidden)
                 owner.searchView.emptyStateView.isHidden = isHidden
                 if !isHidden {
-                    print(isHidden)
                     owner.searchView.searchTableView.isHidden = true
                 }
             }
             .disposed(by: disposeBag)
         
-        // TODO: searchResult가 empty일때 table뷰 숨기고 emptyState뷰 보여주기
         reactor?.state
             .map { $0.searchResult }
             .distinctUntilChanged()

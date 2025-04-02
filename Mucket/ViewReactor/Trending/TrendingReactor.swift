@@ -20,7 +20,7 @@ final class TrendingReactor: Reactor {
     }
     
     enum Action {
-        case loadRecommended
+        case loadAll(type: String)
         case loadTheme(type: String)
         case searchViewTapped
         case clearRouting
@@ -48,16 +48,26 @@ extension TrendingReactor {
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .searchViewTapped:
-                return .just(.pushToSearchView)
+            return .just(.pushToSearchView)
+
         case .clearRouting:
-                return .just(.clearRoutingFlag)
-        case .loadRecommended:
+            return .just(.clearRoutingFlag)
+
+        case .loadAll(let type):
             return .concat([
                 .just(.setLoadingRecommended(true)),
-                fetchRecommendedList().map { .setRecommendedList($0) },
-                .just(.setLoadingRecommended(false))
-                    
+                .just(.setLoadingTheme(true)),
+
+                fetchRecommendedList()
+                    .map { .setRecommendedList($0) },
+
+                fetchThemeList(type: type)
+                    .map { .setThemeList($0) },
+
+                .just(.setLoadingRecommended(false)),
+                .just(.setLoadingTheme(false)),
             ])
+
         case .loadTheme(let type):
             return .concat([
                 .just(.setLoadingTheme(true)),
@@ -98,11 +108,13 @@ extension TrendingReactor {
                     observer.onNext(Array(all.shuffled().prefix(10)))
                     observer.onCompleted()
                 } catch {
+                    print("추천리스트 로딩 실패", error)
                     observer.onError(error)
                 }
             }
             return Disposables.create()
         }
+        .retry(1)
     }
 
     private func fetchThemeList(type: String) -> Observable<[RecipeEntity]> {
@@ -113,10 +125,12 @@ extension TrendingReactor {
                     observer.onNext(Array(theme.shuffled().prefix(10)))
                     observer.onCompleted()
                 } catch {
+                    print("테마리스트 로딩 실패", error)
                     observer.onError(error)
                 }
             }
             return Disposables.create()
         }
+        .retry(1)
     }
 }
