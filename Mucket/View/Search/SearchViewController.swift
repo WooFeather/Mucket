@@ -35,7 +35,9 @@ final class SearchViewController: BaseViewController {
     }
     
     override func configureData() {
-        searchView.searchTableView.register(SearchTableViewCell.self, forCellReuseIdentifier: SearchTableViewCell.id)
+        searchView.searchTableView.register(
+            SearchTableViewCell.self, forCellReuseIdentifier: SearchTableViewCell.id)
+        searchView.searchTableView.prefetchDataSource = self
     }
 }
 
@@ -46,7 +48,6 @@ extension SearchViewController: View {
         bindState(reactor)
     }
     
-    // TODO: 페이지네이션 구현
     private func bindAction(_ reactor: SearchReactor) {
         searchView.backButton.rx.tap
             .map { SearchReactor.Action.backButtonTapped }
@@ -139,5 +140,26 @@ extension SearchViewController: View {
                 }
             }
             .disposed(by: disposeBag)
+        
+        reactor?.state
+            .map { $0.alertMessage }
+            .distinctUntilChanged()
+            .compactMap { $0 } // nil 제거
+            .observe(on: MainScheduler.asyncInstance)
+            .bind(with: self) { owner, message in
+                owner.showAlert(title: "검색실패!", message: message, button: "확인") {
+                    owner.dismiss(animated: true)
+                }
+                owner.reactor?.action.onNext(.clearAlert)
+            }
+            .disposed(by: disposeBag)
+    }
+}
+
+extension SearchViewController: UITableViewDataSourcePrefetching {
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        guard let reactor = reactor else { return }
+        let maxIndex = indexPaths.map { $0.row }.max() ?? 0
+        reactor.action.onNext(.loadNextPageIfNeeded(index: maxIndex))
     }
 }

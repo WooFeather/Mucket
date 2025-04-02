@@ -63,4 +63,20 @@ extension UIViewController {
         }
         return nil
     }
+    
+    func showAlert(title: String, message: String, button: String, isCancelButton: Bool = false  ,completionHandler: @escaping () -> Void) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let button = UIAlertAction(title: button, style: .default) { action in
+            completionHandler()
+        }
+        
+        if isCancelButton {
+            let cancel = UIAlertAction(title: "취소", style: .cancel)
+            alert.addAction(cancel)
+        }
+        
+        alert.addAction(button)
+        
+        present(alert, animated: true)
+    }
 }

@@ -28,8 +28,8 @@ struct RecipeInfoDTO: Decodable {
 }
 
 struct ResultDTO: Decodable {
-    let msg: String
-    let code: String
+    let msg: String?
+    let code: String?
     
     enum CodingKeys: String, CodingKey {
         case msg = "MSG"
