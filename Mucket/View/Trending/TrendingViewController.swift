@@ -56,19 +56,39 @@ extension TrendingViewController: View {
             }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
+        
+        trendingView.recommendCollectionView.rx.modelSelected(RecipeEntity.self)
+            .map { TrendingReactor.Action.recipeCellTapped(recipe: $0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+
+        trendingView.themeCollectionView.rx.modelSelected(RecipeEntity.self)
+            .map { TrendingReactor.Action.recipeCellTapped(recipe: $0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     }
     
     private func bindState(_ reactor: TrendingReactor) {
         reactor.state
-            .map { $0.shouldRouteToSearchView }
-            .distinctUntilChanged()
-            .filter { $0 == .searchView }
+            .map { $0.route }
+            .distinctUntilChanged { $0 == $1 }
             .observe(on: MainScheduler.asyncInstance)
-            .bind(with: self) { owner, _ in
-                let vc = SearchViewController(reactor: SearchReactor())
-                vc.hidesBottomBarWhenPushed = true
-                owner.navigationController?.pushViewController(vc, animated: true)
-                owner.reactor?.action.onNext(.clearRouting) // 다시 push가 되지 않게 clear
+            .bind(with: self) { owner, route in
+                switch route {
+                case .searchView:
+                    let vc = SearchViewController(reactor: SearchReactor())
+                    vc.hidesBottomBarWhenPushed = true
+                    owner.navigationController?.pushViewController(vc, animated: true)
+                    owner.reactor?.action.onNext(.clearRouting)
+
+                case .detail(let recipe):
+                    let vc = RecipeDetailViewController(reactor: RecipeDetailReactor(recipe: recipe))
+                    vc.hidesBottomBarWhenPushed = true
+                    owner.navigationController?.pushViewController(vc, animated: true)
+                    owner.reactor?.action.onNext(.clearRouting)
+                case .none:
+                    break
+                }
             }
             .disposed(by: disposeBag)
         

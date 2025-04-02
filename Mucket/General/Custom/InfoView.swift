@@ -11,7 +11,7 @@ import SnapKit
 final class InfoView: BaseView {
      private let titleLabel = UILabel()
      private let dividerView = UIView()
-     private let valueLabel = UILabel()
+     let valueLabel = UILabel()
      private let unitLabel = UILabel()
      private let valueStack = UIStackView()
      private let mainStack = UIStackView()
@@ -20,7 +20,7 @@ final class InfoView: BaseView {
      init(title: String, unit: String = "g") {
          super.init(frame: .zero)
          titleLabel.text = title
-         unitText = unit
+         unitLabel.text = unit
          valueLabel.text = "--"
      }
      
@@ -58,7 +58,6 @@ final class InfoView: BaseView {
          
          unitLabel.font = .Body.body2
          unitLabel.textColor = .textPrimary
-         unitLabel.text = unitText
          
          valueStack.axis = .horizontal
          valueStack.spacing = 2

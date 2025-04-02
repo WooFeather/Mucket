@@ -24,11 +24,6 @@ final class RecipeDetailViewController: BaseViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        updateTableViewHeight()
-    }
-    
     override func loadView() {
         view = recipeDetailView
     }
@@ -39,8 +34,6 @@ final class RecipeDetailViewController: BaseViewController {
     }
     
     override func configureData() {
-        recipeDetailView.makingTableView.delegate = self
-        recipeDetailView.makingTableView.dataSource = self
         recipeDetailView.makingTableView.register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.id)
     }
     
@@ -61,28 +54,77 @@ final class RecipeDetailViewController: BaseViewController {
 // MARK: - Reactor
 extension RecipeDetailViewController: View {
     func bind(reactor: RecipeDetailReactor) {
-        bindState(reactor)
+        bindAction(reactor)
         bindState(reactor)
     }
     
     private func bindAction(_ reactor: RecipeDetailReactor) {
-        
+        recipeDetailView.backButton.rx.tap
+            .map { RecipeDetailReactor.Action.backButtonTapped }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     }
     
     private func bindState(_ reactor: RecipeDetailReactor) {
+        reactor.state
+            .map{ $0.shouldPopToPrevView }
+            .distinctUntilChanged()
+            .filter { $0 }
+            .bind(with: self) { owner, _ in
+                owner.navigationController?.popViewController(animated: true)
+            }
+            .disposed(by: disposeBag)
         
+        reactor.state
+            .map { $0.recipe.name }
+            .distinctUntilChanged()
+            .bind(to: recipeDetailView.naviTitleLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.recipe.imageURL }
+            .distinctUntilChanged()
+            .compactMap { $0 }
+            .bind(with: self) { owner, urlString in
+                let imageURL = URL(string: urlString.toHTTPS())
+                Task {
+                    do {
+                        let image = try await ImageCacheManager.shared.load(url: imageURL, saveOption: .onlyMemory)
+                        owner.recipeDetailView.thumbImageView.image = image
+                    } catch {
+                        print("이미지 로드 실패")
+                        owner.recipeDetailView.thumbImageView.image = .placeholderSmall
+                    }
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.recipe.ingredients }
+            .distinctUntilChanged()
+            .bind(to: recipeDetailView.ingredientTextView.rx.text)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.recipe }
+            .bind(with: self) { owner, recipe in
+                owner.recipeDetailView.carInfoView.valueLabel.text = recipe.carbs
+                owner.recipeDetailView.proInfoView.valueLabel.text = recipe.protein
+                owner.recipeDetailView.fatInfoView.valueLabel.text = recipe.fat
+                owner.recipeDetailView.naInfoView.valueLabel.text = recipe.sodium
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.manualSteps }
+            .distinctUntilChanged()
+            .bind(to: recipeDetailView.makingTableView.rx.items(
+                cellIdentifier: DetailTableViewCell.id,
+                cellType: DetailTableViewCell.self
+            )) { index, step, cell in
+                cell.configureData(step: step)
+            }
+            .disposed(by: disposeBag)
     }
 }
 
-// TODO: Rx로 구현
-extension RecipeDetailViewController: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 20
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: DetailTableViewCell.id, for: indexPath) as? DetailTableViewCell else { return UITableViewCell() }
-        
-        return cell
-    }
-}

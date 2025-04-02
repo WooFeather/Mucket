@@ -46,6 +46,7 @@ extension SearchViewController: View {
         bindState(reactor)
     }
     
+    // TODO: 페이지네이션 구현
     private func bindAction(_ reactor: SearchReactor) {
         searchView.backButton.rx.tap
             .map { SearchReactor.Action.backButtonTapped }

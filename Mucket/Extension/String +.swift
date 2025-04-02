@@ -11,4 +11,8 @@ extension String {
     var urlEncoded: String {
         self.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? self
     }
+    
+    func toHTTPS() -> String {
+        self.replacingOccurrences(of: "http://", with: "https://")
+    }
 }

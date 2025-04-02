@@ -14,9 +14,10 @@ final class TrendingReactor: Reactor {
     private let repository: RecipeRepositoryType = RecipeRepository.shared
     
     /// 화면 이동을 위한 열거형
-    enum Route {
+    enum Route: Equatable {
         case none
         case searchView
+        case detail(recipe: RecipeEntity)
     }
     
     enum Action {
@@ -24,11 +25,11 @@ final class TrendingReactor: Reactor {
         case loadTheme(type: String)
         case searchViewTapped
         case clearRouting
+        case recipeCellTapped(recipe: RecipeEntity)
     }
     
     enum Mutation {
-        case pushToSearchView
-        case clearRoutingFlag
+        case setRoute(Route)
         case setRecommendedList([RecipeEntity])
         case setThemeList([RecipeEntity])
         case setLoadingRecommended(Bool)
@@ -36,7 +37,7 @@ final class TrendingReactor: Reactor {
     }
     
     struct State {
-        var shouldRouteToSearchView: Route = .none
+        var route: Route = .none
         var recommendedList: [RecipeEntity] = []
         var themeList: [RecipeEntity] = []
         var isLoadingRecommended = false
@@ -48,11 +49,11 @@ extension TrendingReactor {
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .searchViewTapped:
-            return .just(.pushToSearchView)
-
+            return .just(.setRoute(.searchView))
+        case .recipeCellTapped(let recipe):
+            return .just(.setRoute(.detail(recipe: recipe)))
         case .clearRouting:
-            return .just(.clearRoutingFlag)
-
+            return .just(.setRoute(.none))
         case .loadAll(let type):
             return .concat([
                 .just(.setLoadingRecommended(true)),
@@ -80,10 +81,8 @@ extension TrendingReactor {
     func reduce(state: State, mutation: Mutation) -> State {
         var newState = state
         switch mutation {
-        case .pushToSearchView:
-            newState.shouldRouteToSearchView = .searchView
-        case .clearRoutingFlag:
-            newState.shouldRouteToSearchView = .none
+        case .setRoute(let route):
+            newState.route = route
         case .setRecommendedList(let list):
             newState.recommendedList = list
         case .setThemeList(let list):

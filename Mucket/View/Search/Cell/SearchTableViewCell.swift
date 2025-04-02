@@ -69,8 +69,8 @@ final class SearchTableViewCell: BaseTableViewCell, ReusableIdentifier {
     }
     
     func configureData(entity: RecipeEntity) {
-        if let httpsURL = entity.imageURL?.replacingOccurrences(of: "http://", with: "https://") {
-            let imageURL = URL(string: httpsURL)
+        if let url = entity.imageURL {
+            let imageURL = URL(string: url.toHTTPS())
             Task {
                 do {
                     let image = try await ImageCacheManager.shared.load(url: imageURL, saveOption: .onlyMemory)

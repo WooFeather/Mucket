@@ -9,14 +9,14 @@ import UIKit
 import SnapKit
 
 final class RecipeDetailView: BaseView {
-    private let scrollView = UIScrollView()
+    let scrollView = UIScrollView()
     private let contentView = UIView()
 
     private let nutritionHeaderLabel = UILabel()
     private let ingredientHeaderLabel = UILabel()
-    private let makingHeaderLabel = UILabel()
+    let makingHeaderLabel = UILabel()
     
-    private let navigationStackView = UIStackView()
+    let navigationStackView = UIStackView()
     let backButton = UIButton()
     let naviTitleLabel = UILabel()
     let bookmarkButton = UIButton()
@@ -105,13 +105,14 @@ final class RecipeDetailView: BaseView {
         makingTableView.snp.makeConstraints { make in
             make.top.equalTo(makingHeaderLabel.snp.bottom).offset(12)
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(5000)
-            make.bottom.equalToSuperview().offset(-32)
+            make.height.equalTo(1000)
+            make.bottom.equalToSuperview()
         }
     }
     
-    // TODO: 이전 뷰에서 전달받은 값 넣을 예정
     override func configureView() {
+        scrollView.showsVerticalScrollIndicator = false
+        
         navigationStackView.axis = .horizontal
         navigationStackView.alignment = .center
         navigationStackView.distribution = .equalSpacing
@@ -119,7 +120,6 @@ final class RecipeDetailView: BaseView {
         backButton.setImage(.chevronLeft, for: .normal)
         backButton.tintColor = .textPrimary
         
-        naviTitleLabel.text = "간편 카레 레시피"
         naviTitleLabel.font = .Head.head4
         naviTitleLabel.textColor = .textPrimary
         
@@ -151,10 +151,9 @@ final class RecipeDetailView: BaseView {
         ingredientTextView.font = .Body.body4
         ingredientTextView.textColor = .textPrimary
         ingredientTextView.backgroundColor = .clear
-        ingredientTextView.text = "닭고기(1마리), 가시오가피(10g), 대파(20g), 다시마(10g), 건새우(20g), 실곤약(100g), 비트(30g), 치자가루(10g), 마늘(20g), 소금(0.3g), 후춧가루(0.01g), 양파(50g),오이(50g), 겨자가루(10g), 식초(20g), 설탕(20g)"
         
-        makingTableView.backgroundColor = .backgroundPrimary
-        makingTableView.isScrollEnabled = false
+        makingTableView.backgroundColor = UIColor.themeSecondary.withAlphaComponent(0.5)
+        makingTableView.isScrollEnabled = true
         makingTableView.separatorStyle = .none
         makingTableView.rowHeight = UITableView.automaticDimension
         makingTableView.estimatedRowHeight = 100
