@@ -58,6 +58,11 @@ extension SearchViewController: View {
             .map { SearchReactor.Action.searchButtonTapped(query: $0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
+        
+        searchView.searchTableView.rx.modelSelected(RecipeEntity.self)
+            .map { SearchReactor.Action.searchCellTapped(recipe: $0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     }
     
     private func bindState(_ rector: SearchReactor) {
@@ -115,6 +120,22 @@ extension SearchViewController: View {
                     owner.searchView.loadingIndicator.startAnimating()
                 } else {
                     owner.searchView.loadingIndicator.stopAnimating()
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        rector.state
+            .map { $0.route }
+            .distinctUntilChanged { $0 == $1 }
+            .observe(on: MainScheduler.asyncInstance)
+            .bind(with: self) { owner, route in
+                switch route {
+                case .detail(recipe: let recipe):
+                    let vc = RecipeDetailViewController(reactor: RecipeDetailReactor(recipe: recipe))
+                    owner.navigationController?.pushViewController(vc, animated: true)
+                    owner.reactor?.action.onNext(.clearRouting)
+                case .none:
+                    break
                 }
             }
             .disposed(by: disposeBag)

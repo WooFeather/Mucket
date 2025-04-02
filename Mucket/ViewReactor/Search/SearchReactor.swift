@@ -13,9 +13,16 @@ final class SearchReactor: Reactor {
     
     private let repository: RecipeRepositoryType = RecipeRepository.shared
     
+    enum Route: Equatable {
+        case none
+        case detail(recipe: RecipeEntity)
+    }
+    
     enum Action {
         case backButtonTapped
         case searchButtonTapped(query: String)
+        case searchCellTapped(recipe: RecipeEntity)
+        case clearRouting
     }
     
     enum Mutation {
@@ -24,6 +31,7 @@ final class SearchReactor: Reactor {
         case setSearchTableViewHidden(Bool)
         case setEmptyStateHidden(Bool)
         case setLoadingIndicator(Bool)
+        case setRoute(Route)
     }
     
     struct State {
@@ -32,6 +40,7 @@ final class SearchReactor: Reactor {
         var isEmptyStateHidden = true
         var searchResult: [RecipeEntity] = []
         var isLoading = false
+        var route: Route = .none
     }
 }
 
@@ -54,6 +63,10 @@ extension SearchReactor {
                     },
                 .just(.setLoadingIndicator(false))
             ])
+        case .searchCellTapped(recipe: let recipe):
+            return .just(.setRoute(.detail(recipe: recipe)))
+        case .clearRouting:
+            return .just(.setRoute(.none))
         }
     }
     
@@ -70,6 +83,8 @@ extension SearchReactor {
             newState.isSearchTableViewHidden = isHidden
         case .setLoadingIndicator(let isLoading):
             newState.isLoading = isLoading
+        case .setRoute(let route):
+            newState.route = route
         }
         return newState
     }
