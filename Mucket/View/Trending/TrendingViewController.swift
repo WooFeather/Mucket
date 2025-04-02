@@ -82,7 +82,7 @@ extension TrendingViewController: View {
                     owner.reactor?.action.onNext(.clearRouting)
 
                 case .detail(let recipe):
-                    let vc = RecipeDetailViewController(reactor: RecipeDetailReactor(recipe: recipe))
+                    let vc = RecipeDetailViewController(reactor: RecipeDetailReactor(recipe: recipe, repository: BookmarkedRecipeRepository()))
                     vc.hidesBottomBarWhenPushed = true
                     owner.navigationController?.pushViewController(vc, animated: true)
                     owner.reactor?.action.onNext(.clearRouting)

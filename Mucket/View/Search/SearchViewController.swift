@@ -132,7 +132,7 @@ extension SearchViewController: View {
             .bind(with: self) { owner, route in
                 switch route {
                 case .detail(recipe: let recipe):
-                    let vc = RecipeDetailViewController(reactor: RecipeDetailReactor(recipe: recipe))
+                    let vc = RecipeDetailViewController(reactor: RecipeDetailReactor(recipe: recipe, repository: BookmarkedRecipeRepository()))
                     owner.navigationController?.pushViewController(vc, animated: true)
                     owner.reactor?.action.onNext(.clearRouting)
                 case .none:

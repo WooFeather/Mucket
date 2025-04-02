@@ -63,6 +63,11 @@ extension RecipeDetailViewController: View {
             .map { RecipeDetailReactor.Action.backButtonTapped }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
+        
+        recipeDetailView.bookmarkButton.rx.tap
+            .map { RecipeDetailReactor.Action.bookmarkButtonTapped }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     }
     
     private func bindState(_ reactor: RecipeDetailReactor) {
@@ -123,6 +128,15 @@ extension RecipeDetailViewController: View {
                 cellType: DetailTableViewCell.self
             )) { index, step, cell in
                 cell.configureData(step: step)
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.isBookmarked }
+            .distinctUntilChanged()
+            .bind(with: self) { owner, isBookmarked in
+                let image = isBookmarked ? UIImage.bookmarkFill : UIImage.bookmark
+                owner.recipeDetailView.bookmarkButton.setImage(image, for: .normal)
             }
             .disposed(by: disposeBag)
     }

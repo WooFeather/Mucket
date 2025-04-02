@@ -1,6 +1,15 @@
 {
-  "originHash" : "d7c18e62d17fc7265f8a7f0c949ad53ceb0365aec06a9a99b2a702888905f386",
+  "originHash" : "7e5dea07aa345bbe811bd8b8fba4b14d09dd06c9e0c360c28b105da945d09a49",
   "pins" : [
+    {
+      "identity" : "cosmos",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/evgenyneu/Cosmos.git",
+      "state" : {
+        "revision" : "40ba10aaf175bf50abefd0e518bd3b40862af3b1",
+        "version" : "25.0.1"
+      }
+    },
     {
       "identity" : "kakaomapssdk-spm",
       "kind" : "remoteSourceControl",
@@ -17,6 +26,24 @@
       "state" : {
         "revision" : "8fa33f09c6f6621a2aa536d739956d53b84dd139",
         "version" : "3.2.0"
+      }
+    },
+    {
+      "identity" : "realm-core",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/realm/realm-core.git",
+      "state" : {
+        "revision" : "cccb3ca9e26ec452a29f2f0d4050d1e38b8a3d43",
+        "version" : "14.14.0"
+      }
+    },
+    {
+      "identity" : "realm-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/realm/realm-swift.git",
+      "state" : {
+        "revision" : "8cb364a6a63695df296f05b53f7c3f3b1dda6af3",
+        "version" : "10.54.3"
       }
     },
     {
