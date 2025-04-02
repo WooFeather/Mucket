@@ -15,10 +15,6 @@ final class TrendingViewController: BaseViewController {
     private let trendingView = TrendingView()
     var disposeBag = DisposeBag()
     
-    private let repository: RecipeRepositoryType = RecipeRepository.shared
-    private var recommendedList: [RecipeEntity] = []
-    private var themeList: [RecipeEntity] = []
-    
     init(reactor: TrendingReactor) {
         super.init(nibName: nil, bundle: nil)
         self.reactor = reactor
@@ -33,32 +29,8 @@ final class TrendingViewController: BaseViewController {
     }
     
     override func configureData() {
-        trendingView.recommendCollectionView.delegate = self
-        trendingView.recommendCollectionView.dataSource = self
-        trendingView.themeCollectionView.delegate = self
-        trendingView.themeCollectionView.dataSource = self
         trendingView.recommendCollectionView.register(TrendingCollectionViewCell.self, forCellWithReuseIdentifier: TrendingCollectionViewCell.id)
         trendingView.themeCollectionView.register(TrendingCollectionViewCell.self, forCellWithReuseIdentifier: TrendingCollectionViewCell.id)
-        
-        fetchTrendingData()
-    }
-    
-    private func fetchTrendingData() {
-        Task {
-            do {
-                let all = try await repository.fetchAll()
-                self.recommendedList = Array(all.shuffled().prefix(10))
-                
-                let type = trendingView.themeButton.button.title(for: .normal) ?? ""
-                let theme = try await repository.fetchTheme(type: type)
-                self.themeList = Array(theme.shuffled().prefix(10))
-                
-                self.trendingView.recommendCollectionView.reloadData()
-                self.trendingView.themeCollectionView.reloadData()
-            } catch {
-                throw error
-            }
-        }
     }
 }
 
@@ -70,6 +42,9 @@ extension TrendingViewController: View {
     }
     
     private func bindAction(_ reactor: TrendingReactor) {
+        let type = trendingView.themeButton.button.title(for: .normal) ?? "밥"
+        reactor.action.onNext(.reloadTrigger(type: type))
+        
         trendingView.searchView.rx.tapGesture()
             .when(.recognized)
             .map { _ in
@@ -92,37 +67,27 @@ extension TrendingViewController: View {
                 owner.reactor?.action.onNext(.clearRouting) // 다시 push가 되지 않게 clear
             }
             .disposed(by: disposeBag)
-    }
-}
+        
+        reactor.state
+            .map { $0.recommendedList }
+            .distinctUntilChanged()
+            .bind(to: trendingView.recommendCollectionView.rx.items(
+                cellIdentifier: TrendingCollectionViewCell.id,
+                cellType: TrendingCollectionViewCell.self
+            )) { _, entity, cell in
+                cell.configureData(entity: entity)
+            }
+            .disposed(by: disposeBag)
 
-// TODO: Rx로 구현
-extension TrendingViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if collectionView == trendingView.recommendCollectionView {
-            return recommendedList.count
-        } else if collectionView == trendingView.themeCollectionView {
-            return themeList.count
-        } else {
-            return 0
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: TrendingCollectionViewCell.id,
-            for: indexPath
-        ) as? TrendingCollectionViewCell else {
-            return UICollectionViewCell()
-        }
-        
-        if collectionView == trendingView.recommendCollectionView {
-            let value = recommendedList[indexPath.item]
-            cell.configureData(entity: value)
-        } else if collectionView == trendingView.themeCollectionView {
-            let value = themeList[indexPath.item]
-            cell.configureData(entity: value)
-        }
-        
-        return cell
+        reactor.state
+            .map { $0.themeList }
+            .distinctUntilChanged()
+            .bind(to: trendingView.themeCollectionView.rx.items(
+                cellIdentifier: TrendingCollectionViewCell.id,
+                cellType: TrendingCollectionViewCell.self
+            )) { _, entity, cell in
+                cell.configureData(entity: entity)
+            }
+            .disposed(by: disposeBag)
     }
 }
