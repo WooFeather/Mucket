@@ -64,6 +64,7 @@ extension RecipeDetailViewController: View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        // TODO: 토스트 띄우기
         recipeDetailView.bookmarkButton.rx.tap
             .map { RecipeDetailReactor.Action.bookmarkButtonTapped }
             .bind(to: reactor.action)

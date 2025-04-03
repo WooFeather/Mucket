@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import Cosmos
 
 final class AddRestaurantView: BaseView {
     let scrollView = UIScrollView()
@@ -17,6 +18,7 @@ final class AddRestaurantView: BaseView {
     private let addressHeaderLabel = UILabel()
     private let photoHeaderLabel = UILabel()
     private let memoHeaderLabel = UILabel()
+    private let ratingContainerView = UIView()
     private let ratingHeaderLabel = UILabel()
     private let folderHeaderLabel = UILabel()
 
@@ -27,9 +29,12 @@ final class AddRestaurantView: BaseView {
 
     let nameTextField = UITextField()
     let addressButton = UIButton()
-    let photoUploadView = UIView() // TODO: 추후 컬렉션뷰로 구성 예정
+    let photoContainerView = UIView()
+    let photoStackView = UIStackView()
+    let addPhotoButton = UIButton()
+    let previewPhotoView = UIImageView()
     let memoTextView = UITextView()
-    let ratingView = UIView() // TODO: CosmosView로 교체 예정
+    let ratingView = CosmosView()
     let folderSelectButton = UIButton()
 
     override func configureHierarchy() {
@@ -37,37 +42,80 @@ final class AddRestaurantView: BaseView {
         scrollView.addSubview(contentView)
         contentView.addSubview(stackView)
 
+        ratingContainerView.addSubview(ratingHeaderLabel)
+        ratingContainerView.addSubview(ratingView)
+        
+        photoContainerView.addSubview(photoStackView)
+        
         [nameHeaderLabel, nameView,
          addressHeaderLabel, addressView,
-         photoHeaderLabel, photoUploadView,
+         photoHeaderLabel, photoContainerView,
          memoHeaderLabel, memoView,
-         ratingHeaderLabel, ratingView,
+         ratingContainerView,
          folderHeaderLabel, folderView
         ].forEach {
             stackView.addArrangedSubview($0)
+        }
+        
+        [addPhotoButton, previewPhotoView].forEach {
+            photoStackView.addArrangedSubview($0)
         }
     }
 
     override func configureLayout() {
         scrollView.snp.makeConstraints { $0.edges.equalToSuperview() }
+        
         contentView.snp.makeConstraints {
             $0.edges.equalToSuperview()
             $0.width.equalToSuperview()
         }
+        
         stackView.snp.makeConstraints {
             $0.edges.equalToSuperview().inset(20)
         }
 
-        photoUploadView.snp.makeConstraints { $0.height.equalTo(80) }
-        ratingView.snp.makeConstraints { $0.height.equalTo(44) }
+        photoContainerView.snp.makeConstraints {
+            $0.height.equalTo(100)
+        }
+        
+        photoStackView.snp.makeConstraints {
+            $0.leading.top.bottom.equalToSuperview()
+            $0.width.lessThanOrEqualTo(220)
+        }
+        
+        [addPhotoButton, previewPhotoView].forEach {
+            $0.snp.makeConstraints { make in
+                make.width.height.equalTo(100)
+            }
+        }
+        
+        ratingContainerView.snp.makeConstraints {
+            $0.height.equalTo(44)
+        }
+        
+        ratingHeaderLabel.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalToSuperview()
+        }
+        
+        ratingView.snp.makeConstraints {
+            $0.center.equalToSuperview()
+            $0.height.equalTo(30)
+        }
+        
         memoView.snp.makeConstraints { $0.height.equalTo(120) }
         folderView.snp.makeConstraints { $0.height.equalTo(48) }
     }
 
     override func configureView() {
         backgroundColor = .white
+        
         stackView.axis = .vertical
         stackView.spacing = 16
+        
+        photoStackView.axis = .horizontal
+        photoStackView.spacing = 16
+        photoStackView.distribution = .fillEqually
 
         [nameHeaderLabel, addressHeaderLabel, photoHeaderLabel,
          memoHeaderLabel, ratingHeaderLabel, folderHeaderLabel].forEach {
@@ -95,6 +143,17 @@ final class AddRestaurantView: BaseView {
         addressButton.tintColor = .textPrimary
         addressButton.titleLabel?.font = .Body.body4
 
+        addPhotoButton.backgroundColor = .backgroundSecondary
+        addPhotoButton.layer.cornerRadius = 6
+        addPhotoButton.setImage(.plus, for: .normal)
+        addPhotoButton.tintColor = .textPrimary
+        
+        previewPhotoView.layer.cornerRadius = 6
+        previewPhotoView.backgroundColor = .lightGray
+        previewPhotoView.clipsToBounds = true
+        previewPhotoView.contentMode = .scaleAspectFill
+        // previewPhotoView.isHidden = true 사진을 선택하면 true로 바꿔줌
+        
         memoTextView.backgroundColor = .clear
         memoTextView.font = .Body.body4
 
@@ -106,7 +165,12 @@ final class AddRestaurantView: BaseView {
         folderSelectButton.tintColor = .textPrimary
         folderSelectButton.titleLabel?.font = .Body.body4
 
-        photoUploadView.backgroundColor = .lightGray
-        ratingView.backgroundColor = .lightGray
+        ratingView.backgroundColor = .clear
+        ratingView.settings.starSize = 30
+        ratingView.settings.fillMode = .half
+        ratingView.settings.starMargin = 5
+        ratingView.rating = 0
+        ratingView.settings.minTouchRating = 0
+        ratingView.settings.updateOnTouch = true
     }
 }

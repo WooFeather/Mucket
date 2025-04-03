@@ -123,7 +123,6 @@ final class RecipeDetailView: BaseView {
         naviTitleLabel.font = .Head.head4
         naviTitleLabel.textColor = .textPrimary
         
-        // TODO: 북마크 상태에 따라서 이미지 대응
         bookmarkButton.setImage(.bookmark, for: .normal)
         bookmarkButton.tintColor = .textPrimary
         

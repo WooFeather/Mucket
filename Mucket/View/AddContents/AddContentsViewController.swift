@@ -36,7 +36,6 @@ final class AddContentsViewController: BaseViewController {
     
     override func configureData() {
         addContentsView.pageViewController.delegate = self
-        addContentsView.pageViewController.dataSource = self
         addContentsView.pageViewController.setViewControllers([self.dataViewControllers[0]], direction: .forward, animated: true)
         addContentsView.segmentedControl.selectedSegmentIndex = 0
     }
@@ -52,19 +51,6 @@ final class AddContentsViewController: BaseViewController {
 }
 
 // MARK: - PageViewController
-extension AddContentsViewController: UIPageViewControllerDataSource {
-    func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        guard let index = self.dataViewControllers.firstIndex(of: viewController), index - 1 >= 0 else { return nil }
-        
-        return self.dataViewControllers[index - 1]
-    }
-    func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        guard let index = self.dataViewControllers.firstIndex(of: viewController), index + 1 < self.dataViewControllers.count else { return nil }
-        
-        return self.dataViewControllers[index + 1]
-    }
-}
-
 extension AddContentsViewController: UIPageViewControllerDelegate {
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         guard let viewController = pageViewController.viewControllers?[0],
