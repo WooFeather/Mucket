@@ -85,7 +85,7 @@ extension AddCookingViewController: View {
                 print("11111111")
                 switch route {
                 case .folder:
-                    let vc = SelectFolderViewController()
+                    let vc = SelectFolderViewController(reactor: SelectFolderReactor(repository: FolderRepository()))
                     owner.present(vc, animated: true)
                     owner.reactor?.action.onNext(.clearRouting)
                 case .none:

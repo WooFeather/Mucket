@@ -54,6 +54,6 @@ final class SelectFolderView: BaseView {
         doneButton.setTitle("완료", for: .normal)
         doneButton.setTitleColor(.textPrimary, for: .normal)
         
-        folderTableView.backgroundColor = .lightGray
+        folderTableView.backgroundColor = .clear
     }
 }
