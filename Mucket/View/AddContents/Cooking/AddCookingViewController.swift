@@ -6,9 +6,22 @@
 //
 
 import UIKit
+import ReactorKit
+import RxCocoa
 
 final class AddCookingViewController: BaseViewController {
     private let addCookingView = AddCookingView()
+    var disposeBag = DisposeBag()
+    let imagePicker = UIImagePickerController()
+    
+    init(reactor: AddCookingReactor) {
+        super.init(nibName: nil, bundle: nil)
+        self.reactor = reactor
+    }
+    
+    @MainActor required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -27,5 +40,52 @@ final class AddCookingViewController: BaseViewController {
     override func configureView() {
         super.configureView()
         view.backgroundColor = .backgroundPrimary
+    }
+    
+    override func configureData() {
+        imagePicker.delegate = self
+    }
+}
+
+// MARK: - Reactor
+extension AddCookingViewController: View {
+    func bind(reactor: AddCookingReactor) {
+        bindAction(reactor)
+        bindState(reactor)
+    }
+    
+    private func bindAction(_ reactor: AddCookingReactor) {
+        addCookingView.addPhotoButton.rx.tap
+            .map { AddCookingReactor.Action.addPhotoButtonTapped }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindState(_ reactor: AddCookingReactor) {
+        reactor.state
+            .map { $0.isPresent }
+            .distinctUntilChanged()
+            .filter { $0 }
+            .bind(with: self) { owner, _ in
+                owner.present(owner.imagePicker, animated: true)
+            }
+            .disposed(by: disposeBag)
+    }
+}
+
+// MARK: - ImagePicker
+extension AddCookingViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        print(#function)
+        
+        let image = info[UIImagePickerController.InfoKey.originalImage]
+        
+        if let result = image as? UIImage {
+            addCookingView.previewPhotoView.image = result
+        } else {
+            addCookingView.previewPhotoView.image = .xmarkOctagon
+        }
+        
+        dismiss(animated: true)
     }
 }

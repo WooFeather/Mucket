@@ -152,6 +152,7 @@ final class AddRestaurantView: BaseView {
         previewPhotoView.backgroundColor = .lightGray
         previewPhotoView.clipsToBounds = true
         previewPhotoView.contentMode = .scaleAspectFill
+        previewPhotoView.tintColor = .textPrimary
         // previewPhotoView.isHidden = true 사진을 선택하면 true로 바꿔줌
         
         memoTextView.backgroundColor = .clear

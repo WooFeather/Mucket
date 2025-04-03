@@ -23,6 +23,7 @@ extension UIImage {
     static let arrowtriangleDownFill = UIImage(systemName: "arrowtriangle.down.fill")
     static let bookClosed = UIImage(systemName: "book.closed")
     static let squareOnSquare = UIImage(systemName: "square.on.square")
+    static let xmarkOctagon = UIImage(systemName: "xmark.octagon")
     
     /// 버튼 안의 이미지 크기 조절
     func resize(to size: CGSize) -> UIImage {
