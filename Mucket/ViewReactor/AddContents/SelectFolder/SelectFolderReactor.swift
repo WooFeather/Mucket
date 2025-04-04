@@ -14,11 +14,13 @@ final class SelectFolderReactor: Reactor {
     enum Action {
         case viewWillAppear
         case setSelectedFolder(folderId: String)
+        case addFolderButtonTapped(name: String)
     }
 
     enum Mutation {
         case setFolderList([FolderEntity], selectedFolder: FolderEntity)
         case updateSelectedFolderAndList([FolderEntity], FolderEntity)
+        case insertNewFolder([FolderEntity])
     }
 
     struct State {
@@ -47,6 +49,10 @@ final class SelectFolderReactor: Reactor {
             let updated = repository.getSelectedFolder() ?? repository.getDefaultFolder()
             let list = repository.fetchAll()
             return .just(.updateSelectedFolderAndList(list, updated))
+        case .addFolderButtonTapped(let name):
+            _ = repository.add(name: name)
+            let updatedList = repository.fetchAll()
+            return .just(.insertNewFolder(updatedList))
         }
     }
 
@@ -59,6 +65,8 @@ final class SelectFolderReactor: Reactor {
         case .updateSelectedFolderAndList(let list, let selected):
             newState.folderList = list
             newState.selectedFolder = selected
+        case .insertNewFolder(let updated):
+            newState.folderList = updated
         }
         return newState
     }
