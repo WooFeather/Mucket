@@ -12,7 +12,7 @@ import RxCocoa
 final class SelectFolderViewController: BaseViewController {
     private let selectFolderView = SelectFolderView()
     var disposeBag = DisposeBag()
-    var onFolderSelected: ((FolderEntity) -> Void)?
+//    var onFolderSelected: ((FolderEntity) -> Void)?
 
     init(reactor: SelectFolderReactor) {
         super.init(nibName: nil, bundle: nil)
@@ -23,25 +23,25 @@ final class SelectFolderViewController: BaseViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        guard let reactor = self.reactor else { return }
-
-        Observable.just(())
-            .map { SelectFolderReactor.Action.viewWillAppear }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-    }
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//
+//        guard let reactor = self.reactor else { return }
+//
+//        Observable.just(())
+//            .map { SelectFolderReactor.Action.viewWillAppear }
+//            .bind(to: reactor.action)
+//            .disposed(by: disposeBag)
+//    }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        guard let reactor = self.reactor else { return }
-        
-        let folder = reactor.currentState.selectedFolder
-        onFolderSelected?(folder)
-    }
+//    override func viewWillDisappear(_ animated: Bool) {
+//        super.viewWillDisappear(animated)
+//        
+//        guard let reactor = self.reactor else { return }
+//        
+//        let folder = reactor.currentState.selectedFolder
+//        onFolderSelected?(folder)
+//    }
 
     override func loadView() {
         view = selectFolderView
@@ -60,50 +60,50 @@ final class SelectFolderViewController: BaseViewController {
 // MARK: - Reactor
 extension SelectFolderViewController: View {
     func bind(reactor: SelectFolderReactor) {
-        selectFolderView.folderTableView.rx.modelSelected(FolderEntity.self)
-            .bind(with: self) { owner, folder in
-                reactor.action.onNext(.setSelectedFolder(folderId: folder.id))
-            }
-            .disposed(by: disposeBag)
-
-        selectFolderView.doneButton.rx.tap
-            .bind(with: self) { owner, _ in
-                owner.dismiss(animated: true)
-            }
-            .disposed(by: disposeBag)
-        
-        selectFolderView.addFolderButton.rx.tap
-            .bind(with: self) { owner, _ in
-                let alert = UIAlertController(title: "폴더 추가", message: "새 폴더 이름을 입력하세요", preferredStyle: .alert)
-                
-                alert.addTextField { textField in
-                    textField.placeholder = "예: 내 요리 폴더"
-                }
-                
-                let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
-                let add = UIAlertAction(title: "추가", style: .default) { _ in
-                    guard let name = alert.textFields?.first?.text?.trimmingCharacters(in: .whitespacesAndNewlines),
-                          !name.isEmpty else { return }
-
-                    owner.reactor?.action.onNext(.addFolderButtonTapped(name: name))
-                }
-
-                alert.addAction(cancel)
-                alert.addAction(add)
-                
-                owner.present(alert, animated: true)
-            }
-            .disposed(by: disposeBag)
-
-        reactor.state
-            .map { $0.folderList }
-            .distinctUntilChanged()
-            .bind(to: selectFolderView.folderTableView.rx.items(cellIdentifier: "folderTableViewCell", cellType: UITableViewCell.self)) { _, entity, cell in
-                cell.backgroundColor = .clear
-                cell.textLabel?.text = entity.name
-                cell.accessoryType = (entity.id == reactor.currentState.selectedFolder.id) ? .checkmark : .none
-                cell.tintColor = .themePrimary
-            }
-            .disposed(by: disposeBag)
+//        selectFolderView.folderTableView.rx.modelSelected(FolderEntity.self)
+//            .bind(with: self) { owner, folder in
+//                reactor.action.onNext(.setSelectedFolder(folderId: folder.id))
+//            }
+//            .disposed(by: disposeBag)
+//
+//        selectFolderView.doneButton.rx.tap
+//            .bind(with: self) { owner, _ in
+//                owner.dismiss(animated: true)
+//            }
+//            .disposed(by: disposeBag)
+//        
+//        selectFolderView.addFolderButton.rx.tap
+//            .bind(with: self) { owner, _ in
+//                let alert = UIAlertController(title: "폴더 추가", message: "새 폴더 이름을 입력하세요", preferredStyle: .alert)
+//                
+//                alert.addTextField { textField in
+//                    textField.placeholder = "예: 내 요리 폴더"
+//                }
+//                
+//                let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+//                let add = UIAlertAction(title: "추가", style: .default) { _ in
+//                    guard let name = alert.textFields?.first?.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+//                          !name.isEmpty else { return }
+//
+//                    owner.reactor?.action.onNext(.addFolderButtonTapped(name: name))
+//                }
+//
+//                alert.addAction(cancel)
+//                alert.addAction(add)
+//                
+//                owner.present(alert, animated: true)
+//            }
+//            .disposed(by: disposeBag)
+//
+//        reactor.state
+//            .map { $0.folderList }
+//            .distinctUntilChanged()
+//            .bind(to: selectFolderView.folderTableView.rx.items(cellIdentifier: "folderTableViewCell", cellType: UITableViewCell.self)) { _, entity, cell in
+//                cell.backgroundColor = .clear
+//                cell.textLabel?.text = entity.name
+//                cell.accessoryType = (entity.id == reactor.currentState.selectedFolder.id) ? .checkmark : .none
+//                cell.tintColor = .themePrimary
+//            }
+//            .disposed(by: disposeBag)
     }
 }

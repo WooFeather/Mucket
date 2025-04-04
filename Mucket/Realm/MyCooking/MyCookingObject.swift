@@ -8,7 +8,7 @@
 import Foundation
 import RealmSwift
 
-class MyCookingObject: Object {
+final class MyCookingObject: Object {
     @Persisted(primaryKey: true) var id: ObjectId
     @Persisted var name: String
     @Persisted var youtubeLink: String?
@@ -16,8 +16,7 @@ class MyCookingObject: Object {
     @Persisted var memo: String?
     @Persisted var rating: Double?
     @Persisted var createdAt: Date = Date()
-
-    @Persisted var folder: FolderObject? // 관계 설정
+    @Persisted(originProperty: "myCookingObject") var myCookingFolder: LinkingObjects<MyCookingFolderObject>
 }
 
 // MARK: - Mapper
@@ -29,20 +28,18 @@ struct MyCookingEntity: Equatable {
     let memo: String?
     let rating: Double?
     let createdAt: Date
-    let folderId: String? // 폴더 ID만 저장해서 간접 연결
+    let folderId: String?
 }
 
 extension MyCookingEntity {
-    func toRealmObject(folder: FolderObject?) -> MyCookingObject {
+    func toRealmObject() -> MyCookingObject {
         let object = MyCookingObject()
-        object.id = ObjectId.generate()
+        object.id = try! ObjectId(string: id)
         object.name = name
         object.youtubeLink = youtubeLink
         object.imageFileURL = imageFileURL
         object.memo = memo
         object.rating = rating
-        object.createdAt = createdAt
-        object.folder = folder
         return object
     }
 }
@@ -57,7 +54,7 @@ extension MyCookingObject {
             memo: self.memo,
             rating: self.rating,
             createdAt: self.createdAt,
-            folderId: self.folder?.id.stringValue
+            folderId: self.myCookingFolder.first?.id.stringValue
         )
     }
 }
