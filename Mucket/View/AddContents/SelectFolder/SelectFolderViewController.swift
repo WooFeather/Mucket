@@ -71,29 +71,6 @@ extension SelectFolderViewController: View {
                 owner.dismiss(animated: true)
             }
             .disposed(by: disposeBag)
-        
-        selectFolderView.addFolderButton.rx.tap
-            .bind(with: self) { owner, _ in
-                let alert = UIAlertController(title: "폴더 추가", message: "새 폴더 이름을 입력하세요", preferredStyle: .alert)
-                
-                alert.addTextField { textField in
-                    textField.placeholder = "예: 내 요리 폴더"
-                }
-                
-                let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
-                let add = UIAlertAction(title: "추가", style: .default) { _ in
-                    guard let name = alert.textFields?.first?.text?.trimmingCharacters(in: .whitespacesAndNewlines),
-                          !name.isEmpty else { return }
-
-                    owner.reactor?.action.onNext(.addFolderButtonTapped(name: name))
-                }
-
-                alert.addAction(cancel)
-                alert.addAction(add)
-                
-                owner.present(alert, animated: true)
-            }
-            .disposed(by: disposeBag)
 
         reactor.state
             .map { $0.folderList }

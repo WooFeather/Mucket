@@ -61,6 +61,11 @@ extension AddCookingViewController: View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        addCookingView.folderSelectButton.rx.tap
+            .map { AddCookingReactor.Action.folderSelectButtonTapped }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
     }
     
     private func bindState(_ reactor: AddCookingReactor) {
@@ -71,6 +76,31 @@ extension AddCookingViewController: View {
             .bind(with: self) { owner, _ in
                 owner.present(owner.imagePicker, animated: true)
             }
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.route }
+            .distinctUntilChanged()
+            .observe(on: MainScheduler.asyncInstance)
+            .bind(with: self) { owner, route in
+                switch route {
+                case .folder:
+                    let vc = SelectFolderViewController(reactor: SelectFolderReactor(repository: FolderRepository()))
+                    vc.onFolderSelected = { selected in
+                        owner.reactor?.action.onNext(.setSelectedFolder(selected))
+                    }
+                    owner.present(vc, animated: true)
+                    owner.reactor?.action.onNext(.clearRouting)
+                case .none:
+                    break
+                }
+            }
+            .disposed(by: disposeBag)
+
+        reactor.state
+            .map { $0.selectedFolder?.name ?? "기본 폴더" }
+            .distinctUntilChanged()
+            .bind(to: addCookingView.folderSelectButton.rx.title(for: .normal))
             .disposed(by: disposeBag)
     }
 }
