@@ -16,6 +16,7 @@ final class RecipeDetailView: BaseView {
     private let ingredientHeaderLabel = UILabel()
     let makingHeaderLabel = UILabel()
     
+    // TODO: title이 길 경우 backButton이 잘리는 문제
     let navigationStackView = UIStackView()
     let backButton = UIButton()
     let naviTitleLabel = UILabel()

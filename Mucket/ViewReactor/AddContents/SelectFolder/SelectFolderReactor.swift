@@ -8,44 +8,58 @@
 import ReactorKit
 
 final class SelectFolderReactor: Reactor {
-    
-    var initialState: State = State()
-    
     private let repository: FolderRepositoryType
-    
-    init(repository: FolderRepositoryType) {
-        self.repository = repository
-    }
-    
+    var initialState: State
+
     enum Action {
         case viewWillAppear
+        case setSelectedFolder(folderId: String)
     }
-    
+
     enum Mutation {
-        case setFolderList([FolderEntity])
+        case setFolderList([FolderEntity], selectedFolder: FolderEntity)
+        case updateSelectedFolderAndList([FolderEntity], FolderEntity)
     }
-    
+
     struct State {
         var folderList: [FolderEntity] = []
+        var selectedFolder: FolderEntity
     }
-}
 
-extension SelectFolderReactor {
+    init(repository: FolderRepositoryType) {
+        self.repository = repository
+
+        let current = repository.getSelectedFolder() ?? repository.getDefaultFolder()
+        self.initialState = State(
+            folderList: repository.fetchAll(),
+            selectedFolder: current
+        )
+    }
+
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .viewWillAppear:
             let folders = repository.fetchAll()
-            return .just(.setFolderList(folders))
+            let selected = repository.getSelectedFolder() ?? repository.getDefaultFolder()
+            return .just(.setFolderList(folders, selectedFolder: selected))
+        case .setSelectedFolder(let folderId):
+            repository.setSelectedFolder(folderId)
+            let updated = repository.getSelectedFolder() ?? repository.getDefaultFolder()
+            let list = repository.fetchAll()
+            return .just(.updateSelectedFolderAndList(list, updated))
         }
     }
-    
+
     func reduce(state: State, mutation: Mutation) -> State {
         var newState = state
         switch mutation {
-        case .setFolderList(let folders):
-            newState.folderList = folders
+        case .setFolderList(let list, let selected):
+            newState.folderList = list
+            newState.selectedFolder = selected
+        case .updateSelectedFolderAndList(let list, let selected):
+            newState.folderList = list
+            newState.selectedFolder = selected
         }
-        
         return newState
     }
 }

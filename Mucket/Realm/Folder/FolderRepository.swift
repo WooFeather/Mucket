@@ -14,6 +14,8 @@ protocol FolderRepositoryType {
     func add(name: String) -> FolderEntity
     func delete(id: String)
     func getDefaultFolder() -> FolderEntity
+    func setSelectedFolder(_ folderId: String)
+    func getSelectedFolder() -> FolderEntity?
 }
 
 final class FolderRepository: FolderRepositoryType {
@@ -48,10 +50,35 @@ final class FolderRepository: FolderRepositoryType {
     }
 
     func getDefaultFolder() -> FolderEntity {
+        // 기본 폴더가 없으면 생성하고, 있으면 반환
         if let defaultFolder = realm.objects(FolderObject.self).filter("name == %@", "기본 폴더").first {
-            return defaultFolder.toEntity()
+            return defaultFolder.toEntity() // 기본 폴더 반환
         } else {
-            return add(name: "기본 폴더")
+            // 기본 폴더가 없으면 생성해서 저장
+            let defaultFolder = FolderObject()
+            defaultFolder.name = "기본 폴더"
+            try? realm.write {
+                realm.add(defaultFolder)
+            }
+            return defaultFolder.toEntity() // 새로 생성된 기본 폴더 반환
+        }
+    }
+    
+    func setSelectedFolder(_ folderId: String) {
+        let folders = realm.objects(FolderObject.self)
+        try? realm.write {
+            folders.setValue(false, forKey: "isSelected")
+            if let selectedFolder = folders.first(where: { $0.id.stringValue == folderId }) {
+                selectedFolder.isSelected = true
+            }
+        }
+    }
+
+    func getSelectedFolder() -> FolderEntity? {
+        if let selectedFolder = realm.objects(FolderObject.self).filter("isSelected == true").first {
+            return selectedFolder.toEntity()
+        } else {
+            return nil
         }
     }
 }

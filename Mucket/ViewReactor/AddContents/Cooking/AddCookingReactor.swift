@@ -8,32 +8,41 @@
 import ReactorKit
 
 final class AddCookingReactor: Reactor {
-    
-    var initialState: State = State()
-    
+    private let folderRepository: FolderRepositoryType
+
+    var initialState: State
+
     enum Route: Equatable {
         case none
-        case folder // TODO: 현재 폴더 기억한채로 이동(기본값은 기본폴더)
+        case folder
     }
-    
+
     enum Action {
         case addPhotoButtonTapped
         case folderSelectButtonTapped
         case clearRouting
+        case setSelectedFolder(FolderEntity)
     }
-    
+
     enum Mutation {
         case presentImagePicker(Bool)
         case setRoute(Route)
+        case setSelectedFolder(FolderEntity)
     }
-    
+
     struct State {
         var isPresent = false
         var route: Route = .none
+        var selectedFolder: FolderEntity?
     }
-}
 
-extension AddCookingReactor {
+    init(folderRepository: FolderRepositoryType = FolderRepository()) {
+        self.folderRepository = folderRepository
+
+        let defaultSelected = folderRepository.getSelectedFolder() ?? folderRepository.getDefaultFolder()
+        self.initialState = State(selectedFolder: defaultSelected)
+    }
+
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .addPhotoButtonTapped:
@@ -45,16 +54,20 @@ extension AddCookingReactor {
             return .just(.setRoute(.folder))
         case .clearRouting:
             return .just(.setRoute(.none))
+        case .setSelectedFolder(let folder):
+            return .just(.setSelectedFolder(folder))
         }
     }
-    
+
     func reduce(state: State, mutation: Mutation) -> State {
         var newState = state
         switch mutation {
-        case .presentImagePicker(let isPresent):
-            newState.isPresent = isPresent
+        case .presentImagePicker(let present):
+            newState.isPresent = present
         case .setRoute(let route):
             newState.route = route
+        case .setSelectedFolder(let folder):
+            newState.selectedFolder = folder
         }
         return newState
     }
