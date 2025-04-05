@@ -43,6 +43,7 @@ final class CookingView: BaseView {
         filterButton.snp.makeConstraints { make in
             make.centerY.equalTo(myCookingHeader)
             make.leading.equalTo(myCookingHeader.snp.trailing).offset(8)
+            make.width.lessThanOrEqualTo(150)
         }
         
         myCookingCollectionView.snp.makeConstraints { make in
@@ -63,10 +64,7 @@ final class CookingView: BaseView {
         myCookingHeader.font = .Head.head2
         
         myCookingCollectionView.backgroundColor = .backgroundPrimary
-//         myCookingCollectionView.isHidden = true
-        
-        // TODO: 데이터가 있을때 emptyStateView isHidden = true
-         emptyStateView.isHidden = true
+        emptyStateView.isHidden = true
         
         configureContextMenu()
     }

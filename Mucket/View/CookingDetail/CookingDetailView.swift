@@ -25,7 +25,7 @@ final class CookingDetailView: BaseView {
     let thumbImageView = UIImageView() // TODO: pageControl 들어갈 예정
     let ratingView = CosmosView()
     let memoTextView = UITextView()
-    let emptyVideoView = UIView() // TODO: YoutubeView로 변경 예정
+    let emptyVideoView = UIView()
     
     let youtubePlayerContainerView = UIView()
     

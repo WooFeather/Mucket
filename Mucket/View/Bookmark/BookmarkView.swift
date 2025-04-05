@@ -58,7 +58,7 @@ final class BookmarkView: BaseView {
         naviTitleLabel.font = .Head.head2
         
         searchBar.textField.returnKeyType = .search
-        searchBar.textField.placeholder = "레시피를 검색해 보세요."
+        searchBar.textField.placeholder = "북마크한 레시피를 검색해 보세요."
         
         bookmarkTableView.backgroundColor = .backgroundPrimary
         bookmarkTableView.isHidden = false

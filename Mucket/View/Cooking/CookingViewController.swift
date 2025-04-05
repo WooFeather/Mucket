@@ -85,6 +85,15 @@ extension CookingViewController: View {
             .disposed(by: disposeBag)
         
         reactor.state
+            .map { $0.filteredCookings.isEmpty }
+            .distinctUntilChanged()
+            .bind(with: self) { owner, isEmpty in
+                owner.cookingView.emptyStateView.isHidden = !isEmpty
+                owner.cookingView.myCookingCollectionView.isHidden = isEmpty
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.state
             .map { $0.route }
             .distinctUntilChanged()
             .observe(on: MainScheduler.asyncInstance)

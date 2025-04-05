@@ -71,6 +71,15 @@ extension BookmarkViewController: View {
             .disposed(by: disposeBag)
         
         reactor.state
+            .map { $0.bookmarkRecipes.isEmpty }
+            .distinctUntilChanged()
+            .bind(with: self) { owner, isEmpty in
+                owner.bookmarkView.emptyStateView.isHidden = !isEmpty
+                owner.bookmarkView.bookmarkTableView.isHidden = isEmpty
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.state
             .map { $0.route }
             .distinctUntilChanged { $0 == $1 }
             .observe(on: MainScheduler.asyncInstance)
