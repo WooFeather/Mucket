@@ -8,7 +8,7 @@
 import Foundation
 import RealmSwift
 
-class MyCookingObject: Object {
+final class MyCookingObject: Object {
     @Persisted(primaryKey: true) var id: ObjectId
     @Persisted var name: String
     @Persisted var youtubeLink: String?

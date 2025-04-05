@@ -8,7 +8,7 @@
 import Foundation
 import RealmSwift
 
-class RestaurantObject: Object {
+final class RestaurantObject: Object {
     @Persisted(primaryKey: true) var id: ObjectId
     @Persisted var name: String
     @Persisted var latitude: Double?

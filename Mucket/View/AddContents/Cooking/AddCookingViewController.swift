@@ -117,6 +117,46 @@ extension AddCookingViewController: View {
                 owner.addCookingView.folderSelectButton.setTitle(folder.name, for: .normal)
             }
             .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.nameContents }
+            .distinctUntilChanged()
+            .compactMap { $0 }
+            .bind(to: addCookingView.nameTextField.rx.text)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.imageURLContents }
+            .distinctUntilChanged()
+            .compactMap { $0 }
+            .bind(with: self) { owner, imageURL in
+                let filePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(imageURL)
+                let savedImage = UIImage(contentsOfFile: filePath.path)
+                
+                owner.addCookingView.previewPhotoView.image = savedImage ?? .placeholderSmall
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.ratingContents }
+            .distinctUntilChanged()
+            .compactMap { $0 }
+            .bind(to: addCookingView.ratingView.rx.rating)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.memoContents }
+            .distinctUntilChanged()
+            .compactMap { $0 }
+            .bind(to: addCookingView.memoTextView.rx.text)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.youtubeLinkContents }
+            .distinctUntilChanged()
+            .compactMap { $0 }
+            .bind(to: addCookingView.linkTextField.rx.text)
+            .disposed(by: disposeBag)
     }
 }
 

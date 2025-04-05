@@ -31,17 +31,19 @@ final class CookingDetailReactor: Reactor {
         case clearRouting
         case clearShowAlert
         case confirmDeleteTapped
+        case refreshData
     }
     
     enum Mutation {
         case setRoute(Route)
         case ShowDeleteAlert(Bool)
+        case setCooking(MyCookingEntity)
     }
     
     struct State {
         var route: Route = .none
         var showDeleteAlert = false
-        let cooking: MyCookingEntity
+        var cooking: MyCookingEntity
     }
 }
 
@@ -62,6 +64,12 @@ extension CookingDetailReactor {
             repository.delete(id: currentState.cooking.id)
             
             return .just(.setRoute(.prevView))
+        case .refreshData:
+            let cookingId = currentState.cooking.id
+            if let updatedCooking = repository.fetchById(cookingId)?.toEntity() {
+                return .just(.setCooking(updatedCooking))
+            }
+            return .empty()
         }
     }
     
@@ -72,6 +80,8 @@ extension CookingDetailReactor {
             newState.route = route
         case .ShowDeleteAlert(let isShow):
             newState.showDeleteAlert = isShow
+        case .setCooking(let cooking):
+            newState.cooking = cooking
         }
         
         return newState

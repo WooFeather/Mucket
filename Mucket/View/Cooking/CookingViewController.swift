@@ -52,6 +52,10 @@ final class CookingViewController: BaseViewController {
         // 컨텍스트 메뉴 업데이트
         cookingView.updateFolderMenu()
     }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 }
 
 extension CookingViewController: View {

@@ -8,7 +8,7 @@
 import Foundation
 import RealmSwift
 
-class CookingFolderObject: Object {
+final class CookingFolderObject: Object {
     @Persisted(primaryKey: true) var id: ObjectId
     @Persisted var name: String
     @Persisted var createdAt: Date = Date()

@@ -39,12 +39,17 @@ final class AddCookingReactor: Reactor {
         var route: Route = .none
         var selectedFolder: CookingFolderEntity?
         var isSaveCompleted = false
+        var nameContents: String?
+        var imageURLContents: String?
+        var ratingContents: Double?
+        var memoContents: String?
+        var youtubeLinkContents: String?
     }
 
     init(
         folderRepository: CookingFolderRepositoryType = CookingFolderRepository(),
         myCookingRepository: MyCookingRepositoryType = MyCookingRepository(),
-        editingCookingId: String? = nil  // ⭐ 요리 ID 전달 여부로 분기
+        editingCookingId: String? = nil  // 요리 ID 전달 여부로 분기
     ) {
         self.folderRepository = folderRepository
         self.myCookingRepository = myCookingRepository
@@ -53,10 +58,12 @@ final class AddCookingReactor: Reactor {
         if let cookingId = editingCookingId,
            let cookingObject = myCookingRepository.fetchById(cookingId),
            let folderObject = cookingObject.folder.first {
+            print("요리 편집", cookingId, cookingObject, folderObject)
             let selected = folderObject.toEntity()
-            self.initialState = State(selectedFolder: selected)
+            self.initialState = State(selectedFolder: selected, nameContents: cookingObject.name, imageURLContents: cookingObject.imageFileURL, ratingContents: cookingObject.rating, memoContents: cookingObject.memo, youtubeLinkContents: cookingObject.youtubeLink)
         } else {
             // 새 요리 생성 → 기본 폴더 선택
+            print("새 요리")
             let defaultFolder = folderRepository.getDefaultFolder()
             self.initialState = State(selectedFolder: defaultFolder)
         }

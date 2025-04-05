@@ -30,6 +30,24 @@ final class CookingDetailViewController: BaseViewController {
         super.configureView()
         view.backgroundColor = .backgroundPrimary
     }
+    
+    override func configureData() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleCookingUpdated),
+            name: NSNotification.Name("CookingDataUpdated"),
+            object: nil
+        )
+    }
+
+    @objc private func handleCookingUpdated() {
+        guard let reactor = self.reactor else { return }
+        reactor.action.onNext(.refreshData)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 }
 
 // MARK: - Reactor
@@ -66,7 +84,8 @@ extension CookingDetailViewController: View {
                     owner.navigationController?.popViewController(animated: true)
                     owner.reactor?.action.onNext(.clearRouting)
                 case .editView(let cooking):
-                    print("수정뷰로 이동")
+                    let vc = CookingModificationViewController(editingCookingId: cooking.id)
+                    owner.navigationController?.pushViewController(vc, animated: true)
                     owner.reactor?.action.onNext(.clearRouting)
                 case .none:
                     break
@@ -112,7 +131,7 @@ extension CookingDetailViewController: View {
             .filter { $0 }
             .observe(on: MainScheduler.asyncInstance)
             .bind(with: self) { owner, _ in
-                owner.showAlert(title: "삭제하기", message: "이 요리를 삭제하시겠습니까?", button: "삭제", isCancelButton: true) {
+                owner.showAlert(title: "삭제하기", message: "이 요리를 삭제하시겠습니까?", button: "삭제", style: .destructive, isCancelButton: true) {
                     owner.reactor?.action.onNext(.confirmDeleteTapped)
                 }
                 owner.reactor?.action.onNext(.clearShowAlert)

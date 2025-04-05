@@ -111,14 +111,23 @@ final class MyCookingRepository: MyCookingRepositoryType {
     
     private func removeImageFromDocumentsDirectory(path: String) {
         let fileManager = FileManager.default
-        let fileURL = URL(fileURLWithPath: path)
+        
+        let fileURL: URL
+        if path.hasPrefix("/") {
+            // 절대 경로인 경우
+            fileURL = URL(fileURLWithPath: path)
+        } else {
+            // 상대 경로인 경우, 문서 디렉토리에 추가
+            fileURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(path)
+        }
         
         do {
-            if fileManager.fileExists(atPath: path) {
+            let absolutePath = fileURL.path
+            if fileManager.fileExists(atPath: absolutePath) {
                 try fileManager.removeItem(at: fileURL)
-                print("이미지 삭제 성공: \(path)")
+                print("이미지 삭제 성공: \(absolutePath)")
             } else {
-                print("삭제할 이미지가 존재하지 않습니다: \(path)")
+                print("삭제할 이미지가 존재하지 않습니다: \(absolutePath)")
             }
         } catch {
             print("이미지 삭제 실패: \(error.localizedDescription)")
