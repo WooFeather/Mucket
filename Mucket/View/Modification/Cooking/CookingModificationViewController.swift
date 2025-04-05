@@ -42,7 +42,7 @@ final class CookingModificationViewController: BaseViewController {
     // MARK: - Action
     
     @objc private func cancelButtonTapped() {
-        navigationController?.popViewController(animated: true)
+        dismiss(animated: true)
     }
     
     @objc private func saveButtonTapped() {
@@ -121,7 +121,7 @@ final class CookingModificationViewController: BaseViewController {
                 NotificationCenter.default.post(name: NSNotification.Name("CookingDataUpdated"), object: nil)
             }
             
-            self.navigationController?.popViewController(animated: true)
+            self.dismiss(animated: true)
         } else {
             showAlert(title: "요리 이름은 필수 사항입니다!", message: "요리 이름을 다시 한 번 확인해주세요 :)", button: "확인") { }
         }

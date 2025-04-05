@@ -15,6 +15,7 @@ class BaseViewController: UIViewController {
         configureView()
         configureData()
         configureAction()
+        enableSwipeBackGesture()
     }
     
     func configureView() {
@@ -25,4 +26,19 @@ class BaseViewController: UIViewController {
     func configureData() { }
     
     func configureAction() { }
+}
+
+// 뒤로가기 제스처
+extension BaseViewController: UIGestureRecognizerDelegate {
+    private func enableSwipeBackGesture() {
+        if let navigationController = navigationController,
+           navigationController.viewControllers.count > 1 {
+            navigationController.interactivePopGestureRecognizer?.delegate = self
+            navigationController.interactivePopGestureRecognizer?.isEnabled = true
+        }
+    }
+    
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        return navigationController?.viewControllers.count ?? 0 > 1
+    }
 }

@@ -51,6 +51,7 @@ final class CookingViewController: BaseViewController {
     @objc private func updateFolderMenu() {
         // 컨텍스트 메뉴 업데이트
         cookingView.updateFolderMenu()
+        reactor?.action.onNext(.fetchCookings)
     }
     
     deinit {

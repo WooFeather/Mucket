@@ -87,7 +87,8 @@ extension CookingDetailViewController: View {
                     owner.reactor?.action.onNext(.clearRouting)
                 case .editView(let cooking):
                     let vc = CookingModificationViewController(editingCookingId: cooking.id)
-                    owner.navigationController?.pushViewController(vc, animated: true)
+                    vc.modalPresentationStyle = .fullScreen
+                    owner.present(vc, animated: true)
                     owner.reactor?.action.onNext(.clearRouting)
                 case .none:
                     break

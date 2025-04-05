@@ -16,10 +16,12 @@ final class SelectFolderReactor: Reactor {
         case viewWillAppear
         case setSelectedFolder(folderId: String)
         case addFolder(name: String)
+        case deleteFolder(id: String)
     }
 
     enum Mutation {
         case setFolderList([CookingFolderEntity], selectedFolderId: String?)
+        case updateFolderList
     }
 
     struct State {
@@ -58,6 +60,9 @@ final class SelectFolderReactor: Reactor {
             let newFolder = repository.add(name: name)
             let updatedList = repository.fetchAll()
             return .just(.setFolderList(updatedList, selectedFolderId: newFolder.id))
+        case .deleteFolder(let id):
+            repository.delete(id: id)
+            return .just(.updateFolderList)
         }
     }
 
@@ -67,6 +72,15 @@ final class SelectFolderReactor: Reactor {
         case let .setFolderList(folders, selectedId):
             newState.folderList = folders
             newState.selectedFolderId = selectedId
+        case .updateFolderList:
+            let updated = repository.fetchAll()
+            newState.folderList = updated
+            
+            // 현재 선택한 폴더가 삭제되었을 수도 있으므로 재설정
+            if let selectedId = state.selectedFolderId,
+               !updated.contains(where: { $0.id == selectedId }) {
+                newState.selectedFolderId = repository.getDefaultFolder().id
+            }
         }
         return newState
     }

@@ -33,15 +33,6 @@ final class SelectFolderViewController: BaseViewController {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
     }
-    
-//    override func viewWillDisappear(_ animated: Bool) {
-//        super.viewWillDisappear(animated)
-//        
-//        guard let reactor = self.reactor else { return }
-//        
-//        let folder = reactor.currentState.selectedFolder
-//        onFolderSelected?(folder)
-//    }
 
     override func loadView() {
         view = selectFolderView
@@ -60,6 +51,11 @@ final class SelectFolderViewController: BaseViewController {
 // MARK: - Reactor
 extension SelectFolderViewController: View {
     func bind(reactor: SelectFolderReactor) {
+        bindAction(reactor)
+        bindState(reactor)
+    }
+    
+    private func bindAction(_ reactor: SelectFolderReactor) {
         selectFolderView.folderTableView.rx.modelSelected(CookingFolderEntity.self)
             .bind(with: self) { owner, folder in
                 reactor.action.onNext(.setSelectedFolder(folderId: folder.id))
@@ -76,6 +72,30 @@ extension SelectFolderViewController: View {
             }
             .disposed(by: disposeBag)
         
+        selectFolderView.addFolderButton.rx.tap
+            .bind(with: self) { owner, _ in
+                owner.showAddFolderAlert()
+            }
+            .disposed(by: disposeBag)
+        
+        selectFolderView.folderTableView.rx.itemDeleted
+            .bind(with: self) { owner, indexPath in
+                guard let reactor = owner.reactor else { return }
+                let folder = reactor.currentState.folderList[indexPath.row]
+                // 기본 폴더는 삭제 방지
+                if folder.name == "기본 폴더" {
+                    owner.showAlert(title: "삭제 불가", message: "기본 폴더는 삭제할 수 없습니다.", button: "확인") { }
+                } else {
+                    owner.showAlert(title: "폴더 삭제", message: "해당 폴더에 속한 요리는 '기본 폴더'로 이동하게 됩니다. 폴더를 삭제하시겠습니까?", button: "삭제", style: .destructive, isCancelButton: true) {
+                        reactor.action.onNext(.deleteFolder(id: folder.id))
+                        NotificationCenter.default.post(name: NSNotification.Name("FolderListUpdated"), object: nil)
+                    }
+                }
+            }
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindState(_ reactor: SelectFolderReactor) {
         reactor.state
             .map { $0.folderList }
             .distinctUntilChanged()
@@ -90,12 +110,6 @@ extension SelectFolderViewController: View {
                 let selectedId = reactor.currentState.selectedFolderId
                 cell.accessoryType = (entity.id == selectedId) ? .checkmark : .none
                 cell.tintColor = .themePrimary
-            }
-            .disposed(by: disposeBag)
-        
-        selectFolderView.addFolderButton.rx.tap
-            .bind(with: self) { owner, _ in
-                owner.showAddFolderAlert()
             }
             .disposed(by: disposeBag)
         

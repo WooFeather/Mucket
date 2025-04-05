@@ -42,10 +42,27 @@ final class CookingFolderRepository: CookingFolderRepositoryType {
 
     func delete(id: String) {
         guard let objectId = try? ObjectId(string: id),
-              let folder = realm.object(ofType: CookingFolderObject.self, forPrimaryKey: objectId) else { return }
+              let folderToDelete = realm.object(ofType: CookingFolderObject.self, forPrimaryKey: objectId) else { return }
+
+        // 기본 폴더는 삭제 금지
+        if folderToDelete.name == "기본 폴더" {
+            print("기본 폴더는 삭제할 수 없습니다.")
+            return
+        }
+
+        guard let defaultFolder = realm.objects(CookingFolderObject.self).filter("name == %@", "기본 폴더").first else {
+            print("기본 폴더가 존재하지 않습니다.")
+            return
+        }
 
         try? realm.write {
-            realm.delete(folder)
+            // 폴더 내 요리들을 기본 폴더로 이동
+            for cooking in folderToDelete.cookings {
+                defaultFolder.cookings.append(cooking)
+            }
+
+            // 폴더 삭제
+            realm.delete(folderToDelete)
         }
     }
 
