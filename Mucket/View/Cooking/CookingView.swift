@@ -17,7 +17,7 @@ final class CookingView: BaseView {
     lazy var myCookingCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
 
     
-    private let repository = FolderRepository()
+    private let repository = CookingFolderRepository()
     private lazy var contextMenuItems = repository.fetchAll().map { $0.name }
     var didSelectFolder: ((String?) -> Void)?
     

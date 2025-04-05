@@ -17,7 +17,7 @@ class MyCookingObject: Object {
     @Persisted var rating: Double?
     @Persisted var createdAt: Date = Date()
 
-    @Persisted(originProperty: "cookings") var folder: LinkingObjects<FolderObject>
+    @Persisted(originProperty: "cookings") var folder: LinkingObjects<CookingFolderObject>
 }
 
 

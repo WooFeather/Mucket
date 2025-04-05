@@ -8,31 +8,31 @@
 import Foundation
 import RealmSwift
 
-protocol FolderRepositoryType {
+protocol CookingFolderRepositoryType {
     func getFileURL()
-    func fetchAll() -> [FolderEntity]
-    func add(name: String) -> FolderEntity
+    func fetchAll() -> [CookingFolderEntity]
+    func add(name: String) -> CookingFolderEntity
     func delete(id: String)
-    func getDefaultFolder() -> FolderEntity
+    func getDefaultFolder() -> CookingFolderEntity
     func getCookingObject(by id: String) -> MyCookingObject?
     func getMyCookings(inFolderId: String) -> [MyCookingEntity]
 }
 
-final class FolderRepository: FolderRepositoryType {
+final class CookingFolderRepository: CookingFolderRepositoryType {
     private let realm = try! Realm()
     
     func getFileURL() {
         print(realm.configuration.fileURL ?? "URL 찾을 수 없음")
     }
 
-    func fetchAll() -> [FolderEntity] {
-        return realm.objects(FolderObject.self)
+    func fetchAll() -> [CookingFolderEntity] {
+        return realm.objects(CookingFolderObject.self)
             .sorted(byKeyPath: "createdAt")
             .map { $0.toEntity() }
     }
 
-    func add(name: String) -> FolderEntity {
-        let folder = FolderObject()
+    func add(name: String) -> CookingFolderEntity {
+        let folder = CookingFolderObject()
         folder.name = name
         try? realm.write {
             realm.add(folder)
@@ -42,20 +42,20 @@ final class FolderRepository: FolderRepositoryType {
 
     func delete(id: String) {
         guard let objectId = try? ObjectId(string: id),
-              let folder = realm.object(ofType: FolderObject.self, forPrimaryKey: objectId) else { return }
+              let folder = realm.object(ofType: CookingFolderObject.self, forPrimaryKey: objectId) else { return }
 
         try? realm.write {
             realm.delete(folder)
         }
     }
 
-    func getDefaultFolder() -> FolderEntity {
+    func getDefaultFolder() -> CookingFolderEntity {
         // 기본 폴더가 없으면 생성하고, 있으면 반환
-        if let defaultFolder = realm.objects(FolderObject.self).filter("name == %@", "기본 폴더").first {
+        if let defaultFolder = realm.objects(CookingFolderObject.self).filter("name == %@", "기본 폴더").first {
             return defaultFolder.toEntity() // 기본 폴더 반환
         } else {
             // 기본 폴더가 없으면 생성해서 저장
-            let defaultFolder = FolderObject()
+            let defaultFolder = CookingFolderObject()
             defaultFolder.name = "기본 폴더"
             try? realm.write {
                 realm.add(defaultFolder)
@@ -71,7 +71,7 @@ final class FolderRepository: FolderRepositoryType {
     
     func getMyCookings(inFolderId: String) -> [MyCookingEntity] {
         guard let objectId = try? ObjectId(string: inFolderId),
-              let folder = realm.object(ofType: FolderObject.self, forPrimaryKey: objectId) else {
+              let folder = realm.object(ofType: CookingFolderObject.self, forPrimaryKey: objectId) else {
             return []
         }
         

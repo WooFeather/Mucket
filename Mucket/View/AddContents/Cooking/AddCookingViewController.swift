@@ -88,7 +88,7 @@ extension AddCookingViewController: View {
                 switch route {
                 case .folder:
                     // 폴더 선택 화면으로 이동
-                    let folderRepo = FolderRepository()
+                    let folderRepo = CookingFolderRepository()
                     let reactor = SelectFolderReactor(repository: folderRepo, selectedCookingId: nil)
                     let folderVC = SelectFolderViewController(reactor: reactor)
                     

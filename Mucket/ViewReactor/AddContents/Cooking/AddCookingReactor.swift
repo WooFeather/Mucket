@@ -9,7 +9,7 @@ import ReactorKit
 import Foundation
 
 final class AddCookingReactor: Reactor {
-    private let folderRepository: FolderRepositoryType
+    private let folderRepository: CookingFolderRepositoryType
     private let myCookingRepository: MyCookingRepositoryType
 
     var initialState: State
@@ -23,26 +23,26 @@ final class AddCookingReactor: Reactor {
         case addPhotoButtonTapped
         case folderSelectButtonTapped
         case clearRouting
-        case setSelectedFolder(FolderEntity)
+        case setSelectedFolder(CookingFolderEntity)
         case saveCooking(name: String, memo: String?, rating: Double?, imageURL: String?, youtubeLink: String?)
     }
 
     enum Mutation {
         case presentImagePicker(Bool)
         case setRoute(Route)
-        case setSelectedFolder(FolderEntity)
+        case setSelectedFolder(CookingFolderEntity)
         case setSaveCompleted(Bool)
     }
     
     struct State {
         var isPresent = false
         var route: Route = .none
-        var selectedFolder: FolderEntity?
+        var selectedFolder: CookingFolderEntity?
         var isSaveCompleted = false
     }
 
     init(
-        folderRepository: FolderRepositoryType = FolderRepository(),
+        folderRepository: CookingFolderRepositoryType = CookingFolderRepository(),
         myCookingRepository: MyCookingRepositoryType = MyCookingRepository(),
         editingCookingId: String? = nil  // ⭐ 요리 ID 전달 여부로 분기
     ) {

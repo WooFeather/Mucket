@@ -8,7 +8,7 @@
 import ReactorKit
 
 final class SelectFolderReactor: Reactor {
-    private let repository: FolderRepositoryType
+    private let repository: CookingFolderRepositoryType
     private let selectedCookingId: String?
     var initialState: State
 
@@ -19,15 +19,15 @@ final class SelectFolderReactor: Reactor {
     }
 
     enum Mutation {
-        case setFolderList([FolderEntity], selectedFolderId: String?)
+        case setFolderList([CookingFolderEntity], selectedFolderId: String?)
     }
 
     struct State {
-        var folderList: [FolderEntity] = []
+        var folderList: [CookingFolderEntity] = []
         var selectedFolderId: String?
     }
 
-    init(repository: FolderRepositoryType, selectedCookingId: String?) {
+    init(repository: CookingFolderRepositoryType, selectedCookingId: String?) {
         self.repository = repository
         self.selectedCookingId = selectedCookingId
 

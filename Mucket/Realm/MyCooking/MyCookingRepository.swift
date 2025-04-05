@@ -20,7 +20,7 @@ protocol MyCookingRepositoryType {
 
 final class MyCookingRepository: MyCookingRepositoryType {
     private let realm = try! Realm()
-    private let folderRepository = FolderRepository()
+    private let folderRepository = CookingFolderRepository()
     
     func getFileURL() {
         print(realm.configuration.fileURL ?? "URL 찾을 수 없음")
@@ -36,7 +36,7 @@ final class MyCookingRepository: MyCookingRepositoryType {
     func fetch(in folderId: String?) -> [MyCookingEntity] {
         if let folderId = folderId,
            let objectId = try? ObjectId(string: folderId),
-           let folder = realm.object(ofType: FolderObject.self, forPrimaryKey: objectId) {
+           let folder = realm.object(ofType: CookingFolderObject.self, forPrimaryKey: objectId) {
             // 특정 폴더의 요리들 반환
             return folder.cookings.map { $0.toEntity() }
         } else {
@@ -63,7 +63,7 @@ final class MyCookingRepository: MyCookingRepositoryType {
             }
             
             if let folderObjectId = folderObjectId,
-               let folder = realm.object(ofType: FolderObject.self, forPrimaryKey: folderObjectId) {
+               let folder = realm.object(ofType: CookingFolderObject.self, forPrimaryKey: folderObjectId) {
                 folder.cookings.append(realmObject)
             }
         }
@@ -78,7 +78,7 @@ final class MyCookingRepository: MyCookingRepositoryType {
             // 폴더 관계 업데이트가 필요한 경우
             if let folderId = entity.folderId,
                let objectId = try? ObjectId(string: folderId),
-               let folder = realm.object(ofType: FolderObject.self, forPrimaryKey: objectId) {
+               let folder = realm.object(ofType: CookingFolderObject.self, forPrimaryKey: objectId) {
                 
                 // 이전 폴더에서 제거하고 새 폴더에 추가
                 if let currentFolder = realmObject.folder.first, currentFolder.id != folder.id {

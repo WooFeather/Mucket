@@ -8,7 +8,7 @@
 import Foundation
 import RealmSwift
 
-class PlaceObject: Object {
+class RestaurantObject: Object {
     @Persisted(primaryKey: true) var id: ObjectId
     @Persisted var name: String
     @Persisted var latitude: Double?
@@ -18,11 +18,11 @@ class PlaceObject: Object {
     @Persisted var rating: Double?
     @Persisted var createdAt: Date = Date()
 
-    @Persisted var folder: FolderObject?
+    @Persisted var folder: RestaurantFolderObject?
 }
 
 // MARK: - Mapper
-struct PlaceEntity: Equatable {
+struct RestaurantEntity: Equatable {
     let id: String
     let name: String
     let latitude: Double?
@@ -34,9 +34,9 @@ struct PlaceEntity: Equatable {
     let folderId: String?
 }
 
-extension PlaceEntity {
-    func toRealmObject(folder: FolderObject?) -> PlaceObject {
-        let object = PlaceObject()
+extension RestaurantEntity {
+    func toRealmObject(folder: RestaurantFolderObject?) -> RestaurantObject {
+        let object = RestaurantObject()
         object.id = try! ObjectId(string: id)
         object.name = name
         object.latitude = latitude
@@ -50,9 +50,9 @@ extension PlaceEntity {
     }
 }
 
-extension PlaceObject {
-    func toEntity() -> PlaceEntity {
-        return PlaceEntity(
+extension RestaurantObject {
+    func toEntity() -> RestaurantEntity {
+        return RestaurantEntity(
             id: self.id.stringValue,
             name: self.name,
             latitude: self.latitude,

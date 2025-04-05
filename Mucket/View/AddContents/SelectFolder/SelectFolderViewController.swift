@@ -12,7 +12,7 @@ import RxCocoa
 final class SelectFolderViewController: BaseViewController {
     private let selectFolderView = SelectFolderView()
     var disposeBag = DisposeBag()
-    var onFolderSelected: ((FolderEntity) -> Void)?
+    var onFolderSelected: ((CookingFolderEntity) -> Void)?
 
     init(reactor: SelectFolderReactor) {
         super.init(nibName: nil, bundle: nil)
@@ -60,7 +60,7 @@ final class SelectFolderViewController: BaseViewController {
 // MARK: - Reactor
 extension SelectFolderViewController: View {
     func bind(reactor: SelectFolderReactor) {
-        selectFolderView.folderTableView.rx.modelSelected(FolderEntity.self)
+        selectFolderView.folderTableView.rx.modelSelected(CookingFolderEntity.self)
             .bind(with: self) { owner, folder in
                 reactor.action.onNext(.setSelectedFolder(folderId: folder.id))
             }

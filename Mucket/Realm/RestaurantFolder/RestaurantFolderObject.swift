@@ -1,31 +1,31 @@
 //
-//  FolderObject.swift
+//  RestaurantFolderObject.swift
 //  Mucket
 //
-//  Created by 조우현 on 4/3/25.
+//  Created by 조우현 on 4/5/25.
 //
 
 import Foundation
 import RealmSwift
 
-class FolderObject: Object {
+class RestaurantFolderObject: Object {
     @Persisted(primaryKey: true) var id: ObjectId
     @Persisted var name: String
     @Persisted var createdAt: Date = Date()
     
-    @Persisted var cookings: List<MyCookingObject>
+    @Persisted var restaurants: List<RestaurantObject>
 }
 
 // MARK: - Mapper
-struct FolderEntity: Equatable {
+struct RestaurantFolderEntity: Equatable {
     let id: String
     let name: String
     let createdAt: Date
 }
 
-extension FolderEntity {
-    func toRealmObject() -> FolderObject {
-        let object = FolderObject()
+extension RestaurantFolderEntity {
+    func toRealmObject() -> RestaurantFolderObject {
+        let object = RestaurantFolderObject()
         object.id = try! ObjectId(string: id)
         object.name = name
         object.createdAt = createdAt
@@ -33,9 +33,9 @@ extension FolderEntity {
     }
 }
 
-extension FolderObject {
-    func toEntity() -> FolderEntity {
-        return FolderEntity(
+extension RestaurantFolderObject {
+    func toEntity() -> RestaurantFolderEntity {
+        return RestaurantFolderEntity(
             id: self.id.stringValue,
             name: self.name,
             createdAt: self.createdAt
