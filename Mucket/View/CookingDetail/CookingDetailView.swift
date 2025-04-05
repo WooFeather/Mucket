@@ -59,7 +59,7 @@ final class CookingDetailView: BaseView {
         thumbImageView.snp.makeConstraints {
             $0.top.equalTo(navigationStackView.snp.bottom).offset(16)
             $0.leading.trailing.equalToSuperview().inset(16)
-            $0.height.equalTo(200)
+            $0.height.equalTo(240)
         }
 
         ratingHeaderLabel.snp.makeConstraints {

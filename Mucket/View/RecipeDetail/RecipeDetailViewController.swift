@@ -32,23 +32,6 @@ final class RecipeDetailViewController: BaseViewController {
         super.configureView()
         view.backgroundColor = .backgroundPrimary
     }
-    
-    override func configureData() {
-        recipeDetailView.makingTableView.register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.id)
-    }
-    
-    private func updateTableViewHeight() {
-        recipeDetailView.makingTableView.reloadData()
-        
-        DispatchQueue.main.async {
-            self.recipeDetailView.makingTableView.layoutIfNeeded()
-            let height = self.recipeDetailView.makingTableView.contentSize.height
-
-            self.recipeDetailView.makingTableView.snp.updateConstraints {
-                $0.height.equalTo(height)
-            }
-        }
-    }
 }
 
 // MARK: - Reactor
@@ -124,11 +107,14 @@ extension RecipeDetailViewController: View {
         reactor.state
             .map { $0.manualSteps }
             .distinctUntilChanged()
-            .bind(to: recipeDetailView.makingTableView.rx.items(
-                cellIdentifier: DetailTableViewCell.id,
-                cellType: DetailTableViewCell.self
-            )) { index, step, cell in
-                cell.configureData(step: step)
+            .bind(with: self) { owner, steps in
+                owner.recipeDetailView.makingStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+                
+                for step in steps {
+                    let stepView = DetailStepView()
+                    stepView.configureData(step: step)
+                    owner.recipeDetailView.makingStackView.addArrangedSubview(stepView)
+                }
             }
             .disposed(by: disposeBag)
         

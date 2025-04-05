@@ -32,7 +32,7 @@ final class RecipeDetailView: BaseView {
     let fatInfoView = InfoView(title: "지방")
     let naInfoView = InfoView(title: "나트륨", unit: "mg")
     
-    let makingTableView = UITableView()
+    let makingStackView = UIStackView()
     
     override func configureHierarchy() {
         addSubview(navigationStackView)
@@ -40,7 +40,7 @@ final class RecipeDetailView: BaseView {
         scrollView.addSubview(contentView)
 
         [thumbImageView, nutritionHeaderLabel, infoStackView, ingredientHeaderLabel,
-         ingredientView, makingHeaderLabel, makingTableView].forEach {
+         ingredientView, makingHeaderLabel, makingStackView].forEach {
             contentView.addSubview($0)
         }
 
@@ -77,7 +77,7 @@ final class RecipeDetailView: BaseView {
         thumbImageView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(16)
             make.leading.trailing.equalToSuperview().inset(16)
-            make.height.equalTo(200)
+            make.height.equalTo(240)
         }
 
         nutritionHeaderLabel.snp.makeConstraints { make in
@@ -106,11 +106,10 @@ final class RecipeDetailView: BaseView {
             make.top.equalTo(ingredientView.snp.bottom).offset(24)
             make.leading.equalToSuperview().inset(16)
         }
-
-        makingTableView.snp.makeConstraints { make in
+        
+        makingStackView.snp.makeConstraints { make in
             make.top.equalTo(makingHeaderLabel.snp.bottom).offset(12)
-            make.leading.trailing.equalToSuperview()
-            make.height.equalTo(1000)
+            make.horizontalEdges.equalToSuperview()
             make.bottom.equalToSuperview()
         }
     }
@@ -157,10 +156,9 @@ final class RecipeDetailView: BaseView {
         ingredientTextView.textColor = .textPrimary
         ingredientTextView.backgroundColor = .clear
         
-        makingTableView.backgroundColor = .clear
-        makingTableView.isScrollEnabled = true
-        makingTableView.separatorStyle = .none
-        makingTableView.rowHeight = UITableView.automaticDimension
-        makingTableView.estimatedRowHeight = 100
+        makingStackView.axis = .vertical
+        makingStackView.spacing = 16
+        makingStackView.alignment = .fill
+        makingStackView.distribution = .fill
     }
 }
