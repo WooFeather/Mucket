@@ -59,24 +59,29 @@ final class AddContentsViewController: BaseViewController {
         guard let addCookingVC = dataViewControllers[0] as? AddCookingViewController,
               let reactor = addCookingVC.reactor else { return }
 
-        // 아래 필드는 AddCookingViewController 내에서 추출
-        let name = addCookingVC.addCookingView.nameTextField.text ?? "이름 없음"
-        let memo = addCookingVC.addCookingView.memoTextView.text
-        let rating = addCookingVC.addCookingView.ratingView.rating
-        let image = addCookingVC.addCookingView.previewPhotoView.image ?? .placeholderSmall
-        let youtubeLink = addCookingVC.addCookingView.linkTextField.text
+        let trimmedName = addCookingVC.addCookingView.nameTextField.text?.trimmingCharacters(in: .whitespaces)
         
-        let imageURL = saveImageToDocumentsDirectory(image: image)
-        
-        reactor.action.onNext(.saveCooking(
-            name: name,
-            memo: memo,
-            rating: rating,
-            imageURL: imageURL,
-            youtubeLink: youtubeLink
-        ))
-        
-        self.dismiss(animated: true)
+        if trimmedName != "" {
+            let name = trimmedName ?? "이름 없음"
+            let memo = addCookingVC.addCookingView.memoTextView.text
+            let rating = addCookingVC.addCookingView.ratingView.rating
+            let image = addCookingVC.addCookingView.previewPhotoView.image ?? .placeholderSmall
+            let youtubeLink = addCookingVC.addCookingView.linkTextField.text
+            
+            let imageURL = saveImageToDocumentsDirectory(image: image)
+            
+            reactor.action.onNext(.saveCooking(
+                name: name,
+                memo: memo,
+                rating: rating,
+                imageURL: imageURL,
+                youtubeLink: youtubeLink
+            ))
+            
+            self.dismiss(animated: true)
+        } else {
+            showAlert(title: "요리 이름은 필수 사항입니다!", message: "요리 이름을 다시 한 번 확인해주세요 :)", button: "확인") { }
+        }
     }
     
     private func saveImageToDocumentsDirectory(image: UIImage) -> String? {

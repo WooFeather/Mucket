@@ -50,70 +50,76 @@ final class CookingModificationViewController: BaseViewController {
               let reactor = addCookingVC.reactor,
               let editingCookingId = editingCookingId else { return }
         
-        let name = addCookingVC.addCookingView.nameTextField.text ?? "이름 없음"
-        let memo = addCookingVC.addCookingView.memoTextView.text
-        let rating = addCookingVC.addCookingView.ratingView.rating
-        let image = addCookingVC.addCookingView.previewPhotoView.image
-        let youtubeLink = addCookingVC.addCookingView.linkTextField.text
-        let selectedFolder = reactor.currentState.selectedFolder
+        let trimmedName = addCookingVC.addCookingView.nameTextField.text?.trimmingCharacters(in: .whitespaces)
         
-        let repository = MyCookingRepository()
-        
-        if let cookingObject = repository.fetchById(editingCookingId) {
-            var imageURL: String? = cookingObject.imageFileURL
+        if trimmedName != "" {
+            let name = trimmedName ?? "이름 없음"
+            let memo = addCookingVC.addCookingView.memoTextView.text
+            let rating = addCookingVC.addCookingView.ratingView.rating
+            let image = addCookingVC.addCookingView.previewPhotoView.image
+            let youtubeLink = addCookingVC.addCookingView.linkTextField.text
+            let selectedFolder = reactor.currentState.selectedFolder
             
-            // 이미지가 변경되었다면 새로 저장
-            if let newImage = image {
-                if let oldImagePath = cookingObject.imageFileURL, !oldImagePath.isEmpty {
-                    let fileManager = FileManager.default
-                    // 전체 경로인지 확인하고 처리
-                    let oldImageURL: URL
-                    if oldImagePath.hasPrefix("/") {
-                        // 절대 경로인 경우
-                        oldImageURL = URL(fileURLWithPath: oldImagePath)
-                    } else {
-                        // 상대 경로인 경우, 문서 디렉토리에 추가
-                        oldImageURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(oldImagePath)
+            let repository = MyCookingRepository()
+            
+            if let cookingObject = repository.fetchById(editingCookingId) {
+                var imageURL: String? = cookingObject.imageFileURL
+                
+                // 이미지가 변경되었다면 새로 저장
+                if let newImage = image {
+                    if let oldImagePath = cookingObject.imageFileURL, !oldImagePath.isEmpty {
+                        let fileManager = FileManager.default
+                        // 전체 경로인지 확인하고 처리
+                        let oldImageURL: URL
+                        if oldImagePath.hasPrefix("/") {
+                            // 절대 경로인 경우
+                            oldImageURL = URL(fileURLWithPath: oldImagePath)
+                        } else {
+                            // 상대 경로인 경우, 문서 디렉토리에 추가
+                            oldImageURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(oldImagePath)
+                        }
+                        
+                        // 파일 존재 여부 확인 후 삭제 시도
+                        if fileManager.fileExists(atPath: oldImageURL.path) {
+                            do {
+                                try fileManager.removeItem(at: oldImageURL)
+                                print("이전 이미지 삭제 성공: \(oldImageURL.path)")
+                            } catch {
+                                print("이전 이미지 삭제 실패: \(error.localizedDescription)")
+                            }
+                        } else {
+                            print("삭제할 이미지 파일이 존재하지 않음: \(oldImageURL.path)")
+                        }
                     }
                     
-                    // 파일 존재 여부 확인 후 삭제 시도
-                    if fileManager.fileExists(atPath: oldImageURL.path) {
-                        do {
-                            try fileManager.removeItem(at: oldImageURL)
-                            print("이전 이미지 삭제 성공: \(oldImageURL.path)")
-                        } catch {
-                            print("이전 이미지 삭제 실패: \(error.localizedDescription)")
-                        }
-                    } else {
-                        print("삭제할 이미지 파일이 존재하지 않음: \(oldImageURL.path)")
-                    }
+                    imageURL = saveImageToDocumentsDirectory(image: newImage)
+                    print("새 이미지 저장 경로: \(imageURL ?? "없음")")
                 }
                 
-                imageURL = saveImageToDocumentsDirectory(image: newImage)
-                print("새 이미지 저장 경로: \(imageURL ?? "없음")")
+                // 업데이트할 엔티티 생성
+                let updatedEntity = MyCookingEntity(
+                    id: editingCookingId,
+                    name: name,
+                    youtubeLink: youtubeLink,
+                    imageFileURL: imageURL,
+                    memo: memo,
+                    rating: rating,
+                    createdAt: cookingObject.createdAt,
+                    folderId: selectedFolder?.id
+                    
+                )
+                
+                // 엔티티 업데이트
+                repository.update(updatedEntity)
+                
+                // 알림 발송 (필요하다면)
+                NotificationCenter.default.post(name: NSNotification.Name("CookingDataUpdated"), object: nil)
             }
             
-            // 업데이트할 엔티티 생성
-            let updatedEntity = MyCookingEntity(
-                id: editingCookingId,
-                name: name,
-                youtubeLink: youtubeLink,
-                imageFileURL: imageURL,
-                memo: memo,
-                rating: rating,
-                createdAt: cookingObject.createdAt,
-                folderId: selectedFolder?.id
-                
-            )
-            
-            // 엔티티 업데이트
-            repository.update(updatedEntity)
-            
-            // 알림 발송 (필요하다면)
-            NotificationCenter.default.post(name: NSNotification.Name("CookingDataUpdated"), object: nil)
+            self.navigationController?.popViewController(animated: true)
+        } else {
+            showAlert(title: "요리 이름은 필수 사항입니다!", message: "요리 이름을 다시 한 번 확인해주세요 :)", button: "확인") { }
         }
-        
-        self.navigationController?.popViewController(animated: true)
     }
     
     private func saveImageToDocumentsDirectory(image: UIImage) -> String? {
