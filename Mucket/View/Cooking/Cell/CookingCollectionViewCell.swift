@@ -7,11 +7,12 @@
 
 import UIKit
 import SnapKit
+import Cosmos
 
 final class CookingCollectionViewCell: BaseCollectionViewCell, ReusableIdentifier {
     private let thumbImageView = UIImageView()
     private let nameLabel = UILabel()
-    private let ratingView = UIView() // TODO: CosmosView로 교체 예정
+    private let ratingView = CosmosView()
     
     override func configureHierarchy() {
         [thumbImageView, nameLabel, ratingView].forEach {
@@ -42,13 +43,31 @@ final class CookingCollectionViewCell: BaseCollectionViewCell, ReusableIdentifie
         thumbImageView.backgroundColor = .backgroundSecondary
         thumbImageView.layer.cornerRadius = 6
         thumbImageView.image = .placeholderSmall
-        thumbImageView.contentMode = .scaleAspectFit
+        thumbImageView.contentMode = .scaleAspectFill
         thumbImageView.clipsToBounds = true
         
         nameLabel.text = "닭가슴살 스테이크"
         nameLabel.font = .Body.body2
         nameLabel.textColor = .textSecondary
         
-        ratingView.backgroundColor = .lightGray
+        ratingView.settings.updateOnTouch = false
+    }
+    
+    func configureData(entity: MyCookingEntity) {
+        if let fileName = entity.imageFileURL {
+            // 파일명으로부터 전체 경로 생성
+            let filePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(fileName)
+            let savedImage = UIImage(contentsOfFile: filePath.path)
+            
+            if savedImage == nil {
+                print("이미지를 로드할 수 없습니다: \(filePath)")
+            }
+            thumbImageView.image = savedImage ?? .placeholderSmall
+        } else {
+            thumbImageView.image = .placeholderSmall
+        }
+        
+        nameLabel.text = entity.name
+        ratingView.rating = entity.rating ?? 0
     }
 }

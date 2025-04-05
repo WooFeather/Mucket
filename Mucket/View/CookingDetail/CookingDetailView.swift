@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import Cosmos
 
 final class CookingDetailView: BaseView {
     private let ratingHeaderLabel = UILabel()
@@ -22,9 +23,13 @@ final class CookingDetailView: BaseView {
     let editButton = UIButton()
     
     let thumbImageView = UIImageView() // TODO: pageControl 들어갈 예정
-    let ratingView = UIView() // TODO: CosmosView로 들어갈 예정
+    let ratingView = CosmosView()
     let memoTextView = UITextView()
     let videoView = UIView() // TODO: YoutubeView로 변경 예정
+    
+    private let contextMenuItems = ["수정하기", "삭제하기"]
+    var didSelectEditMenu: (() -> Void)?
+    var didSelectDeleteMenu: (() -> Void)?
     
     override func configureHierarchy() {
         [navigationStackView, thumbImageView, ratingHeaderLabel, ratingView, memoHeaderLabel, memoView, videoHeaderLabel, videoView, emptyVideoBackground].forEach {
@@ -44,6 +49,10 @@ final class CookingDetailView: BaseView {
             $0.leading.trailing.equalToSuperview().inset(16)
             $0.height.equalTo(40)
         }
+        
+        naviTitleLabel.snp.makeConstraints { make in
+            make.width.equalTo(200)
+        }
 
         thumbImageView.snp.makeConstraints {
             $0.top.equalTo(navigationStackView.snp.bottom).offset(16)
@@ -61,7 +70,6 @@ final class CookingDetailView: BaseView {
             $0.centerY.equalTo(ratingHeaderLabel)
             $0.centerX.equalToSuperview()
             $0.height.equalTo(38)
-            $0.width.equalTo(200)
         }
 
         memoHeaderLabel.snp.makeConstraints {
@@ -105,7 +113,6 @@ final class CookingDetailView: BaseView {
         }
     }
 
-    // TODO: 이전 뷰에서 전달받은 값 넣을 예정
     override func configureView() {
         navigationStackView.axis = .horizontal
         navigationStackView.alignment = .center
@@ -117,6 +124,7 @@ final class CookingDetailView: BaseView {
         naviTitleLabel.text = "빽쌤 유튜브 짜장면"
         naviTitleLabel.font = .Head.head4
         naviTitleLabel.textColor = .textPrimary
+        naviTitleLabel.textAlignment = .center
 
         editButton.setImage(.pencil, for: .normal)
         editButton.tintColor = .textPrimary
@@ -135,7 +143,10 @@ final class CookingDetailView: BaseView {
             $0.textColor = .textSecondary
         }
         
-        ratingView.backgroundColor = .lightGray
+        ratingView.settings.updateOnTouch = false
+        ratingView.settings.starSize = 30
+        ratingView.settings.fillMode = .half
+        ratingView.settings.starMargin = 5
         
         emptyVideoBackground.backgroundColor = .backgroundSecondary
         emptyVideoBackground.layer.cornerRadius = 6
@@ -155,6 +166,20 @@ final class CookingDetailView: BaseView {
         memoTextView.textColor = .textPrimary
         memoTextView.backgroundColor = .clear
         memoTextView.text = "불조절이 너무 어려웠다!! 특히 볶을 때말이지!! 다음부터는 중불로 하기~~~~~불조절이 너무 어려웠다!! 특히 볶을 때말이지!! 다음부터는 중불로 하기~~~~~불조절이 너무 어려웠다!! 특히 볶을 때말이지!! 다음부터는 중불로 하기~~~~~불조절이 너무 어려웠다!! 특히 볶을 때말이지!! 다음부터는 중불로 하기~~~~~불조절이 너무 어려웠다!! 특히 볶을 때말이지!! 다음부터는 중불로 하기~~~~~불조절이 너무 어려웠다!! 특히 볶을 때말이지!! 다음부터는 중불로 하기~~~~~"
+        
+        configureContextMenu()
     }
+    
+    private func configureContextMenu() {
+        let editAction = UIAction(title: "수정하기", image: UIImage(systemName: "pencil")) { [weak self] _ in
+            self?.didSelectEditMenu?()
+        }
 
+        let deleteAction = UIAction(title: "삭제하기", image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] _ in
+            self?.didSelectDeleteMenu?()
+        }
+
+        editButton.menu = UIMenu(title: "", children: [editAction, deleteAction])
+        editButton.showsMenuAsPrimaryAction = true
+    }
 }

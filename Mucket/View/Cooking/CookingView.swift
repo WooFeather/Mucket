@@ -16,6 +16,11 @@ final class CookingView: BaseView {
     
     lazy var myCookingCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
 
+    
+    private let repository = CookingFolderRepository()
+    private lazy var contextMenuItems = repository.fetchAll().map { $0.name }
+    var didSelectFolder: ((String?) -> Void)?
+    
     override func configureHierarchy() {
         addSubview(roundedBackgroundView)
         
@@ -62,6 +67,40 @@ final class CookingView: BaseView {
         
         // TODO: 데이터가 있을때 emptyStateView isHidden = true
          emptyStateView.isHidden = true
+        
+        configureContextMenu()
+    }
+    
+    private func configureContextMenu() {
+        // 폴더 목록에 '전체보기' 추가
+        var menuItems = ["전체보기"]
+        menuItems.append(contentsOf: repository.fetchAll().map { $0.name })
+        
+        // 드롭다운 메뉴 설정
+        let actions = menuItems.enumerated().map { index, title in
+            UIAction(title: title) { [weak self] _ in
+                guard let self = self else { return }
+                
+                if index == 0 {
+                    // '전체보기' 선택
+                    self.filterButton.button.setTitle("전체보기", for: .normal)
+                    self.didSelectFolder?(nil) // nil은 전체보기를 의미
+                } else {
+                    // 특정 폴더 선택
+                    let folders = self.repository.fetchAll()
+                    let selectedFolder = folders[index - 1] // -1은 '전체보기' 때문에
+                    self.filterButton.button.setTitle(selectedFolder.name, for: .normal)
+                    self.didSelectFolder?(selectedFolder.id)
+                }
+            }
+        }
+        
+        filterButton.button.menu = UIMenu(title: "폴더 선택", children: actions)
+        filterButton.button.showsMenuAsPrimaryAction = true
+    }
+    
+    func updateFolderMenu() {
+        configureContextMenu()
     }
 }
 

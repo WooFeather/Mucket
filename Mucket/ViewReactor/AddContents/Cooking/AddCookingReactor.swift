@@ -6,9 +6,11 @@
 //
 
 import ReactorKit
+import Foundation
 
 final class AddCookingReactor: Reactor {
-    private let folderRepository: FolderRepositoryType
+    private let folderRepository: CookingFolderRepositoryType
+    private let myCookingRepository: MyCookingRepositoryType
 
     var initialState: State
 
@@ -21,26 +23,43 @@ final class AddCookingReactor: Reactor {
         case addPhotoButtonTapped
         case folderSelectButtonTapped
         case clearRouting
-        case setSelectedFolder(FolderEntity)
+        case setSelectedFolder(CookingFolderEntity)
+        case saveCooking(name: String, memo: String?, rating: Double?, imageURL: String?, youtubeLink: String?)
     }
 
     enum Mutation {
         case presentImagePicker(Bool)
         case setRoute(Route)
-        case setSelectedFolder(FolderEntity)
+        case setSelectedFolder(CookingFolderEntity)
+        case setSaveCompleted(Bool)
     }
-
+    
     struct State {
         var isPresent = false
         var route: Route = .none
-        var selectedFolder: FolderEntity?
+        var selectedFolder: CookingFolderEntity?
+        var isSaveCompleted = false
     }
 
-    init(folderRepository: FolderRepositoryType = FolderRepository()) {
+    init(
+        folderRepository: CookingFolderRepositoryType = CookingFolderRepository(),
+        myCookingRepository: MyCookingRepositoryType = MyCookingRepository(),
+        editingCookingId: String? = nil  // ⭐ 요리 ID 전달 여부로 분기
+    ) {
         self.folderRepository = folderRepository
+        self.myCookingRepository = myCookingRepository
 
-        let defaultSelected = folderRepository.getSelectedFolder() ?? folderRepository.getDefaultFolder()
-        self.initialState = State(selectedFolder: defaultSelected)
+        // 편집 중인 요리라면 → 해당 요리가 속한 폴더를 조회
+        if let cookingId = editingCookingId,
+           let cookingObject = myCookingRepository.fetchById(cookingId),
+           let folderObject = cookingObject.folder.first {
+            let selected = folderObject.toEntity()
+            self.initialState = State(selectedFolder: selected)
+        } else {
+            // 새 요리 생성 → 기본 폴더 선택
+            let defaultFolder = folderRepository.getDefaultFolder()
+            self.initialState = State(selectedFolder: defaultFolder)
+        }
     }
 
     func mutate(action: Action) -> Observable<Mutation> {
@@ -56,6 +75,19 @@ final class AddCookingReactor: Reactor {
             return .just(.setRoute(.none))
         case .setSelectedFolder(let folder):
             return .just(.setSelectedFolder(folder))
+        case .saveCooking(name: let name, memo: let memo, rating: let rating, imageURL: let imageURL, youtubeLink: let youtubeLink):
+            let entity = MyCookingEntity(
+                id: "",
+                name: name,
+                youtubeLink: youtubeLink,
+                imageFileURL: imageURL,
+                memo: memo,
+                rating: rating,
+                createdAt: Date(),
+                folderId: currentState.selectedFolder?.id
+            )
+            myCookingRepository.add(entity, toFolderId: currentState.selectedFolder?.id)
+            return .just(.setSaveCompleted(true))
         }
     }
 
@@ -68,6 +100,8 @@ final class AddCookingReactor: Reactor {
             newState.route = route
         case .setSelectedFolder(let folder):
             newState.selectedFolder = folder
+        case .setSaveCompleted(let value):
+            newState.isSaveCompleted = value
         }
         return newState
     }

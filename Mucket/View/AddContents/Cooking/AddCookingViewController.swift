@@ -10,7 +10,7 @@ import ReactorKit
 import RxCocoa
 
 final class AddCookingViewController: BaseViewController {
-    private let addCookingView = AddCookingView()
+    let addCookingView = AddCookingView()
     var disposeBag = DisposeBag()
     let imagePicker = UIImagePickerController()
     private var didAppear = false
@@ -81,26 +81,41 @@ extension AddCookingViewController: View {
         reactor.state
             .map { $0.route }
             .distinctUntilChanged()
-            .observe(on: MainScheduler.asyncInstance)
-            .bind(with: self) { owner, route in
+            .filter { $0 != .none }
+            .subscribe(onNext: { [weak self] route in
+                guard let self = self else { return }
+                
                 switch route {
                 case .folder:
-                    let vc = SelectFolderViewController(reactor: SelectFolderReactor(repository: FolderRepository()))
-                    vc.onFolderSelected = { selected in
-                        owner.reactor?.action.onNext(.setSelectedFolder(selected))
+                    // 폴더 선택 화면으로 이동
+                    let folderRepo = CookingFolderRepository()
+                    let reactor = SelectFolderReactor(repository: folderRepo, selectedCookingId: nil)
+                    let folderVC = SelectFolderViewController(reactor: reactor)
+                    
+                    // 폴더 선택 콜백 설정
+                    folderVC.onFolderSelected = { [weak self] selectedFolder in
+                        guard let self = self else { return }
+                        self.reactor?.action.onNext(.setSelectedFolder(selectedFolder))
                     }
-                    owner.present(vc, animated: true)
-                    owner.reactor?.action.onNext(.clearRouting)
-                case .none:
+                    
+                    self.present(folderVC, animated: true) {
+                        // 라우팅 상태 초기화
+                        self.reactor?.action.onNext(.clearRouting)
+                    }
+                    
+                default:
                     break
                 }
-            }
+            })
             .disposed(by: disposeBag)
-
+        
         reactor.state
-            .map { $0.selectedFolder?.name ?? "기본 폴더" }
+            .map { $0.selectedFolder }
             .distinctUntilChanged()
-            .bind(to: addCookingView.folderSelectButton.rx.title(for: .normal))
+            .compactMap { $0 }
+            .bind(with: self) { owner, folder in
+                owner.addCookingView.folderSelectButton.setTitle(folder.name, for: .normal)
+            }
             .disposed(by: disposeBag)
     }
 }

@@ -8,39 +8,37 @@
 import Foundation
 import RealmSwift
 
-class FolderObject: Object {
+class CookingFolderObject: Object {
     @Persisted(primaryKey: true) var id: ObjectId
     @Persisted var name: String
     @Persisted var createdAt: Date = Date()
-    @Persisted var isSelected: Bool = false
+    
+    @Persisted var cookings: List<MyCookingObject>
 }
 
 // MARK: - Mapper
-struct FolderEntity: Equatable {
+struct CookingFolderEntity: Equatable {
     let id: String
     let name: String
     let createdAt: Date
-    let isSelected: Bool
 }
 
-extension FolderEntity {
-    func toRealmObject() -> FolderObject {
-        let object = FolderObject()
+extension CookingFolderEntity {
+    func toRealmObject() -> CookingFolderObject {
+        let object = CookingFolderObject()
         object.id = try! ObjectId(string: id)
         object.name = name
         object.createdAt = createdAt
-        object.isSelected = isSelected
         return object
     }
 }
 
-extension FolderObject {
-    func toEntity() -> FolderEntity {
-        return FolderEntity(
+extension CookingFolderObject {
+    func toEntity() -> CookingFolderEntity {
+        return CookingFolderEntity(
             id: self.id.stringValue,
             name: self.name,
-            createdAt: self.createdAt,
-            isSelected: self.isSelected
+            createdAt: self.createdAt
         )
     }
 }
