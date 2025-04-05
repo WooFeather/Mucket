@@ -60,6 +60,11 @@ final class CookingModificationViewController: BaseViewController {
             let youtubeLink = addCookingVC.addCookingView.linkTextField.text
             let selectedFolder = reactor.currentState.selectedFolder
             
+            if !isValidYoutubeLink(youtubeLink) {
+                showAlert(title: "링크 확인", message: "유효한 유튜브 링크만 입력할 수 있어요 :)", button: "확인") { }
+                return
+            }
+            
             let repository = MyCookingRepository()
             
             if let cookingObject = repository.fetchById(editingCookingId) {
@@ -144,5 +149,13 @@ final class CookingModificationViewController: BaseViewController {
         // 사용자 문서 디렉토리 경로 반환
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         return paths[0]
+    }
+    
+    private func isValidYoutubeLink(_ link: String?) -> Bool {
+        guard let link = link?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased(), !link.isEmpty else {
+            return true // 비어있으면 유효하다고 간주
+        }
+        
+        return link.contains("youtube.com") || link.contains("youtu.be")
     }
 }

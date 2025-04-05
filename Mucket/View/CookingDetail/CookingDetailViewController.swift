@@ -5,12 +5,14 @@
 //  Created by 조우현 on 3/31/25.
 //
 
+
 import UIKit
 import ReactorKit
 import RxCocoa
+import YouTubePlayerKit
 
 final class CookingDetailViewController: BaseViewController {
-    private let cookingView = CookingDetailView()
+    let cookingView = CookingDetailView()
     var disposeBag = DisposeBag()
     
     init(reactor: CookingDetailReactor) {
@@ -122,6 +124,19 @@ extension CookingDetailViewController: View {
             .distinctUntilChanged()
             .bind(with: self) { owner, rating in
                 owner.cookingView.ratingView.rating = rating ?? 0
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.cooking.youtubeLink }
+            .distinctUntilChanged()
+            .observe(on: MainScheduler.asyncInstance)
+            .bind(with: self) { owner, link in
+                let trimmedLink = link?.trimmingCharacters(in: .whitespaces).lowercased()
+                
+                if trimmedLink != "" {
+                    owner.showYouTubeVideo(urlString: link)
+                }
             }
             .disposed(by: disposeBag)
         

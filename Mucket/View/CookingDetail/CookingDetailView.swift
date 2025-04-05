@@ -13,7 +13,7 @@ final class CookingDetailView: BaseView {
     private let ratingHeaderLabel = UILabel()
     private let memoHeaderLabel = UILabel()
     private let videoHeaderLabel = UILabel()
-    private let emptyVideoBackground = UIView()
+    let emptyVideoBackground = UIView()
     private let emptyVideoLabel = UILabel()
     private lazy var memoView = BackgroundContentView(contentView: memoTextView)
     
@@ -25,14 +25,16 @@ final class CookingDetailView: BaseView {
     let thumbImageView = UIImageView() // TODO: pageControl 들어갈 예정
     let ratingView = CosmosView()
     let memoTextView = UITextView()
-    let videoView = UIView() // TODO: YoutubeView로 변경 예정
+    let emptyVideoView = UIView() // TODO: YoutubeView로 변경 예정
+    
+    let youtubePlayerContainerView = UIView()
     
     private let contextMenuItems = ["수정하기", "삭제하기"]
     var didSelectEditMenu: (() -> Void)?
     var didSelectDeleteMenu: (() -> Void)?
     
     override func configureHierarchy() {
-        [navigationStackView, thumbImageView, ratingHeaderLabel, ratingView, memoHeaderLabel, memoView, videoHeaderLabel, videoView, emptyVideoBackground].forEach {
+        [navigationStackView, thumbImageView, ratingHeaderLabel, ratingView, memoHeaderLabel, memoView, videoHeaderLabel, emptyVideoView, emptyVideoBackground, youtubePlayerContainerView].forEach {
             addSubview($0)
         }
         
@@ -94,7 +96,13 @@ final class CookingDetailView: BaseView {
             $0.height.equalTo(18)
         }
 
-        videoView.snp.makeConstraints {
+        emptyVideoView.snp.makeConstraints {
+            $0.top.equalTo(videoHeaderLabel.snp.bottom).offset(8)
+            $0.leading.trailing.equalToSuperview().inset(16)
+            $0.height.equalTo(180)
+        }
+        
+        youtubePlayerContainerView.snp.makeConstraints {
             $0.top.equalTo(videoHeaderLabel.snp.bottom).offset(8)
             $0.leading.trailing.equalToSuperview().inset(16)
             $0.height.equalTo(180)
