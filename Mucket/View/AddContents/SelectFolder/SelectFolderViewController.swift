@@ -126,6 +126,9 @@ extension SelectFolderViewController: View {
             
             // 폴더 추가 액션 전달
             reactor.action.onNext(.addFolder(name: text))
+            
+            // 폴더 추가 알림 발송
+            NotificationCenter.default.post(name: NSNotification.Name("FolderListUpdated"), object: nil)
         }
         
         alert.addAction(cancelAction)

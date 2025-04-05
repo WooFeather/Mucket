@@ -70,7 +70,6 @@ final class CookingDetailView: BaseView {
             $0.centerY.equalTo(ratingHeaderLabel)
             $0.centerX.equalToSuperview()
             $0.height.equalTo(38)
-            $0.width.equalTo(200)
         }
 
         memoHeaderLabel.snp.makeConstraints {

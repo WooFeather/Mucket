@@ -39,6 +39,18 @@ final class CookingViewController: BaseViewController {
     
     override func configureData() {
         cookingView.myCookingCollectionView.register(CookingCollectionViewCell.self, forCellWithReuseIdentifier: CookingCollectionViewCell.id)
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(updateFolderMenu),
+            name: NSNotification.Name("FolderListUpdated"),
+            object: nil
+        )
+    }
+    
+    @objc private func updateFolderMenu() {
+        // 컨텍스트 메뉴 업데이트
+        cookingView.updateFolderMenu()
     }
 }
 
@@ -49,6 +61,10 @@ extension CookingViewController: View {
     }
     
     private func bindAction(_ reactor: CookingReactor) {
+        cookingView.didSelectFolder = { folderId in
+            reactor.action.onNext(.filterByFolder(folderId: folderId))
+        }
+        
         cookingView.myCookingCollectionView.rx.modelSelected(MyCookingEntity.self)
             .map { CookingReactor.Action.cookingCellTapped($0) }
             .bind(to: reactor.action)
@@ -57,7 +73,7 @@ extension CookingViewController: View {
     
     private func bindState(_ reactor: CookingReactor) {
         reactor.state
-            .map { $0.cookings }
+            .map { $0.filteredCookings }
             .distinctUntilChanged()
             .bind(to: cookingView.myCookingCollectionView.rx.items(cellIdentifier: CookingCollectionViewCell.id, cellType: CookingCollectionViewCell.self)) { row, entity, cell in
                 cell.configureData(entity: entity)
