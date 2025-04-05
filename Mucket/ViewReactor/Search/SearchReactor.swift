@@ -142,7 +142,7 @@ extension SearchReactor {
         return Observable.create { [weak self] observer in
             Task {
                 do {
-                    let result = try await self?.repository.search(startIndex: (page - 1) * 10 + 1, count: 20, byIngredient: query) ?? []
+                    let result = try await self?.repository.search(startIndex: (page - 1) * 10 + 1, count: 20, byName: query) ?? []
                     observer.onNext(result)
                     observer.onCompleted()
                 } catch {

@@ -19,8 +19,8 @@ final class MockRecipeRepository: RecipeRepositoryType {
         return mockData
     }
     
-    func search(startIndex: Int, count: Int, byIngredient ingredient: String) async throws -> [RecipeEntity] {
-        return mockData.filter { $0.ingredients.contains(ingredient) }
+    func search(startIndex: Int, count: Int, byName name: String) async throws -> [RecipeEntity] {
+        return mockData.filter { $0.name.contains(name) }
     }
     
     func fetchTheme(type: String) async throws -> [RecipeEntity] {
