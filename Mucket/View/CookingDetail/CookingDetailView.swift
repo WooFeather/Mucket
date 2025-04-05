@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import Cosmos
 
 final class CookingDetailView: BaseView {
     private let ratingHeaderLabel = UILabel()
@@ -22,7 +23,7 @@ final class CookingDetailView: BaseView {
     let editButton = UIButton()
     
     let thumbImageView = UIImageView() // TODO: pageControl 들어갈 예정
-    let ratingView = UIView() // TODO: CosmosView로 들어갈 예정
+    let ratingView = CosmosView()
     let memoTextView = UITextView()
     let videoView = UIView() // TODO: YoutubeView로 변경 예정
     
@@ -135,7 +136,7 @@ final class CookingDetailView: BaseView {
             $0.textColor = .textSecondary
         }
         
-        ratingView.backgroundColor = .lightGray
+        ratingView.settings.updateOnTouch = false
         
         emptyVideoBackground.backgroundColor = .backgroundSecondary
         emptyVideoBackground.layer.cornerRadius = 6

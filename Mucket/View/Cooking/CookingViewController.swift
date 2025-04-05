@@ -70,8 +70,8 @@ extension CookingViewController: View {
             .observe(on: MainScheduler.asyncInstance)
             .bind(with: self) { owner, route in
                 switch route {
-                case .detail(cooking: let cooking):
-                    let vc = CookingDetailViewController(reactor: CookingDetailReactor())
+                case .detail(let cooking):
+                    let vc = CookingDetailViewController(reactor: CookingDetailReactor(cooking: cooking, repository: MyCookingRepository()))
                     vc.hidesBottomBarWhenPushed = true
                     owner.navigationController?.pushViewController(vc, animated: true)
                     owner.reactor?.action.onNext(.clearRouting)
