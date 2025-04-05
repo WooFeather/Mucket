@@ -84,10 +84,10 @@ extension CookingDetailViewController: View {
             .map { $0.cooking.imageFileURL }
             .distinctUntilChanged()
             .bind(with: self) { owner, urlString in
-                let savedImage = UIImage(contentsOfFile: urlString ?? "")
-                if savedImage == nil {
-                    print("이미지를 로드할 수 없습니다.")
-                }
+                
+                let filePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(urlString ?? "")
+                let savedImage = UIImage(contentsOfFile: filePath.path)
+                
                 owner.cookingView.thumbImageView.image = savedImage ?? .placeholderSmall
             }
             .disposed(by: disposeBag)

@@ -54,10 +54,13 @@ final class CookingCollectionViewCell: BaseCollectionViewCell, ReusableIdentifie
     }
     
     func configureData(entity: MyCookingEntity) {
-        if let url = entity.imageFileURL {
-            let savedImage = UIImage(contentsOfFile: url)
+        if let fileName = entity.imageFileURL {
+            // 파일명으로부터 전체 경로 생성
+            let filePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(fileName)
+            let savedImage = UIImage(contentsOfFile: filePath.path)
+            
             if savedImage == nil {
-                print("이미지를 로드할 수 없습니다.")
+                print("이미지를 로드할 수 없습니다: \(filePath)")
             }
             thumbImageView.image = savedImage ?? .placeholderSmall
         } else {

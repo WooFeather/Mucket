@@ -61,7 +61,7 @@ extension TabBarController: UITabBarControllerDelegate {
 
     private func presentAddRecipeModal() {
         let addRecipeVC = AddContentsViewController()
-        addRecipeVC.modalPresentationStyle = .pageSheet
+        addRecipeVC.modalPresentationStyle = .fullScreen
         present(addRecipeVC, animated: true)
     }
 }

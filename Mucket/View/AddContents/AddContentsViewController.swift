@@ -43,11 +43,16 @@ final class AddContentsViewController: BaseViewController {
     override func configureAction() {
         addContentsView.segmentedControl.addTarget(self, action: #selector(changeValue), for: .valueChanged)
         addContentsView.saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
+        addContentsView.cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
     }
     
     // MARK: - Actions
     @objc private func changeValue(control: UISegmentedControl) {
         self.currentPage = control.selectedSegmentIndex
+    }
+    
+    @objc private func cancelButtonTapped() {
+        dismiss(animated: true)
     }
     
     @objc private func saveButtonTapped() {
@@ -75,19 +80,17 @@ final class AddContentsViewController: BaseViewController {
     }
     
     private func saveImageToDocumentsDirectory(image: UIImage) -> String? {
-        // 이미지 데이터를 PNG 형식으로 변환
         guard let imageData = image.pngData() else {
             return nil
         }
         
-        // 파일 경로 설정
-        let fileName = UUID().uuidString + ".png" // 고유한 파일 이름 생성
+        // 파일명만 생성
+        let fileName = UUID().uuidString + ".png"
         let filePath = getDocumentsDirectory().appendingPathComponent(fileName)
         
-        // 파일 시스템에 이미지 저장
         do {
             try imageData.write(to: filePath)
-            return filePath.path // 저장된 파일 경로 반환
+            return fileName // 파일명만 반환
         } catch {
             print("이미지 저장 실패: \(error)")
             return nil
