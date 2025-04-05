@@ -51,6 +51,7 @@ final class CookingCollectionViewCell: BaseCollectionViewCell, ReusableIdentifie
         nameLabel.textColor = .textSecondary
         
         ratingView.settings.updateOnTouch = false
+        ratingView.settings.fillMode = .half
     }
     
     func configureData(entity: MyCookingEntity) {
