@@ -39,17 +39,19 @@ final class DetailTableViewCell: BaseTableViewCell, ReusableIdentifier {
     }
     
     override func configureView() {
-        thumbImageView.backgroundColor = .backgroundSecondary
+        thumbImageView.backgroundColor = .themeSecondary
         thumbImageView.image = .placeholderSmall
         thumbImageView.layer.cornerRadius = 6
         thumbImageView.clipsToBounds = true
         thumbImageView.contentMode = .scaleAspectFill
         
-        descriptionContainer.backgroundColor = .backgroundSecondary
+        descriptionContainer.backgroundColor = .backgroundPrimary
+        descriptionContainer.layer.borderColor = UIColor.themePrimary.cgColor
+        descriptionContainer.layer.borderWidth = 1
         descriptionContainer.layer.cornerRadius = 6
         descriptionContainer.clipsToBounds = true
         
-        descriptionLabel.font = .Body.body2
+        descriptionLabel.font = .Body.body4
         descriptionLabel.backgroundColor = .clear
         descriptionLabel.textColor = .textPrimary
         descriptionLabel.numberOfLines = 0

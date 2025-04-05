@@ -1,16 +1,16 @@
 //
-//  BackgroundContentView.swift
+//  ColorBackgroundContentView.swift
 //  Mucket
 //
-//  Created by 조우현 on 4/1/25.
+//  Created by 조우현 on 4/6/25.
 //
 
 import UIKit
 import SnapKit
 
-final class BackgroundContentView: BaseView {
+final class ColorBackgroundContentView: BaseView {
 
-    let backgroundView = UIView()
+    let backgroundView = UIImageView()
     let contentView: UIView
 
     init(contentView: UIView) {
@@ -33,10 +33,10 @@ final class BackgroundContentView: BaseView {
     }
 
     override func configureView() {
-        backgroundView.backgroundColor = .backgroundPrimary
-        backgroundView.layer.borderColor = UIColor.themePrimary.cgColor
-        backgroundView.layer.borderWidth = 1
+        backgroundView.backgroundColor = .clear
+        backgroundView.image = .speechBubble
+        backgroundView.contentMode = .scaleAspectFit
+        backgroundView.isUserInteractionEnabled = true
         backgroundView.layer.cornerRadius = 6
     }
 }
-

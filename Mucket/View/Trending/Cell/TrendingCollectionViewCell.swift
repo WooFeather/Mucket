@@ -32,7 +32,7 @@ final class TrendingCollectionViewCell: BaseCollectionViewCell, ReusableIdentifi
     }
     
     override func configureView() {
-        thumbImageView.backgroundColor = .backgroundSecondary
+        thumbImageView.backgroundColor = .themeSecondary
         thumbImageView.layer.cornerRadius = 6
         thumbImageView.contentMode = .scaleAspectFill
         thumbImageView.clipsToBounds = true

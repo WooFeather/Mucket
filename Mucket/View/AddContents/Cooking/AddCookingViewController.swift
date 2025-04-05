@@ -133,6 +133,7 @@ extension AddCookingViewController: View {
                 let filePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(imageURL)
                 let savedImage = UIImage(contentsOfFile: filePath.path)
                 
+                
                 owner.addCookingView.previewPhotoView.image = savedImage ?? .placeholderSmall
             }
             .disposed(by: disposeBag)

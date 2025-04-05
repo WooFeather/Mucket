@@ -140,17 +140,16 @@ final class AddCookingView: BaseView {
             $0.textColor = .textPrimary
         }
         
-        addPhotoButton.backgroundColor = .backgroundSecondary
+        addPhotoButton.backgroundColor = .themeSecondary
         addPhotoButton.layer.cornerRadius = 6
         addPhotoButton.setImage(.plus, for: .normal)
         addPhotoButton.tintColor = .textPrimary
         
         previewPhotoView.layer.cornerRadius = 6
-        previewPhotoView.backgroundColor = .lightGray
+        previewPhotoView.backgroundColor = .backgroundPrimary
         previewPhotoView.clipsToBounds = true
         previewPhotoView.contentMode = .scaleAspectFill
         previewPhotoView.tintColor = .textPrimary
-        // previewPhotoView.isHidden = true 사진을 선택하면 true로 바꿔줌
         
         memoTextView.backgroundColor = .clear
         memoTextView.font = .Body.body4

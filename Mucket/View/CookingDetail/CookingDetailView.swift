@@ -15,7 +15,7 @@ final class CookingDetailView: BaseView {
     private let videoHeaderLabel = UILabel()
     let emptyVideoBackground = UIView()
     private let emptyVideoLabel = UILabel()
-    private lazy var memoView = BackgroundContentView(contentView: memoTextView)
+    private lazy var memoView = ColorBackgroundContentView(contentView: memoTextView)
     
     private let navigationStackView = UIStackView()
     let backButton = UIButton()
@@ -156,7 +156,7 @@ final class CookingDetailView: BaseView {
         ratingView.settings.fillMode = .half
         ratingView.settings.starMargin = 5
         
-        emptyVideoBackground.backgroundColor = .backgroundSecondary
+        emptyVideoBackground.backgroundColor = .themeSecondary
         emptyVideoBackground.layer.cornerRadius = 6
         
         emptyVideoLabel.text = """

@@ -48,7 +48,7 @@ final class SearchTableViewCell: BaseTableViewCell, ReusableIdentifier {
     }
     
     override func configureView() {
-        thumbImageView.backgroundColor = .backgroundSecondary
+        thumbImageView.backgroundColor = .themeSecondary
         thumbImageView.image = .placeholderSmall
         thumbImageView.layer.cornerRadius = 6
         thumbImageView.clipsToBounds = true

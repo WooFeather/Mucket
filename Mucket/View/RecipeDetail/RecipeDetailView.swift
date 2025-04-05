@@ -22,7 +22,7 @@ final class RecipeDetailView: BaseView {
     let naviTitleLabel = UILabel()
     let bookmarkButton = UIButton()
     
-    lazy var ingredientView = BackgroundContentView(contentView: ingredientTextView)
+    lazy var ingredientView = ColorBackgroundContentView(contentView: ingredientTextView)
     let ingredientTextView = UITextView()
     let thumbImageView = UIImageView()
     
@@ -157,7 +157,7 @@ final class RecipeDetailView: BaseView {
         ingredientTextView.textColor = .textPrimary
         ingredientTextView.backgroundColor = .clear
         
-        makingTableView.backgroundColor = UIColor.themeSecondary.withAlphaComponent(0.5)
+        makingTableView.backgroundColor = .clear
         makingTableView.isScrollEnabled = true
         makingTableView.separatorStyle = .none
         makingTableView.rowHeight = UITableView.automaticDimension

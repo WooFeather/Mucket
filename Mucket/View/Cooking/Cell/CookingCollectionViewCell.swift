@@ -40,7 +40,7 @@ final class CookingCollectionViewCell: BaseCollectionViewCell, ReusableIdentifie
     }
     
     override func configureView() {
-        thumbImageView.backgroundColor = .backgroundSecondary
+        thumbImageView.backgroundColor = .themeSecondary
         thumbImageView.layer.cornerRadius = 6
         thumbImageView.image = .placeholderSmall
         thumbImageView.contentMode = .scaleAspectFill
