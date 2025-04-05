@@ -9,56 +9,64 @@ import ReactorKit
 
 final class SelectFolderReactor: Reactor {
     private let repository: FolderRepositoryType
+    private let selectedCookingId: String?
     var initialState: State
 
     enum Action {
         case viewWillAppear
         case setSelectedFolder(folderId: String)
+        case addFolder(name: String)
     }
 
     enum Mutation {
-        case setFolderList([FolderEntity], selectedFolder: FolderEntity)
-        case updateSelectedFolderAndList([FolderEntity], FolderEntity)
+        case setFolderList([FolderEntity], selectedFolderId: String?)
     }
 
     struct State {
         var folderList: [FolderEntity] = []
-        var selectedFolder: FolderEntity
+        var selectedFolderId: String?
     }
 
-    init(repository: FolderRepositoryType) {
+    init(repository: FolderRepositoryType, selectedCookingId: String?) {
         self.repository = repository
+        self.selectedCookingId = selectedCookingId
 
-        let current = repository.getSelectedFolder() ?? repository.getDefaultFolder()
+        // 초기 상태는 selectedCookingId로 폴더 찾아서 설정
+        let folderId: String? = {
+            guard let id = selectedCookingId,
+                  let cookingObject = repository.getCookingObject(by: id),
+                  let folder = cookingObject.folder.first else {
+                return repository.getDefaultFolder().id
+            }
+            return folder.id.stringValue
+        }()
+
         self.initialState = State(
             folderList: repository.fetchAll(),
-            selectedFolder: current
+            selectedFolderId: folderId
         )
     }
 
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .viewWillAppear:
-            let folders = repository.fetchAll()
-            let selected = repository.getSelectedFolder() ?? repository.getDefaultFolder()
-            return .just(.setFolderList(folders, selectedFolder: selected))
-        case .setSelectedFolder(let folderId):
-            repository.setSelectedFolder(folderId)
-            let updated = repository.getSelectedFolder() ?? repository.getDefaultFolder()
             let list = repository.fetchAll()
-            return .just(.updateSelectedFolderAndList(list, updated))
+            return .just(.setFolderList(list, selectedFolderId: currentState.selectedFolderId))
+        case .setSelectedFolder(let folderId):
+            return .just(.setFolderList(currentState.folderList, selectedFolderId: folderId))
+        case .addFolder(name: let name):
+            let newFolder = repository.add(name: name)
+            let updatedList = repository.fetchAll()
+            return .just(.setFolderList(updatedList, selectedFolderId: newFolder.id))
         }
     }
 
     func reduce(state: State, mutation: Mutation) -> State {
         var newState = state
         switch mutation {
-        case .setFolderList(let list, let selected):
-            newState.folderList = list
-            newState.selectedFolder = selected
-        case .updateSelectedFolderAndList(let list, let selected):
-            newState.folderList = list
-            newState.selectedFolder = selected
+        case let .setFolderList(folders, selectedId):
+            newState.folderList = folders
+            newState.selectedFolderId = selectedId
         }
         return newState
     }

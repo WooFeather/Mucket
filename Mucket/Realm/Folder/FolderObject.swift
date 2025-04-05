@@ -12,7 +12,6 @@ class FolderObject: Object {
     @Persisted(primaryKey: true) var id: ObjectId
     @Persisted var name: String
     @Persisted var createdAt: Date = Date()
-    @Persisted var isSelected: Bool = false
     
     @Persisted var cookings: List<MyCookingObject>
 }

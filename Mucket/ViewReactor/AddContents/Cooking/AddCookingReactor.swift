@@ -41,13 +41,25 @@ final class AddCookingReactor: Reactor {
         var isSaveCompleted = false
     }
 
-    init(folderRepository: FolderRepositoryType = FolderRepository(),
-         myCookingRepository: MyCookingRepositoryType = MyCookingRepository()) {
+    init(
+        folderRepository: FolderRepositoryType = FolderRepository(),
+        myCookingRepository: MyCookingRepositoryType = MyCookingRepository(),
+        editingCookingId: String? = nil  // ⭐ 요리 ID 전달 여부로 분기
+    ) {
         self.folderRepository = folderRepository
         self.myCookingRepository = myCookingRepository
 
-        let defaultSelected = folderRepository.getSelectedFolder() ?? folderRepository.getDefaultFolder()
-        self.initialState = State(selectedFolder: defaultSelected)
+        // 편집 중인 요리라면 → 해당 요리가 속한 폴더를 조회
+        if let cookingId = editingCookingId,
+           let cookingObject = myCookingRepository.fetchById(cookingId),
+           let folderObject = cookingObject.folder.first {
+            let selected = folderObject.toEntity()
+            self.initialState = State(selectedFolder: selected)
+        } else {
+            // 새 요리 생성 → 기본 폴더 선택
+            let defaultFolder = folderRepository.getDefaultFolder()
+            self.initialState = State(selectedFolder: defaultFolder)
+        }
     }
 
     func mutate(action: Action) -> Observable<Mutation> {

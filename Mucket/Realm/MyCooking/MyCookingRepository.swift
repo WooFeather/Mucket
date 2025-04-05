@@ -15,6 +15,7 @@ protocol MyCookingRepositoryType {
     func add(_ entity: MyCookingEntity, toFolderId folderId: String?)
     func update(_ entity: MyCookingEntity)
     func delete(id: String)
+    func fetchById(_ id: String) -> MyCookingObject?
 }
 
 final class MyCookingRepository: MyCookingRepositoryType {
@@ -122,5 +123,10 @@ final class MyCookingRepository: MyCookingRepositoryType {
         } catch {
             print("이미지 삭제 실패: \(error.localizedDescription)")
         }
+    }
+    
+    func fetchById(_ id: String) -> MyCookingObject? {
+        guard let objectId = try? ObjectId(string: id) else { return nil }
+        return realm.object(ofType: MyCookingObject.self, forPrimaryKey: objectId)
     }
 }
