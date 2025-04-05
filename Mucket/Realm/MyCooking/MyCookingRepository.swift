@@ -99,8 +99,28 @@ final class MyCookingRepository: MyCookingRepositoryType {
             return
         }
         
+        if let imagePath = cooking.imageFileURL {
+            removeImageFromDocumentsDirectory(path: imagePath)
+        }
+        
         try? realm.write {
             realm.delete(cooking)
+        }
+    }
+    
+    private func removeImageFromDocumentsDirectory(path: String) {
+        let fileManager = FileManager.default
+        let fileURL = URL(fileURLWithPath: path)
+        
+        do {
+            if fileManager.fileExists(atPath: path) {
+                try fileManager.removeItem(at: fileURL)
+                print("이미지 삭제 성공: \(path)")
+            } else {
+                print("삭제할 이미지가 존재하지 않습니다: \(path)")
+            }
+        } catch {
+            print("이미지 삭제 실패: \(error.localizedDescription)")
         }
     }
 }

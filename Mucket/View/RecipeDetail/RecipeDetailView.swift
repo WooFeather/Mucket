@@ -59,6 +59,10 @@ final class RecipeDetailView: BaseView {
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(40)
         }
+        
+        naviTitleLabel.snp.makeConstraints { make in
+            make.width.equalTo(200)
+        }
 
         scrollView.snp.makeConstraints { make in
             make.top.equalTo(navigationStackView.snp.bottom)
@@ -123,6 +127,7 @@ final class RecipeDetailView: BaseView {
         
         naviTitleLabel.font = .Head.head4
         naviTitleLabel.textColor = .textPrimary
+        naviTitleLabel.textAlignment = .center
         
         bookmarkButton.setImage(.bookmark, for: .normal)
         bookmarkButton.tintColor = .textPrimary

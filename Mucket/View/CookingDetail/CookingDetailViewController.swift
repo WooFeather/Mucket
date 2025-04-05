@@ -44,6 +44,15 @@ extension CookingDetailViewController: View {
             .map { CookingDetailReactor.Action.backButtonTapped }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
+        
+        cookingView.didSelectEditMenu = {
+            let cooking = reactor.currentState.cooking
+            reactor.action.onNext(.editButtonTapped(cooking))
+        }
+        
+        cookingView.didSelectDeleteMenu = {
+            reactor.action.onNext(.deleteButtonTapped)
+        }
     }
     
     private func bindState(_ reactor: CookingDetailReactor) {
@@ -94,6 +103,19 @@ extension CookingDetailViewController: View {
             .distinctUntilChanged()
             .bind(with: self) { owner, rating in
                 owner.cookingView.ratingView.rating = rating ?? 0
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.showDeleteAlert }
+            .distinctUntilChanged()
+            .filter { $0 }
+            .observe(on: MainScheduler.asyncInstance)
+            .bind(with: self) { owner, _ in
+                owner.showAlert(title: "삭제하기", message: "이 요리를 삭제하시겠습니까?", button: "삭제", isCancelButton: true) {
+                    owner.reactor?.action.onNext(.confirmDeleteTapped)
+                }
+                owner.reactor?.action.onNext(.clearShowAlert)
             }
             .disposed(by: disposeBag)
     }
