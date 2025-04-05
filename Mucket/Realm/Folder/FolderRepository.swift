@@ -16,6 +16,7 @@ protocol FolderRepositoryType {
     func getDefaultFolder() -> FolderEntity
     func setSelectedFolder(_ folderId: String)
     func getSelectedFolder() -> FolderEntity?
+    func getMyCookings(inFolderId: String) -> [MyCookingEntity]
 }
 
 final class FolderRepository: FolderRepositoryType {
@@ -80,5 +81,14 @@ final class FolderRepository: FolderRepositoryType {
         } else {
             return nil
         }
+    }
+    
+    func getMyCookings(inFolderId: String) -> [MyCookingEntity] {
+        guard let objectId = try? ObjectId(string: inFolderId),
+              let folder = realm.object(ofType: FolderObject.self, forPrimaryKey: objectId) else {
+            return []
+        }
+        
+        return folder.cookings.map { $0.toEntity() }
     }
 }

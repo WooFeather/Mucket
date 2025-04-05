@@ -22,14 +22,23 @@ final class CookingViewController: BaseViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        guard let reactor = self.reactor else { return }
+        
+        Observable.just(())
+            .map { CookingReactor.Action.fetchCookings }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+    }
+    
     override func loadView() {
         view = cookingView
     }
     
     override func configureData() {
         cookingView.myCookingCollectionView.register(CookingCollectionViewCell.self, forCellWithReuseIdentifier: CookingCollectionViewCell.id)
-        cookingView.myCookingCollectionView.delegate = self
-        cookingView.myCookingCollectionView.dataSource = self
     }
 }
 
@@ -40,23 +49,36 @@ extension CookingViewController: View {
     }
     
     private func bindAction(_ reactor: CookingReactor) {
-        
+        cookingView.myCookingCollectionView.rx.modelSelected(MyCookingEntity.self)
+            .map { CookingReactor.Action.cookingCellTapped($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     }
     
     private func bindState(_ reactor: CookingReactor) {
+        reactor.state
+            .map { $0.cookings }
+            .distinctUntilChanged()
+            .bind(to: cookingView.myCookingCollectionView.rx.items(cellIdentifier: CookingCollectionViewCell.id, cellType: CookingCollectionViewCell.self)) { row, entity, cell in
+                cell.configureData(entity: entity)
+            }
+            .disposed(by: disposeBag)
         
-    }
-}
-
-// TODO: Rx로 구현
-extension CookingViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 20
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CookingCollectionViewCell.id, for: indexPath) as? CookingCollectionViewCell else { return UICollectionViewCell() }
-        
-        return cell
+        reactor.state
+            .map { $0.route }
+            .distinctUntilChanged()
+            .observe(on: MainScheduler.asyncInstance)
+            .bind(with: self) { owner, route in
+                switch route {
+                case .detail(cooking: let cooking):
+                    let vc = CookingDetailViewController(reactor: CookingDetailReactor())
+                    vc.hidesBottomBarWhenPushed = true
+                    owner.navigationController?.pushViewController(vc, animated: true)
+                    owner.reactor?.action.onNext(.clearRouting)
+                case .none:
+                    break
+                }
+            }
+            .disposed(by: disposeBag)
     }
 }

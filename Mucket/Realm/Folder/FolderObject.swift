@@ -13,6 +13,8 @@ class FolderObject: Object {
     @Persisted var name: String
     @Persisted var createdAt: Date = Date()
     @Persisted var isSelected: Bool = false
+    
+    @Persisted var cookings: List<MyCookingObject>
 }
 
 // MARK: - Mapper
@@ -20,7 +22,6 @@ struct FolderEntity: Equatable {
     let id: String
     let name: String
     let createdAt: Date
-    let isSelected: Bool
 }
 
 extension FolderEntity {
@@ -29,7 +30,6 @@ extension FolderEntity {
         object.id = try! ObjectId(string: id)
         object.name = name
         object.createdAt = createdAt
-        object.isSelected = isSelected
         return object
     }
 }
@@ -39,8 +39,7 @@ extension FolderObject {
         return FolderEntity(
             id: self.id.stringValue,
             name: self.name,
-            createdAt: self.createdAt,
-            isSelected: self.isSelected
+            createdAt: self.createdAt
         )
     }
 }
