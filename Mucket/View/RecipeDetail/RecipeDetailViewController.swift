@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 import ReactorKit
 import RxCocoa
+import Toast
 
 final class RecipeDetailViewController: BaseViewController {
     
@@ -47,10 +48,20 @@ extension RecipeDetailViewController: View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        // TODO: 토스트 띄우기
         recipeDetailView.bookmarkButton.rx.tap
             .map { RecipeDetailReactor.Action.bookmarkButtonTapped }
             .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        recipeDetailView.bookmarkButton.rx.tap
+            .withLatestFrom(reactor.state.map(\.isBookmarked))
+            .bind(with: self) { owner, isBookmarked in
+                let message = isBookmarked ? "북마크에 추가되었습니다" : "북마크에서 삭제되었습니다"
+                if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                   let window = scene.windows.first(where: { $0.isKeyWindow }) {
+                    window.makeToast(message)
+                }
+            }
             .disposed(by: disposeBag)
     }
     

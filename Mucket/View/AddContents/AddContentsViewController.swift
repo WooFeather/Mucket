@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Toast
 
 final class AddContentsViewController: BaseViewController {
     private let addContentsView = AddContentsView()
@@ -82,6 +83,11 @@ final class AddContentsViewController: BaseViewController {
                 imageURL: imageURL,
                 youtubeLink: youtubeLink
             ))
+            
+            if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = scene.windows.first(where: { $0.isKeyWindow }) {
+                window.makeToast("요리가 저장되었습니다")
+            }
             
             self.dismiss(animated: true)
         } else {

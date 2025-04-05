@@ -20,6 +20,7 @@
 		798E37F12D97D2AC00EDCF49 /* RxGesture in Frameworks */ = {isa = PBXBuildFile; productRef = 798E37F02D97D2AC00EDCF49 /* RxGesture */; };
 		798E38A32D9A941800EDCF49 /* KakaoMapsSDK-SPM in Frameworks */ = {isa = PBXBuildFile; productRef = 798E38A22D9A941800EDCF49 /* KakaoMapsSDK-SPM */; };
 		79CD41DC2DA17480000189F3 /* YouTubePlayerKit in Frameworks */ = {isa = PBXBuildFile; productRef = 79CD41DB2DA17480000189F3 /* YouTubePlayerKit */; };
+		79CD41E52DA1B094000189F3 /* Toast in Frameworks */ = {isa = PBXBuildFile; productRef = 79CD41E42DA1B094000189F3 /* Toast */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -67,6 +68,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79CD41E52DA1B094000189F3 /* Toast in Frameworks */,
 				798E36C62D97A82200EDCF49 /* RxSwift in Frameworks */,
 				798E36CC2D97A93C00EDCF49 /* Differentiator in Frameworks */,
 				798E37F12D97D2AC00EDCF49 /* RxGesture in Frameworks */,
@@ -133,6 +135,7 @@
 				798A4E7F2D9DAEA90017FF22 /* Cosmos */,
 				798A4E822D9DAEE30017FF22 /* RealmSwift */,
 				79CD41DB2DA17480000189F3 /* YouTubePlayerKit */,
+				79CD41E42DA1B094000189F3 /* Toast */,
 			);
 			productName = Mucket;
 			productReference = 798E36042D96F51600EDCF49 /* Mucket.app */;
@@ -172,6 +175,7 @@
 				798A4E7E2D9DAEA90017FF22 /* XCRemoteSwiftPackageReference "Cosmos" */,
 				798A4E812D9DAEE30017FF22 /* XCRemoteSwiftPackageReference "realm-swift" */,
 				79CD41DA2DA17480000189F3 /* XCRemoteSwiftPackageReference "YouTubePlayerKit" */,
+				79CD41E32DA1B094000189F3 /* XCRemoteSwiftPackageReference "Toast-Swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 798E36052D96F51600EDCF49 /* Products */;
@@ -486,6 +490,14 @@
 				minimumVersion = 2.0.0;
 			};
 		};
+		79CD41E32DA1B094000189F3 /* XCRemoteSwiftPackageReference "Toast-Swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/scalessec/Toast-Swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.1.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -543,6 +555,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 79CD41DA2DA17480000189F3 /* XCRemoteSwiftPackageReference "YouTubePlayerKit" */;
 			productName = YouTubePlayerKit;
+		};
+		79CD41E42DA1B094000189F3 /* Toast */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 79CD41E32DA1B094000189F3 /* XCRemoteSwiftPackageReference "Toast-Swift" */;
+			productName = Toast;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
