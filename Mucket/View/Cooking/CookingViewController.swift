@@ -38,6 +38,8 @@ final class CookingViewController: BaseViewController {
     }
     
     override func configureData() {
+        configureAddButton() // TODO: 2차릴리즈 삭제 예정
+        
         cookingView.myCookingCollectionView.register(CookingCollectionViewCell.self, forCellWithReuseIdentifier: CookingCollectionViewCell.id)
         
         NotificationCenter.default.addObserver(
@@ -110,5 +112,18 @@ extension CookingViewController: View {
                 }
             }
             .disposed(by: disposeBag)
+    }
+}
+
+extension CookingViewController {
+    func configureAddButton() {
+        cookingView.addCookingButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc
+    private func addButtonTapped() {
+        let addRecipeVC = AddContentsViewController()
+        addRecipeVC.modalPresentationStyle = .fullScreen
+        present(addRecipeVC, animated: true)
     }
 }

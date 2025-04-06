@@ -30,22 +30,10 @@
                                     <constraint firstAttribute="width" constant="150" id="wXF-sF-HIX"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="집밥, 맛집 기록을 한번에!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k5F-dY-TVb">
-                                <rect key="frame" x="96.666666666666686" y="292" width="200" height="22"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="200" id="SKS-oH-q9l"/>
-                                    <constraint firstAttribute="height" constant="22" id="XoW-Wy-Yd7"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="AppleSDGothicNeo-Bold" family="Apple SD Gothic Neo" pointSize="18"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" red="0.93725490196078431" green="0.72156862745098038" blue="0.3529411764705882" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
-                            <constraint firstItem="fZl-uP-jk4" firstAttribute="top" secondItem="k5F-dY-TVb" secondAttribute="bottom" constant="12" id="AJ9-fL-pEP"/>
-                            <constraint firstItem="k5F-dY-TVb" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="FkK-0Q-lpd"/>
                             <constraint firstItem="mQa-k7-aRu" firstAttribute="top" secondItem="fZl-uP-jk4" secondAttribute="bottom" constant="12" id="INh-GJ-Pox"/>
                             <constraint firstItem="fZl-uP-jk4" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="J25-Mo-DaM"/>
                             <constraint firstItem="fZl-uP-jk4" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="QUl-Cc-ViJ"/>
