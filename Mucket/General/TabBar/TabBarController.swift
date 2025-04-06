@@ -12,7 +12,7 @@ final class TabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        delegate = self
+//        delegate = self
         configureTabBarController()
         setupTabBarAppearance()
     }
@@ -36,7 +36,9 @@ final class TabBarController: UITabBarController {
         let restaurantMapNav = UINavigationController(rootViewController: restaurantMapVC)
         let bookmarkNav = UINavigationController(rootViewController: bookmarkVC)
         
-        setViewControllers([trendingNav, cookingNav, placeholderNav, restaurantMapNav, bookmarkNav], animated: true)
+        // TODO: 2차릴리즈에서 수정
+        // setViewControllers([trendingNav, cookingNav, placeholderNav, restaurantMapNav, bookmarkNav], animated: true)
+        setViewControllers([trendingNav, cookingNav, bookmarkNav], animated: true)
     }
     
     private func setupTabBarAppearance() {
@@ -48,20 +50,20 @@ final class TabBarController: UITabBarController {
     }
 }
 
-extension TabBarController: UITabBarControllerDelegate {
-    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-        if let viewControllers = self.viewControllers,
-           let index = viewControllers.firstIndex(of: viewController),
-           index == 2 {
-            presentAddRecipeModal()
-            return false
-        }
-        return true
-    }
-
-    private func presentAddRecipeModal() {
-        let addRecipeVC = AddContentsViewController()
-        addRecipeVC.modalPresentationStyle = .fullScreen
-        present(addRecipeVC, animated: true)
-    }
-}
+//extension TabBarController: UITabBarControllerDelegate {
+//    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+//        if let viewControllers = self.viewControllers,
+//           let index = viewControllers.firstIndex(of: viewController),
+//           index == 2 {
+//            presentAddRecipeModal()
+//            return false
+//        }
+//        return true
+//    }
+//
+//    private func presentAddRecipeModal() {
+//        let addRecipeVC = AddContentsViewController()
+//        addRecipeVC.modalPresentationStyle = .fullScreen
+//        present(addRecipeVC, animated: true)
+//    }
+//}

@@ -11,9 +11,14 @@ import Toast
 final class AddContentsViewController: BaseViewController {
     private let addContentsView = AddContentsView()
     
+    // TODO: 2차 릴리즈에서 제거 예정
+//    private lazy var dataViewControllers: [UIViewController] = [
+//        AddCookingViewController(reactor: AddCookingReactor()),
+//        AddRestaurantViewController(reactor: AddRestaurantReactor())
+//    ]
+    
     private lazy var dataViewControllers: [UIViewController] = [
-        AddCookingViewController(reactor: AddCookingReactor()),
-        AddRestaurantViewController(reactor: AddRestaurantReactor())
+        AddCookingViewController(reactor: AddCookingReactor())
     ]
     
     private var currentPage: Int = 0 {
@@ -22,7 +27,7 @@ final class AddContentsViewController: BaseViewController {
             
             let direction: UIPageViewController.NavigationDirection = oldValue <= currentPage ? .forward : .reverse
             addContentsView.pageViewController.setViewControllers([dataViewControllers[currentPage]], direction: direction, animated: true)
-            addContentsView.segmentedControl.selectedSegmentIndex = currentPage
+//            addContentsView.segmentedControl.selectedSegmentIndex = currentPage
         }
     }
     
@@ -36,21 +41,21 @@ final class AddContentsViewController: BaseViewController {
     }
     
     override func configureData() {
-        addContentsView.pageViewController.delegate = self
+//        addContentsView.pageViewController.delegate = self
         addContentsView.pageViewController.setViewControllers([self.dataViewControllers[0]], direction: .forward, animated: true)
-        addContentsView.segmentedControl.selectedSegmentIndex = 0
+//        addContentsView.segmentedControl.selectedSegmentIndex = 0
     }
     
     override func configureAction() {
-        addContentsView.segmentedControl.addTarget(self, action: #selector(changeValue), for: .valueChanged)
+//        addContentsView.segmentedControl.addTarget(self, action: #selector(changeValue), for: .valueChanged)
         addContentsView.saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
         addContentsView.cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
     }
     
     // MARK: - Actions
-    @objc private func changeValue(control: UISegmentedControl) {
-        self.currentPage = control.selectedSegmentIndex
-    }
+//    @objc private func changeValue(control: UISegmentedControl) {
+//        self.currentPage = control.selectedSegmentIndex
+//    }
     
     @objc private func cancelButtonTapped() {
         dismiss(animated: true)
@@ -129,12 +134,12 @@ final class AddContentsViewController: BaseViewController {
 }
 
 // MARK: - PageViewController
-extension AddContentsViewController: UIPageViewControllerDelegate {
-    func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
-        guard let viewController = pageViewController.viewControllers?[0],
-              let index = self.dataViewControllers.firstIndex(of: viewController) else { return }
-        
-        self.currentPage = index
-        addContentsView.segmentedControl.selectedSegmentIndex = index
-    }
-}
+//extension AddContentsViewController: UIPageViewControllerDelegate {
+//    func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+//        guard let viewController = pageViewController.viewControllers?[0],
+//              let index = self.dataViewControllers.firstIndex(of: viewController) else { return }
+//        
+//        self.currentPage = index
+//        addContentsView.segmentedControl.selectedSegmentIndex = index
+//    }
+//}

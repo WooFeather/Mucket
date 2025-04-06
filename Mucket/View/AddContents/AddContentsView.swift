@@ -13,11 +13,11 @@ final class AddContentsView: BaseView {
     let cancelButton = UIButton()
     let saveButton = UIButton()
     
-    let segmentedControl = UnderlineSegmentedControl(items: ["요리 추가", "맛집 추가"])
+//    let segmentedControl = UnderlineSegmentedControl(items: ["요리 추가", "맛집 추가"])
     let pageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal)
     
     override func configureHierarchy() {
-        [navigationStackView, segmentedControl, pageViewController.view].forEach {
+        [navigationStackView, pageViewController.view].forEach {
             addSubview($0)
         }
         
@@ -33,14 +33,14 @@ final class AddContentsView: BaseView {
             make.height.equalTo(44)
         }
         
-        segmentedControl.snp.makeConstraints { make in
-            make.top.equalTo(navigationStackView.snp.bottom).offset(10)
-            make.leading.trailing.equalToSuperview().inset(16)
-            make.height.equalTo(36)
-        }
+//        segmentedControl.snp.makeConstraints { make in
+//            make.top.equalTo(navigationStackView.snp.bottom).offset(10)
+//            make.leading.trailing.equalToSuperview().inset(16)
+//            make.height.equalTo(36)
+//        }
         
         pageViewController.view.snp.makeConstraints { make in
-            make.top.equalTo(segmentedControl.snp.bottom).offset(10)
+            make.top.equalTo(navigationStackView.snp.bottom).offset(10)
             make.leading.trailing.bottom.equalToSuperview()
         }
     }
