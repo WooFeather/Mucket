@@ -17,6 +17,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
 //        SDKInitializer.InitSDK(appKey: APIKeys.kakaoAppKey)
         
+        sleep(2)
+        
         return true
     }
 
