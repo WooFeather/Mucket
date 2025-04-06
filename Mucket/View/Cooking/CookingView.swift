@@ -12,7 +12,6 @@ final class CookingView: BaseView {
     private let roundedBackgroundView = RoundedBackgroundView()
     private let myCookingHeader = UILabel()
     let filterButton = DropdownButton(title: "전체보기")
-    let addCookingButton = UIButton() // TODO: 2차릴리즈에서 제거
     let emptyStateView = EmptyStateView(message: "레시피 기록이 없습니다. +버튼을 눌러 추가해보세요.", isHidden: false)
     
     lazy var myCookingCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
@@ -25,7 +24,7 @@ final class CookingView: BaseView {
     override func configureHierarchy() {
         addSubview(roundedBackgroundView)
         
-        [myCookingHeader, filterButton, myCookingCollectionView, emptyStateView, addCookingButton].forEach {
+        [myCookingHeader, filterButton, myCookingCollectionView, emptyStateView].forEach {
             roundedBackgroundView.addSubview($0)
         }
     }
@@ -47,12 +46,6 @@ final class CookingView: BaseView {
             make.width.lessThanOrEqualTo(150)
         }
         
-        addCookingButton.snp.makeConstraints { make in
-            make.centerY.equalTo(myCookingHeader)
-            make.trailing.equalToSuperview().offset(-16)
-            make.size.equalTo(24)
-        }
-        
         myCookingCollectionView.snp.makeConstraints { make in
             make.top.equalTo(myCookingHeader.snp.bottom).offset(16)
             make.horizontalEdges.bottom.equalTo(safeAreaLayoutGuide)
@@ -69,9 +62,6 @@ final class CookingView: BaseView {
         myCookingHeader.text = "나의 요리"
         myCookingHeader.textColor = .textPrimary
         myCookingHeader.font = .Head.head2
-        
-        addCookingButton.setImage(.plusCircle, for: .normal)
-        addCookingButton.tintColor = .themePrimary
         
         myCookingCollectionView.backgroundColor = .backgroundPrimary
         emptyStateView.isHidden = true
