@@ -147,7 +147,7 @@ final class CookingDetailView: BaseView {
         navigationStackView.alignment = .center
         navigationStackView.distribution = .equalSpacing
 
-        scrollView.showsVerticalScrollIndicator = true
+        scrollView.showsVerticalScrollIndicator = false
         scrollView.alwaysBounceVertical = true
         
         backButton.setImage(.chevronLeft, for: .normal)
