@@ -8,17 +8,17 @@
 import Foundation
 import RealmSwift
 
-protocol RestaurantFolderRepositoryType {
+protocol PlaceFolderRepositoryType {
     func getFileURL()
-    func fetchAll() -> [RestaurantFolderEntity]
-    func add(name: String) -> RestaurantFolderEntity
+    func fetchAll() -> [PlaceFolderEntity]
+    func add(name: String) -> PlaceFolderEntity
     func delete(id: String)
-    func getDefaultFolder() -> RestaurantFolderEntity
-    func getRestaurantObject(by id: String) -> RestaurantObject?
-    func getRestaurants(inFolderId: String) -> [RestaurantEntity]
+    func getDefaultFolder() -> PlaceFolderEntity
+    func getRestaurantObject(by id: String) -> PlaceObject?
+    func getRestaurants(inFolderId: String) -> [PlaceEntity]
 }
 
-final class RestaurantFolderRepository: RestaurantFolderRepositoryType {
+final class PlaceFolderRepository: PlaceFolderRepositoryType {
     
     private let realm = try! Realm()
     
@@ -26,14 +26,14 @@ final class RestaurantFolderRepository: RestaurantFolderRepositoryType {
         print(realm.configuration.fileURL ?? "URL 찾을 수 없음")
     }
 
-    func fetchAll() -> [RestaurantFolderEntity] {
-        return realm.objects(RestaurantFolderObject.self)
+    func fetchAll() -> [PlaceFolderEntity] {
+        return realm.objects(PlaceFolderObject.self)
             .sorted(byKeyPath: "createdAt")
             .map { $0.toEntity() }
     }
 
-    func add(name: String) -> RestaurantFolderEntity {
-        let folder = RestaurantFolderObject()
+    func add(name: String) -> PlaceFolderEntity {
+        let folder = PlaceFolderObject()
         folder.name = name
         try? realm.write {
             realm.add(folder)
@@ -43,20 +43,20 @@ final class RestaurantFolderRepository: RestaurantFolderRepositoryType {
 
     func delete(id: String) {
         guard let objectId = try? ObjectId(string: id),
-              let folder = realm.object(ofType: RestaurantFolderObject.self, forPrimaryKey: objectId) else { return }
+              let folder = realm.object(ofType: PlaceFolderObject.self, forPrimaryKey: objectId) else { return }
 
         try? realm.write {
             realm.delete(folder)
         }
     }
 
-    func getDefaultFolder() -> RestaurantFolderEntity {
+    func getDefaultFolder() -> PlaceFolderEntity {
         // 기본 폴더가 없으면 생성하고, 있으면 반환
-        if let defaultFolder = realm.objects(RestaurantFolderObject.self).filter("name == %@", "기본 폴더").first {
+        if let defaultFolder = realm.objects(PlaceFolderObject.self).filter("name == %@", "기본 폴더").first {
             return defaultFolder.toEntity() // 기본 폴더 반환
         } else {
             // 기본 폴더가 없으면 생성해서 저장
-            let defaultFolder = RestaurantFolderObject()
+            let defaultFolder = PlaceFolderObject()
             defaultFolder.name = "기본 폴더"
             try? realm.write {
                 realm.add(defaultFolder)
@@ -65,17 +65,17 @@ final class RestaurantFolderRepository: RestaurantFolderRepositoryType {
         }
     }
     
-    func getRestaurantObject(by id: String) -> RestaurantObject? {
+    func getRestaurantObject(by id: String) -> PlaceObject? {
         guard let objId = try? ObjectId(string: id) else { return nil }
-        return realm.object(ofType: RestaurantObject.self, forPrimaryKey: objId)
+        return realm.object(ofType: PlaceObject.self, forPrimaryKey: objId)
     }
     
-    func getRestaurants(inFolderId: String) -> [RestaurantEntity] {
+    func getRestaurants(inFolderId: String) -> [PlaceEntity] {
         guard let objectId = try? ObjectId(string: inFolderId),
-              let folder = realm.object(ofType: RestaurantFolderObject.self, forPrimaryKey: objectId) else {
+              let folder = realm.object(ofType: PlaceFolderObject.self, forPrimaryKey: objectId) else {
             return []
         }
         
-        return folder.restaurants.map { $0.toEntity() }
+        return folder.places.map { $0.toEntity() }
     }
 }

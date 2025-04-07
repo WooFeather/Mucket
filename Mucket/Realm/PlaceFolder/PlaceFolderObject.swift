@@ -8,24 +8,24 @@
 import Foundation
 import RealmSwift
 
-final class RestaurantFolderObject: Object {
+final class PlaceFolderObject: Object {
     @Persisted(primaryKey: true) var id: ObjectId
     @Persisted var name: String
     @Persisted var createdAt: Date = Date()
     
-    @Persisted var restaurants: List<RestaurantObject>
+    @Persisted var places: List<PlaceObject>
 }
 
 // MARK: - Mapper
-struct RestaurantFolderEntity: Equatable {
+struct PlaceFolderEntity: Equatable {
     let id: String
     let name: String
     let createdAt: Date
 }
 
-extension RestaurantFolderEntity {
-    func toRealmObject() -> RestaurantFolderObject {
-        let object = RestaurantFolderObject()
+extension PlaceFolderEntity {
+    func toRealmObject() -> PlaceFolderObject {
+        let object = PlaceFolderObject()
         object.id = try! ObjectId(string: id)
         object.name = name
         object.createdAt = createdAt
@@ -33,9 +33,9 @@ extension RestaurantFolderEntity {
     }
 }
 
-extension RestaurantFolderObject {
-    func toEntity() -> RestaurantFolderEntity {
-        return RestaurantFolderEntity(
+extension PlaceFolderObject {
+    func toEntity() -> PlaceFolderEntity {
+        return PlaceFolderEntity(
             id: self.id.stringValue,
             name: self.name,
             createdAt: self.createdAt

@@ -8,6 +8,6 @@
 import UIKit
 import SnapKit
 
-final class RestaurantMapView: BaseView {
+final class PlaceView: BaseView {
     
 }
