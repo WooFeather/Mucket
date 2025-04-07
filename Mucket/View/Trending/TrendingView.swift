@@ -12,6 +12,8 @@ final class TrendingView: BaseView {
     private let logoImageView = UIImageView()
     private let titleImageView = UIImageView()
     private let roundedBackgroundView = RoundedBackgroundView()
+    private let contentScrollView = UIScrollView()
+    private let contentView = UIView()
     private let recommendFoodHeader = UILabel()
     private let themeFoodHeader = UILabel()
     private let contextMenuItems = ["밥", "반찬", "국&찌개", "후식", "일품", "기타"]
@@ -30,8 +32,11 @@ final class TrendingView: BaseView {
             addSubview($0)
         }
         
+        roundedBackgroundView.addSubview(contentScrollView)
+        contentScrollView.addSubview(contentView)
+        
         [recommendFoodHeader, themeFoodHeader, themeButton, recommendCollectionView, themeCollectionView].forEach {
-            roundedBackgroundView.addSubview($0)
+            contentView.addSubview($0)
         }
         
         recommendCollectionView.addSubview(recommendedLoadingIndicator)
@@ -57,12 +62,22 @@ final class TrendingView: BaseView {
             $0.leading.trailing.equalToSuperview().inset(16)
             $0.height.equalTo(60)
         }
-
+        
         roundedBackgroundView.snp.makeConstraints {
             $0.top.equalTo(searchView.snp.bottom).offset(28)
-            $0.leading.trailing.bottom.equalToSuperview()
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(safeAreaLayoutGuide)
         }
-
+        
+        contentScrollView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+        contentView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+            $0.width.equalTo(contentScrollView)
+        }
+        
         recommendFoodHeader.snp.makeConstraints {
             $0.top.leading.equalToSuperview().offset(16)
         }
@@ -92,6 +107,7 @@ final class TrendingView: BaseView {
             $0.top.equalTo(themeFoodHeader.snp.bottom).offset(12)
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(200)
+            $0.bottom.equalToSuperview().offset(-16)
         }
         
         themeLoadingIndicator.snp.makeConstraints { make in
@@ -116,6 +132,9 @@ final class TrendingView: BaseView {
             $0.textColor = .textPrimary
             $0.font = .Head.head2
         }
+        
+        contentScrollView.alwaysBounceVertical = true
+        contentScrollView.showsVerticalScrollIndicator = false
         
         recommendCollectionView.backgroundColor = .backgroundPrimary
         recommendCollectionView.isScrollEnabled = false

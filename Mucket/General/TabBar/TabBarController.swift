@@ -45,6 +45,7 @@ final class TabBarController: UITabBarController {
         appearance.backgroundColor = .backgroundPrimary
         tabBar.standardAppearance = appearance
         tabBar.tintColor = .themePrimary
+        tabBar.scrollEdgeAppearance = appearance
     }
 }
 
