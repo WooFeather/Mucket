@@ -22,6 +22,10 @@ final class CookingDetailView: BaseView {
     let naviTitleLabel = UILabel()
     let editButton = UIButton()
     
+    // 스크롤뷰와 콘텐츠뷰 추가
+    private let scrollView = UIScrollView()
+    private let contentView = UIView()
+    
     let thumbImageView = UIImageView() // TODO: pageControl 들어갈 예정
     let ratingView = CosmosView()
     let memoTextView = UITextView()
@@ -34,8 +38,14 @@ final class CookingDetailView: BaseView {
     var didSelectDeleteMenu: (() -> Void)?
     
     override func configureHierarchy() {
-        [navigationStackView, thumbImageView, ratingHeaderLabel, ratingView, memoHeaderLabel, memoView, videoHeaderLabel, emptyVideoView, emptyVideoBackground, youtubePlayerContainerView].forEach {
+        [navigationStackView, scrollView].forEach {
             addSubview($0)
+        }
+        
+        scrollView.addSubview(contentView)
+        
+        [thumbImageView, ratingHeaderLabel, ratingView, memoHeaderLabel, memoView, videoHeaderLabel, emptyVideoView, emptyVideoBackground, youtubePlayerContainerView].forEach {
+            contentView.addSubview($0)
         }
         
         emptyVideoBackground.addSubview(emptyVideoLabel)
@@ -55,9 +65,19 @@ final class CookingDetailView: BaseView {
         naviTitleLabel.snp.makeConstraints { make in
             make.width.equalTo(200)
         }
+        
+        scrollView.snp.makeConstraints {
+            $0.top.equalTo(navigationStackView.snp.bottom)
+            $0.leading.trailing.bottom.equalToSuperview()
+        }
+        
+        contentView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+            $0.width.equalTo(scrollView)
+        }
 
         thumbImageView.snp.makeConstraints {
-            $0.top.equalTo(navigationStackView.snp.bottom).offset(16)
+            $0.top.equalToSuperview().offset(16)
             $0.leading.trailing.equalToSuperview().inset(16)
             $0.height.equalTo(240)
         }
@@ -112,6 +132,7 @@ final class CookingDetailView: BaseView {
             $0.top.equalTo(videoHeaderLabel.snp.bottom).offset(8)
             $0.leading.trailing.equalToSuperview().inset(16)
             $0.height.equalTo(180)
+            $0.bottom.equalToSuperview().offset(-16)
         }
         
         emptyVideoLabel.snp.makeConstraints {
@@ -126,6 +147,9 @@ final class CookingDetailView: BaseView {
         navigationStackView.alignment = .center
         navigationStackView.distribution = .equalSpacing
 
+        scrollView.showsVerticalScrollIndicator = true
+        scrollView.alwaysBounceVertical = true
+        
         backButton.setImage(.chevronLeft, for: .normal)
         backButton.tintColor = .textPrimary
 
