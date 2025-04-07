@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7985D26A2DA2952700AFAA2B /* KakaoMapsSDK-SPM in Frameworks */ = {isa = PBXBuildFile; productRef = 7985D2692DA2952700AFAA2B /* KakaoMapsSDK-SPM */; };
 		798A4E802D9DAEA90017FF22 /* Cosmos in Frameworks */ = {isa = PBXBuildFile; productRef = 798A4E7F2D9DAEA90017FF22 /* Cosmos */; };
 		798A4E832D9DAEE30017FF22 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 798A4E822D9DAEE30017FF22 /* RealmSwift */; };
 		798A4E842D9DAF140017FF22 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 798A4E822D9DAEE30017FF22 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -78,6 +79,7 @@
 				798E364E2D97076600EDCF49 /* SnapKit in Frameworks */,
 				79CD41DC2DA17480000189F3 /* YouTubePlayerKit in Frameworks */,
 				798A4E832D9DAEE30017FF22 /* RealmSwift in Frameworks */,
+				7985D26A2DA2952700AFAA2B /* KakaoMapsSDK-SPM in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -133,6 +135,7 @@
 				798A4E822D9DAEE30017FF22 /* RealmSwift */,
 				79CD41DB2DA17480000189F3 /* YouTubePlayerKit */,
 				79CD41E42DA1B094000189F3 /* Toast */,
+				7985D2692DA2952700AFAA2B /* KakaoMapsSDK-SPM */,
 			);
 			productName = Mucket;
 			productReference = 798E36042D96F51600EDCF49 /* Mucket.app */;
@@ -172,6 +175,7 @@
 				798A4E812D9DAEE30017FF22 /* XCRemoteSwiftPackageReference "realm-swift" */,
 				79CD41DA2DA17480000189F3 /* XCRemoteSwiftPackageReference "YouTubePlayerKit" */,
 				79CD41E32DA1B094000189F3 /* XCRemoteSwiftPackageReference "Toast-Swift" */,
+				7985D2682DA2952700AFAA2B /* XCRemoteSwiftPackageReference "KakaoMapsSDK-SPM" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 798E36052D96F51600EDCF49 /* Products */;
@@ -420,6 +424,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		7985D2682DA2952700AFAA2B /* XCRemoteSwiftPackageReference "KakaoMapsSDK-SPM" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kakao-mapsSDK/KakaoMapsSDK-SPM.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.12.5;
+			};
+		};
 		798A4E7E2D9DAEA90017FF22 /* XCRemoteSwiftPackageReference "Cosmos" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/evgenyneu/Cosmos.git";
@@ -495,6 +507,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		7985D2692DA2952700AFAA2B /* KakaoMapsSDK-SPM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7985D2682DA2952700AFAA2B /* XCRemoteSwiftPackageReference "KakaoMapsSDK-SPM" */;
+			productName = "KakaoMapsSDK-SPM";
+		};
 		798A4E7F2D9DAEA90017FF22 /* Cosmos */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 798A4E7E2D9DAEA90017FF22 /* XCRemoteSwiftPackageReference "Cosmos" */;
