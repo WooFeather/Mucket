@@ -67,7 +67,6 @@ class KakaoMapViewController: UIViewController, MapControllerDelegate {
 
     override func viewDidDisappear(_ animated: Bool) {
         removeObservers()
-        // mapController?.resetEngine()     //엔진 정지. 추가되었던 ViewBase들이 삭제된다.
     }
     
     // 인증 실패시 호출.
@@ -109,63 +108,23 @@ class KakaoMapViewController: UIViewController, MapControllerDelegate {
         //지도(KakaoMap)를 그리기 위한 viewInfo를 생성
         let mapviewInfo: MapviewInfo = MapviewInfo(viewName: "mapview", viewInfoName: "map", defaultPosition: defaultPosition, defaultLevel: 14)
         
-        let mapView = mapController?.getView("mapview") as? KakaoMap
-        
-        // TODO: POI 조금더 연구
-//        mapView?.setPoiEnabled(true)
-//        createLabelLayer(view: mapView)
-//        createPoiStyle(view: mapView)
-//        createPois(view: mapView)
-        
         //KakaoMap 추가.
         mapController?.addView(mapviewInfo)
-    }
-    
-    // Poi생성을 위한 LabelLayer 생성
-    func createLabelLayer(view: KakaoMap?) {
-        let view = view
-        let manager = view?.getLabelManager()
-        let layerOption = LabelLayerOptions(layerID: "PoiLayer", competitionType: .none, competitionUnit: .symbolFirst, orderType: .rank, zOrder: 0)
-        let _ = manager?.addLabelLayer(option: layerOption)
-    }
-    
-    // Poi 표시 스타일 생성
-    func createPoiStyle(view: KakaoMap?) {
-        let view = view
-        let manager = view?.getLabelManager()
-        
-        // PoiBadge는 스타일에도 추가될 수 있다. 이렇게 추가된 Badge는 해당 스타일이 적용될 때 함께 그려진다.
-        let noti1 = PoiBadge(badgeID: "badge1", image: .symbol, offset: CGPoint(x: 0.9, y: 0.1), zOrder: 0)
-        let iconStyle1 = PoiIconStyle(symbol: .symbol, anchorPoint: CGPoint(x: 0.0, y: 0.5), badges: [noti1])
-        let noti2 = PoiBadge(badgeID: "badge2", image: .symbol, offset: CGPoint(x: 0.9, y: 0.1), zOrder: 0)
-        let iconStyle2 = PoiIconStyle(symbol: .symbol, anchorPoint: CGPoint(x: 0.0, y: 0.5), badges: [noti2])
-    
-        // 5~11, 12~21 에 표출될 스타일을 지정한다.
-        let poiStyle = PoiStyle(styleID: "PerLevelStyle", styles: [
-            PerLevelPoiStyle(iconStyle: iconStyle1, level: 5),
-            PerLevelPoiStyle(iconStyle: iconStyle2, level: 12)
-        ])
-        manager?.addPoiStyle(poiStyle)
-    }
-    
-    func createPois(view: KakaoMap?) {
-        let view = view
-        let manager = view?.getLabelManager()
-        let layer = manager?.getLabelLayer(layerID: "PoiLayer")
-        let poiOption = PoiOptions(styleID: "PerLevelStyle")
-        poiOption.rank = 0
-        
-        let poi1 = layer?.addPoi(option:poiOption, at: MapPoint(longitude: 127.108678, latitude: 37.402001))
-        // Poi 개별 Badge추가. 즉, 아래에서 생성된 Poi는 Style에 빌트인되어있는 badge와, Poi가 개별적으로 가지고 있는 Badge를 갖게 된다.
-        let badge = PoiBadge(badgeID: "noti", image: .symbol, offset: CGPoint(x: 0, y: 0), zOrder: 1)
-        poi1?.addBadge(badge)
-        poi1?.show()
-        poi1?.showBadge(badgeID: "noti")
     }
 
     //addView 성공 이벤트 delegate. 추가적으로 수행할 작업을 진행한다.
     func addViewSucceeded(_ viewName: String, viewInfoName: String) {
-        print("OK") //추가 성공. 성공시 추가적으로 수행할 작업을 진행한다.
+        let mapView = mapController?.getView("mapview") as? KakaoMap
+        let manager = mapView?.getLabelManager()
+        guard let image = UIImage(named: "poi") else {
+            print("❌ 이미지 로드 실패")
+            return
+        }
+        
+        mapView?.setPoiEnabled(true)
+        createLabelLayer(view: mapView, manager: manager)
+//        createPoiStyle(view: mapView, manager: manager, image: image)
+        createPois(view: mapView, manager: manager, image: image)
     }
     
     //addView 실패 이벤트 delegate. 실패에 대한 오류 처리를 진행한다.
@@ -232,4 +191,61 @@ class KakaoMapViewController: UIViewController, MapControllerDelegate {
     var _observerAdded: Bool
     var _auth: Bool
     var _appear: Bool
+}
+
+// MARK: - Pois
+extension KakaoMapViewController {
+    // Poi생성을 위한 LabelLayer 생성
+    func createLabelLayer(view: KakaoMap?, manager: LabelManager?) {
+        
+        let layerOption = LabelLayerOptions(layerID: "PoiLayer", competitionType: .none, competitionUnit: .symbolFirst, orderType: .rank, zOrder: 0)
+        let _ = manager?.addLabelLayer(option: layerOption)
+    }
+    
+    // Poi 표시 스타일 생성
+    func createPoiStyle(view: KakaoMap?, manager: LabelManager?, image: UIImage?) {
+        
+        // PoiBadge는 스타일에도 추가될 수 있다. 이렇게 추가된 Badge는 해당 스타일이 적용될 때 함께 그려진다.
+        let noti1 = PoiBadge(badgeID: "badge1", image: image, offset: CGPoint(x: 0.9, y: 0.1), zOrder: 0)
+        let iconStyle1 = PoiIconStyle(symbol: image, anchorPoint: CGPoint(x: 0.0, y: 0.5), badges: [noti1])
+//        let noti2 = PoiBadge(badgeID: "badge2", image: image, offset: CGPoint(x: 0.9, y: 0.1), zOrder: 0)
+//        let iconStyle2 = PoiIconStyle(symbol: image, anchorPoint: CGPoint(x: 0.0, y: 0.5), badges: [noti2])
+    
+        // 5~11, 12~21 에 표출될 스타일을 지정한다.
+        let poiStyle = PoiStyle(styleID: "PerLevelStyle", styles: [
+            PerLevelPoiStyle(iconStyle: iconStyle1, level: 5)
+//            PerLevelPoiStyle(iconStyle: iconStyle2, level: 12)
+        ])
+        manager?.addPoiStyle(poiStyle)
+    }
+    
+    func createPois(view: KakaoMap?, manager: LabelManager?, image: UIImage?) {
+        guard let layer = manager?.getLabelLayer(layerID: "PoiLayer") else { return }
+        
+        let poiOption = PoiOptions(styleID: "PerLevelStyle")
+        poiOption.rank = 0
+        
+        // POI를 추가할 위치 리스트 (위도, 경도)
+        let poiLocations = [
+            MapPoint(longitude: 127.108678, latitude: 37.402001),
+            MapPoint(longitude: 127.106, latitude: 37.403),
+            MapPoint(longitude: 127.109, latitude: 37.404),
+            MapPoint(longitude: 127.107, latitude: 37.405),
+            MapPoint(longitude: 127.105, latitude: 37.406)
+        ]
+        
+        for (index, point) in poiLocations.enumerated() {
+            if let poi = layer.addPoi(option: poiOption, at: point) {
+                let badge = PoiBadge(
+                    badgeID: "badge\(index)",
+                    image: image,
+                    offset: CGPoint(x: 0, y: 0),
+                    zOrder: 1
+                )
+                poi.addBadge(badge)
+                poi.show()
+                poi.showBadge(badgeID: "badge\(index)")
+            }
+        }
+    }
 }
