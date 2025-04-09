@@ -11,16 +11,26 @@ final class AddRestaurantReactor: Reactor {
     
     var initialState: State = State()
     
+    enum Route: Equatable {
+        case none
+        case searchAddress
+        case folder
+    }
+    
     enum Action {
         case addPhotoButtonTapped
+        case searchAddressButtonTapped
+        case clearRouting
     }
     
     enum Mutation {
+        case setRoute(Route)
         case presentImagePicker(Bool)
     }
     
     struct State {
         var isPresent = false
+        var route: Route = .none
     }
 }
 
@@ -32,6 +42,10 @@ extension AddRestaurantReactor {
                 .just(.presentImagePicker(true)),
                 .just(.presentImagePicker(false)).delay(.milliseconds(100), scheduler: MainScheduler.instance)
             ])
+        case .searchAddressButtonTapped:
+            return .just(.setRoute(.searchAddress))
+        case .clearRouting:
+            return .just(.setRoute(.none))
         }
     }
     
@@ -40,6 +54,8 @@ extension AddRestaurantReactor {
         switch mutation {
         case .presentImagePicker(let isPresent):
             newState.isPresent = isPresent
+        case .setRoute(let route):
+            newState.route = route
         }
         return newState
     }

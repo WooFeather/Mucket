@@ -59,6 +59,13 @@ extension AddRestaurantViewController: View {
             .map { AddRestaurantReactor.Action.addPhotoButtonTapped }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
+        
+        addRestaurantView.addressButton.rx.tap
+            .map {
+                AddRestaurantReactor.Action.searchAddressButtonTapped
+            }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     }
     
     private func bindState(_ reactor: AddRestaurantReactor) {
@@ -68,6 +75,24 @@ extension AddRestaurantViewController: View {
             .filter { $0 }
             .bind(with: self) { owner, _ in
                 owner.present(owner.imagePicker, animated: true)
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.route }
+            .distinctUntilChanged()
+            .filter { $0 != .none }
+            .bind(with: self) { owner, route in
+                switch route {
+                case .searchAddress:
+                    let vc = SearchAddressViewController()
+                    owner.present(vc, animated: true)
+                    owner.reactor?.action.onNext(.clearRouting)
+                case .folder:
+                    print("폴더뷰로 이동")
+                default:
+                    break
+                }
             }
             .disposed(by: disposeBag)
     }
