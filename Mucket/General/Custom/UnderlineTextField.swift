@@ -28,7 +28,7 @@ final class UnderlineTextField: BaseView {
         
         magnifyingGlassImageView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.trailing.equalToSuperview().offset(-16)
+            make.trailing.equalToSuperview()
             make.size.equalTo(20)
         }
         

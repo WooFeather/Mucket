@@ -29,6 +29,7 @@ enum RouterError: Error, LocalizedError {
 
 protocol Router {
     var baseURL: String { get }
+    var apiKey: String { get }
     var path: String { get }
     var method: String { get }
     var headers: [String: String] { get }
@@ -68,3 +69,5 @@ extension Router {
         // RecipeAPI를 위한 메서드 (처리는 RecipeRoter 내에서)
     }
 }
+
+// TODO: 에러코드처리
