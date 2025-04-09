@@ -21,7 +21,7 @@ final class TabBarController: UITabBarController {
         let trendingVC = TrendingViewController(reactor: TrendingReactor())
         let cookingVC = CookingViewController(reactor: CookingReactor(myCookingRepository: MyCookingRepository()))
         let placeholderVC = UIViewController()
-        let restaurantMapVC = RestaurantMapViewController()
+        let restaurantMapVC = PlaceViewController()
         let bookmarkVC = BookmarkViewController(reactor: BookmarkReactor(repository: BookmarkedRecipeRepository()))
         
         trendingVC.tabBarItem.image = .forkKnife

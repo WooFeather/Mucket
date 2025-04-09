@@ -24,6 +24,8 @@ extension UIImage {
     static let bookClosed = UIImage(systemName: "book.closed")
     static let squareOnSquare = UIImage(systemName: "square.on.square")
     static let xmarkOctagon = UIImage(systemName: "xmark.octagon")
+    static let location = UIImage(systemName: "location")
+    static let locationFill = UIImage(systemName: "location.fill")
     
     /// 버튼 안의 이미지 크기 조절
     func resize(to size: CGSize) -> UIImage {
