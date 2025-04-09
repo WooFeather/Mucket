@@ -86,7 +86,7 @@ extension AddRestaurantViewController: View {
             .bind(with: self) { owner, route in
                 switch route {
                 case .searchAddress:
-                    let vc = SearchAddressViewController()
+                    let vc = SearchAddressViewController(reactor: SearchAddressReactor())
                     owner.present(vc, animated: true)
                     owner.reactor?.action.onNext(.clearRouting)
                 case .folder:

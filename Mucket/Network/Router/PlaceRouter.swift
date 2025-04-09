@@ -31,7 +31,7 @@ enum PlaceRouter: Router {
     }
     
     var headers: [String : String] {
-        ["Authorization": APIKeys.kakaoRESTAPIKey]
+        ["Authorization": "KakaoAK \(APIKeys.kakaoRESTAPIKey)"]
     }
     
     var queryParameters: [URLQueryItem]? {

@@ -16,10 +16,11 @@ final class SearchAddressView: BaseView {
     
     let searchBar = UnderlineTextField()
     let emptyStateView = EmptyStateView(message: "검색 결과가 없습니다. 주소를 다시 확인해주세요.", isHidden: false)
+    let loadingIndicator = UIActivityIndicatorView()
     let addressTableView = UITableView()
     
     override func configureHierarchy() {
-        [navigationStackView, searchBar, emptyStateView, addressTableView].forEach {
+        [navigationStackView, searchBar, emptyStateView, addressTableView, loadingIndicator].forEach {
             addSubview($0)
         }
         
@@ -51,6 +52,11 @@ final class SearchAddressView: BaseView {
             make.top.equalTo(searchBar.snp.bottom).offset(16)
             make.horizontalEdges.bottom.equalToSuperview()
         }
+        
+        loadingIndicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.size.equalTo(40)
+        }
     }
     
     override func configureView() {
@@ -66,6 +72,12 @@ final class SearchAddressView: BaseView {
         closeButton.setTitleColor(.textPrimary, for: .normal)
         closeButton.tintColor = .textPrimary
         
-        addressTableView.backgroundColor = .lightGray
+        searchBar.textField.returnKeyType = .search
+        searchBar.textField.placeholder = "맛집 상호를 검색하세요"
+        
+        addressTableView.backgroundColor = .clear
+        
+        loadingIndicator.style = .medium
+        loadingIndicator.color = .backgroundGray
     }
 }

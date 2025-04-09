@@ -35,6 +35,12 @@ final class NetworkManager: NetworkManagerType {
               (200..<300).contains(httpResponse.statusCode) else {
             throw NetworkError.invalidResponse
         }
+        
+        if !(200..<300).contains(httpResponse.statusCode) {
+            print("❌ 상태코드: \(httpResponse.statusCode)")
+            print("❌ 응답본문: \(String(data: data, encoding: .utf8) ?? "데이터 없음")")
+            throw NetworkError.invalidResponse
+        }
 
         // RecipeAPI를 위한 메서드
         try router.decodeErrorIfNeeded(from: data)
