@@ -81,6 +81,7 @@ extension AddRestaurantViewController: View {
         reactor.state
             .map { $0.route }
             .distinctUntilChanged()
+            .observe(on: MainScheduler.asyncInstance)
             .filter { $0 != .none }
             .bind(with: self) { owner, route in
                 switch route {

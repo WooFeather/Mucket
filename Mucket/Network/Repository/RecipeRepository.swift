@@ -21,7 +21,7 @@ final class RecipeRepository: RecipeRepositoryType {
     
     func fetchAll() async throws -> [RecipeEntity] {
         do {
-            let result: RecipeDTO = try await networkManager.fetchData(.fetchAll)
+            let result: RecipeDTO = try await networkManager.fetchData(RecipeRouter.fetchAll)
             return result.recipeInfo.row.map { $0.toEntity() }
         } catch {
             throw error
@@ -30,7 +30,7 @@ final class RecipeRepository: RecipeRepositoryType {
     
     func search(startIndex: Int, count: Int, byName name: String) async throws -> [RecipeEntity] {
         do {
-            let result: RecipeDTO = try await networkManager.fetchData(.searchRecipe(startIndex: startIndex, count: count, name: name))
+            let result: RecipeDTO = try await networkManager.fetchData(RecipeRouter.searchRecipe(startIndex: startIndex, count: count, name: name))
             return result.recipeInfo.row.map { $0.toEntity() }
         } catch {
             throw error
@@ -39,7 +39,7 @@ final class RecipeRepository: RecipeRepositoryType {
     
     func fetchTheme(type: String) async throws -> [RecipeEntity] {
         do {
-            let result: RecipeDTO = try await networkManager.fetchData(.fetchThemedRecipe(type: type))
+            let result: RecipeDTO = try await networkManager.fetchData(RecipeRouter.fetchThemedRecipe(type: type))
             return result.recipeInfo.row.map { $0.toEntity() }
         } catch {
             throw error
