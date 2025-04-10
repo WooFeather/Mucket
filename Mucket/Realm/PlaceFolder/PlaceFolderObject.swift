@@ -13,7 +13,7 @@ final class PlaceFolderObject: Object {
     @Persisted var name: String
     @Persisted var createdAt: Date = Date()
     
-    @Persisted var places: List<PlaceObject>
+    @Persisted var places: List<MyPlaceObject>
 }
 
 // MARK: - Mapper

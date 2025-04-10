@@ -8,7 +8,8 @@
 import Foundation
 import RealmSwift
 
-final class PlaceObject: Object {
+// MARK: - Realm Object
+final class MyPlaceObject: Object {
     @Persisted(primaryKey: true) var id: ObjectId
     @Persisted var name: String
     @Persisted var latitude: Double?
@@ -18,11 +19,11 @@ final class PlaceObject: Object {
     @Persisted var rating: Double?
     @Persisted var createdAt: Date = Date()
 
-    @Persisted var folder: PlaceFolderObject?
+    @Persisted(originProperty: "places") var folder: LinkingObjects<PlaceFolderObject>
 }
 
-// MARK: - Mapper
-struct PlaceEntity: Equatable {
+// MARK: - Entity
+struct MyPlaceEntity: Equatable {
     let id: String
     let name: String
     let latitude: Double?
@@ -34,10 +35,11 @@ struct PlaceEntity: Equatable {
     let folderId: String?
 }
 
-extension PlaceEntity {
-    func toRealmObject(folder: PlaceFolderObject?) -> PlaceObject {
-        let object = PlaceObject()
-        object.id = try! ObjectId(string: id)
+// MARK: - Mapper
+extension MyPlaceEntity {
+    func toRealmObject() -> MyPlaceObject {
+        let object = MyPlaceObject()
+        object.id = id.isEmpty ? ObjectId.generate() : try! ObjectId(string: id)
         object.name = name
         object.latitude = latitude
         object.longitude = longitude
@@ -45,14 +47,13 @@ extension PlaceEntity {
         object.memo = memo
         object.rating = rating
         object.createdAt = createdAt
-        object.folder = folder
         return object
     }
 }
 
-extension PlaceObject {
-    func toEntity() -> PlaceEntity {
-        return PlaceEntity(
+extension MyPlaceObject {
+    func toEntity() -> MyPlaceEntity {
+        return MyPlaceEntity(
             id: self.id.stringValue,
             name: self.name,
             latitude: self.latitude,
@@ -61,7 +62,7 @@ extension PlaceObject {
             memo: self.memo,
             rating: self.rating,
             createdAt: self.createdAt,
-            folderId: self.folder?.id.stringValue
+            folderId: self.folder.first?.id.stringValue
         )
     }
 }

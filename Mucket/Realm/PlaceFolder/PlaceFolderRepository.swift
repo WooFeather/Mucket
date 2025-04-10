@@ -14,8 +14,8 @@ protocol PlaceFolderRepositoryType {
     func add(name: String) -> PlaceFolderEntity
     func delete(id: String)
     func getDefaultFolder() -> PlaceFolderEntity
-    func getRestaurantObject(by id: String) -> PlaceObject?
-    func getRestaurants(inFolderId: String) -> [PlaceEntity]
+    func getPlaceObject(by id: String) -> MyPlaceObject?
+    func getPlaces(inFolderId: String) -> [MyPlaceEntity]
 }
 
 final class PlaceFolderRepository: PlaceFolderRepositoryType {
@@ -43,10 +43,27 @@ final class PlaceFolderRepository: PlaceFolderRepositoryType {
 
     func delete(id: String) {
         guard let objectId = try? ObjectId(string: id),
-              let folder = realm.object(ofType: PlaceFolderObject.self, forPrimaryKey: objectId) else { return }
+              let folderToDelete = realm.object(ofType: PlaceFolderObject.self, forPrimaryKey: objectId) else { return }
+
+        // 기본 폴더는 삭제 금지
+        if folderToDelete.name == "기본 폴더" {
+            print("기본 폴더는 삭제할 수 없습니다.")
+            return
+        }
+
+        guard let defaultFolder = realm.objects(PlaceFolderObject.self).filter("name == %@", "기본 폴더").first else {
+            print("기본 폴더가 존재하지 않습니다.")
+            return
+        }
 
         try? realm.write {
-            realm.delete(folder)
+            // 폴더 내 요리들을 기본 폴더로 이동
+            for place in folderToDelete.places {
+                defaultFolder.places.append(place)
+            }
+
+            // 폴더 삭제
+            realm.delete(folderToDelete)
         }
     }
 
@@ -65,12 +82,12 @@ final class PlaceFolderRepository: PlaceFolderRepositoryType {
         }
     }
     
-    func getRestaurantObject(by id: String) -> PlaceObject? {
+    func getPlaceObject(by id: String) -> MyPlaceObject? {
         guard let objId = try? ObjectId(string: id) else { return nil }
-        return realm.object(ofType: PlaceObject.self, forPrimaryKey: objId)
+        return realm.object(ofType: MyPlaceObject.self, forPrimaryKey: objId)
     }
     
-    func getRestaurants(inFolderId: String) -> [PlaceEntity] {
+    func getPlaces(inFolderId: String) -> [MyPlaceEntity] {
         guard let objectId = try? ObjectId(string: inFolderId),
               let folder = realm.object(ofType: PlaceFolderObject.self, forPrimaryKey: objectId) else {
             return []

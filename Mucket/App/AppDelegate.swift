@@ -7,6 +7,7 @@
 
 import UIKit
 import KakaoMapsSDK
+import RealmSwift
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -19,7 +20,40 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         sleep(2)
         
+        migration()
+        
+        let realm = try! Realm()
+        
+        do {
+            let version = try schemaVersionAtURL(realm.configuration.fileURL!)
+            print("Schema Version", version)
+        } catch {
+            print("schema failed")
+        }
+        
         return true
+    }
+    
+    private func migration() {
+        // 현재 version이 아니라, 최종 업데이트될 version을 입력
+        let config = Realm.Configuration(schemaVersion: 2) { migration, oldSchemaVersion in
+            
+            // 0 -> 1: Place의 folder 칼럼 타입 변경
+            // 기존: @Persisted var folder: PlaceFolderObject?
+            // 변경: @Persisted(originProperty: "places") var folder: LinkingObjects<PlaceFolderObject>
+            if oldSchemaVersion < 1 {
+                // 단순한 칼럼 삭제로 간주
+            }
+            
+            // 0 -> 2: PlaceFolder의 places 칼럼명 변경
+            // 기존: @Persisted var places: List<PlaceObject>
+            // 변경: @Persisted var places: List<MyPlaceObject>
+            if oldSchemaVersion < 2 {
+                // 단순한 칼럼 삭제로 간주
+            }
+        }
+        
+        Realm.Configuration.defaultConfiguration = config
     }
 
     // MARK: UISceneSession Lifecycle
