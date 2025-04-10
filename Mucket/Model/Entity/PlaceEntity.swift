@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SearchPlaceEntity: Equatable {
+struct PlaceEntity: Equatable {
     let details: [PlaceDetail]
     let info: SearchInfo
 }
@@ -25,9 +25,9 @@ struct SearchInfo: Equatable {
     let isEnd: Bool
 }
 
-extension SearchPlaceDTO {
-    func toEntity() -> SearchPlaceEntity {
-        return SearchPlaceEntity(
+extension PlaceDTO {
+    func toEntity() -> PlaceEntity {
+        return PlaceEntity(
             details: self.documents.map {
                 PlaceDetail(
                     id: $0.id,
@@ -42,9 +42,9 @@ extension SearchPlaceDTO {
     }
 }
 
-extension SearchPlaceEntity {
-    static var mockData: SearchPlaceEntity {
-        return SearchPlaceEntity(
+extension PlaceEntity {
+    static var mockData: PlaceEntity {
+        return PlaceEntity(
             details: [
                 PlaceDetail(
                     id: "25037411",

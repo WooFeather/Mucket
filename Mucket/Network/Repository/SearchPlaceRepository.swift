@@ -8,7 +8,7 @@
 import Foundation
 
 protocol SearchPlaceRepositoryType {
-    func search(query: String, page: Int) async throws -> SearchPlaceEntity
+    func search(query: String, page: Int) async throws -> PlaceEntity
 }
 
 final class SearchPlaceRepository: SearchPlaceRepositoryType {
@@ -17,9 +17,9 @@ final class SearchPlaceRepository: SearchPlaceRepositoryType {
     
     private init() { }
     
-    func search(query: String, page: Int) async throws -> SearchPlaceEntity {
+    func search(query: String, page: Int) async throws -> PlaceEntity {
         do {
-            let result: SearchPlaceDTO = try await networkManager.fetchData(PlaceRouter.search(query: query, page: page))
+            let result: PlaceDTO = try await networkManager.fetchData(PlaceRouter.search(query: query, page: page))
             return result.toEntity()
         } catch {
             throw error

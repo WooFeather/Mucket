@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SearchPlaceDTO: Decodable {
+struct PlaceDTO: Decodable {
     let documents: [Document]
     let meta: Meta
 }

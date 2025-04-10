@@ -9,13 +9,13 @@ import Foundation
 
 final class MockPlaceRepository: SearchPlaceRepositoryType {
     
-    private let mockData: SearchPlaceEntity
+    private let mockData: PlaceEntity
     
-    init(mockData: SearchPlaceEntity = SearchPlaceEntity.mockData) {
+    init(mockData: PlaceEntity = PlaceEntity.mockData) {
         self.mockData = mockData
     }
     
-    func search(query: String, page: Int) async throws -> SearchPlaceEntity {
+    func search(query: String, page: Int) async throws -> PlaceEntity {
         return mockData
     }
 }
