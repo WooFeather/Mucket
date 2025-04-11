@@ -21,6 +21,13 @@ final class PlaceViewController: BaseViewController, CLLocationManagerDelegate {
     private var _auth: Bool = false
     private var _appear: Bool = false
     
+    var disposeBag = DisposeBag()
+    
+    init(reactor: PlaceReactor) {
+        super.init(nibName: nil, bundle: nil)
+        self.reactor = reactor
+    }
+    
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         _observerAdded = false
@@ -53,6 +60,21 @@ final class PlaceViewController: BaseViewController, CLLocationManagerDelegate {
     // MARK: - Actions
     @objc private func currentLocationButtonTapped() {
         checkAuthorizationStatus()
+    }
+}
+
+extension PlaceViewController: View {
+    func bind(reactor: PlaceReactor) {
+        bindAction(reactor)
+        bindState(reactor)
+    }
+    
+    private func bindAction(_ reactor: PlaceReactor) {
+        
+    }
+    
+    private func bindState(_ reactor: PlaceReactor) {
+        
     }
 }
 
