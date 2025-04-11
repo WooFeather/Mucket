@@ -328,17 +328,28 @@ extension PlaceViewController {
 
         for (index, poi) in pois.enumerated() {
             let place = places[index]
-            poi.userObject = place.name as NSString
+            poi.userObject = place as AnyObject
             _ = poi.addPoiTappedEventHandler(target: self, handler: PlaceViewController.poiTappedHandler)
             poi.show()
         }
     }
     
     func poiTappedHandler(_ param: PoiInteractionEventParam) {
-        if let name = param.poiItem.userObject as? String {
-            print("➡️ 탭한 장소 이름: \(name)")
-        } else {
-            print("❓ 사용자 객체 없음")
+        guard let place = param.poiItem.userObject as? MyPlaceEntity else {
+            print("❓ 사용자 객체 타입 불일치")
+            return
+        }
+
+        DispatchQueue.main.async {
+            let previewVC = PreviewSheetViewController(place: place)
+
+            if let sheet = previewVC.sheetPresentationController {
+                sheet.detents = [.medium()]
+                sheet.prefersGrabberVisible = true
+                sheet.prefersScrollingExpandsWhenScrolledToEdge = false
+            }
+
+            self.present(previewVC, animated: true)
         }
     }
 }
