@@ -9,9 +9,11 @@ import UIKit
 import ReactorKit
 import SnapKit
 
+// TODO: Reactor로 변경
 final class PreviewSheetViewController: BaseViewController {
     private let previewSheetView = PreviewSheetView()
     private let place: MyPlaceEntity
+    var onDetailRequested: ((MyPlaceEntity) -> Void)?
     
     init(place: MyPlaceEntity) {
         self.place = place
@@ -34,5 +36,15 @@ final class PreviewSheetViewController: BaseViewController {
     override func configureView() {
         super.configureView()
         view.backgroundColor = .backgroundPrimary
+    }
+    
+    override func configureAction() {
+        previewSheetView.detailButton.addTarget(self, action: #selector(detailButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc
+    private func detailButtonTapped() {
+        onDetailRequested?(place)
+        dismiss(animated: true)
     }
 }

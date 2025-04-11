@@ -335,22 +335,21 @@ extension PlaceViewController {
     }
     
     func poiTappedHandler(_ param: PoiInteractionEventParam) {
-        guard let place = param.poiItem.userObject as? MyPlaceEntity else {
-            print("❓ 사용자 객체 타입 불일치")
-            return
+        guard let place = param.poiItem.userObject as? MyPlaceEntity else { return }
+
+        let sheet = PreviewSheetViewController(place: place)
+        
+        sheet.onDetailRequested = { [weak self] place in
+            let vc = PlaceDetailViewController()
+            self?.navigationController?.pushViewController(vc, animated: true)
         }
 
-        DispatchQueue.main.async {
-            let previewVC = PreviewSheetViewController(place: place)
-
-            if let sheet = previewVC.sheetPresentationController {
-                sheet.detents = [.medium()]
-                sheet.prefersGrabberVisible = true
-                sheet.prefersScrollingExpandsWhenScrolledToEdge = false
-            }
-
-            self.present(previewVC, animated: true)
+        if let sheetPresentation = sheet.sheetPresentationController {
+            sheetPresentation.detents = [.medium()]
+            sheetPresentation.prefersGrabberVisible = true
         }
+
+        present(sheet, animated: true)
     }
 }
 
