@@ -103,7 +103,7 @@ extension CookingFolderViewController: View {
                 cellIdentifier: "cookingFolderTableViewCell",
                 cellType: UITableViewCell.self
             )) { [weak self] _, entity, cell in
-                guard let self = self else { return }
+                guard self != nil else { return }
 
                 cell.backgroundColor = .clear
                 cell.textLabel?.text = entity.name

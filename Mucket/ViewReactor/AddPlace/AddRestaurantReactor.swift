@@ -97,7 +97,7 @@ extension AddPlaceReactor {
             return .just(.setRoute(.none))
         case .setSelectedFolder(let folder):
             return .just(.setSelectedFolder(folder))
-        case .savePlace(name: let name, memo: let memo, rating: let rating, imageURL: let imageURL, address: let address, latitude: let latitude, longitude: let longitude):
+        case .savePlace(name: let name, memo: let memo, rating: let rating, imageURL: let imageURL, address: let address, latitude: _, longitude: _):
             let entity = MyPlaceEntity(
                 id: "",
                 name: name,

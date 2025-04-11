@@ -72,9 +72,9 @@ extension SearchAddressReactor {
                     },
                 .just(.setLoadingIndicator(false))
             ])
-        case .searchCellTapped(let place):
+        case .searchCellTapped(_):
             return .just(.popToPrevView) // TODO: 해당 cell의 roadAddressName넘기기
-        case .loadNextPage(let page):
+        case .loadNextPage(_):
             return .empty() // TODO: 페이지네이션 구현
         case .clearAlert:
             return .just(.clearAlertMessage)

@@ -21,6 +21,8 @@ final class PlaceViewController: BaseViewController, CLLocationManagerDelegate {
     private var _auth: Bool = false
     private var _appear: Bool = false
     
+    private let myPlaceRepository = MyPlaceRepository()
+    
     var disposeBag = DisposeBag()
     
     init(reactor: PlaceReactor) {
@@ -103,8 +105,8 @@ extension PlaceViewController: MapControllerDelegate {
         
         mapView?.setPoiEnabled(true)
         createLabelLayer(view: mapView, manager: manager)
-        // createPoiStyle(view: mapView, manager: manager, image: image)
-        createPois(view: mapView, manager: manager, image: image)
+        createPoiStyle(view: mapView, manager: manager, image: image)
+        createPois(view: mapView, manager: manager)
         
         // 지도가 로드된 후 현재 사용자 위치 확인
         if locationManager.authorizationStatus == .authorizedWhenInUse {
@@ -224,6 +226,7 @@ extension PlaceViewController: MapControllerDelegate {
     func addObservers(){
         NotificationCenter.default.addObserver(self, selector: #selector(willResignActive), name: UIApplication.willResignActiveNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(placeSaved), name: Notification.Name("PlaceSaved"), object: nil)
         
         _observerAdded = true
     }
@@ -242,6 +245,22 @@ extension PlaceViewController: MapControllerDelegate {
     @objc func didBecomeActive(){
         mapController?.activateEngine() //뷰가 active 상태가 되면 렌더링 시작. 엔진은 미리 시작된 상태여야 함.
     }
+    
+    @objc private func placeSaved() {
+        reloadPois()
+    }
+    
+    func reloadPois() {
+        guard let mapView = mapController?.getView("mapview") as? KakaoMap else { return }
+
+        let manager = mapView.getLabelManager()
+        guard let layer = manager.getLabelLayer(layerID: "PoiLayer") else { return }
+
+        layer.clearAllExitTransitionPois()
+
+        createPois(view: mapView, manager: manager)
+    }
+
     
     func mapControllerDidChangeZoomLevel(_ mapController: KakaoMapsSDK.KMController, zoomLevel: Double) {
         print("Zoom level changed to: \(zoomLevel)")
@@ -291,35 +310,24 @@ extension PlaceViewController {
         manager?.addPoiStyle(poiStyle)
     }
     
-    func createPois(view: KakaoMap?, manager: LabelManager?, image: UIImage?) {
+    func createPois(view: KakaoMap?, manager: LabelManager?) {
         guard let layer = manager?.getLabelLayer(layerID: "PoiLayer") else { return }
-        
+
         let poiOption = PoiOptions(styleID: "PerLevelStyle")
         poiOption.rank = 0
-        
-        // POI를 추가할 위치 리스트 (위도, 경도)
-        let poiLocations = [
-            MapPoint(longitude: 127.108678, latitude: 37.402001),
-            MapPoint(longitude: 127.106, latitude: 37.403),
-            MapPoint(longitude: 127.109, latitude: 37.404),
-            MapPoint(longitude: 127.107, latitude: 37.405),
-            MapPoint(longitude: 127.105, latitude: 37.406)
-        ]
-        
-        for (index, point) in poiLocations.enumerated() {
+
+        let places = myPlaceRepository.fetchAll()
+
+        for place in places {
+            guard let lat = place.latitude, let lon = place.longitude else { continue }
+            let point = MapPoint(longitude: lon, latitude: lat)
+
             if let poi = layer.addPoi(option: poiOption, at: point) {
-                let badge = PoiBadge(
-                    badgeID: "badge\(index)",
-                    image: image,
-                    offset: CGPoint(x: 0, y: 0),
-                    zOrder: 1
-                )
-                poi.addBadge(badge)
                 poi.show()
-                poi.showBadge(badgeID: "badge\(index)")
             }
         }
     }
+
 }
 
 // MARK: - CoreLocation
@@ -330,7 +338,7 @@ extension PlaceViewController {
         locationManager.stopUpdatingLocation()
         
         // 지도가 초기화된 후에만 카메라 이동
-        if let mapView = mapController?.getView("mapview") as? KakaoMap {
+        if mapController?.getView("mapview") is KakaoMap {
             setRegion(center: location.coordinate)
         }
     }

@@ -120,6 +120,7 @@ final class AddContentsViewController: BaseViewController {
                 longitude: longitude
             ))
 
+            NotificationCenter.default.post(name: Notification.Name("PlaceSaved"), object: nil)
             showToastAndDismiss(message: "맛집이 저장되었습니다")
 
         default:
