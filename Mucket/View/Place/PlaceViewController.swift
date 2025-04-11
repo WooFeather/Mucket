@@ -315,19 +315,32 @@ extension PlaceViewController {
 
         let poiOption = PoiOptions(styleID: "PerLevelStyle")
         poiOption.rank = 0
+        poiOption.clickable = true
 
         let places = myPlaceRepository.fetchAll()
 
-        for place in places {
-            guard let lat = place.latitude, let lon = place.longitude else { continue }
-            let point = MapPoint(longitude: lon, latitude: lat)
+        let points: [MapPoint] = places.compactMap {
+            guard let lat = $0.latitude, let lon = $0.longitude else { return nil }
+            return MapPoint(longitude: lon, latitude: lat)
+        }
 
-            if let poi = layer.addPoi(option: poiOption, at: point) {
-                poi.show()
-            }
+        guard let pois = layer.addPois(option: poiOption, at: points) else { return }
+
+        for (index, poi) in pois.enumerated() {
+            let place = places[index]
+            poi.userObject = place.name as NSString
+            _ = poi.addPoiTappedEventHandler(target: self, handler: PlaceViewController.poiTappedHandler)
+            poi.show()
         }
     }
-
+    
+    func poiTappedHandler(_ param: PoiInteractionEventParam) {
+        if let name = param.poiItem.userObject as? String {
+            print("➡️ 탭한 장소 이름: \(name)")
+        } else {
+            print("❓ 사용자 객체 없음")
+        }
+    }
 }
 
 // MARK: - CoreLocation
