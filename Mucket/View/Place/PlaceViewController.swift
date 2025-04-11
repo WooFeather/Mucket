@@ -226,7 +226,9 @@ extension PlaceViewController: MapControllerDelegate {
     func addObservers(){
         NotificationCenter.default.addObserver(self, selector: #selector(willResignActive), name: UIApplication.willResignActiveNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(placeSaved), name: Notification.Name("PlaceSaved"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(placeUpdated), name: Notification.Name("PlaceSaved"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(placeUpdated), name: Notification.Name("PlaceUpdated"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(placeUpdated), name: Notification.Name("PlaceDeleted"), object: nil)
         
         _observerAdded = true
     }
@@ -246,7 +248,7 @@ extension PlaceViewController: MapControllerDelegate {
         mapController?.activateEngine() //뷰가 active 상태가 되면 렌더링 시작. 엔진은 미리 시작된 상태여야 함.
     }
     
-    @objc private func placeSaved() {
+    @objc private func placeUpdated() {
         reloadPois()
     }
     
@@ -256,7 +258,7 @@ extension PlaceViewController: MapControllerDelegate {
         let manager = mapView.getLabelManager()
         guard let layer = manager.getLabelLayer(layerID: "PoiLayer") else { return }
 
-        layer.clearAllExitTransitionPois()
+        layer.clearAllItems()
 
         createPois(view: mapView, manager: manager)
     }

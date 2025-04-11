@@ -35,7 +35,7 @@ final class PlaceDetailViewController: BaseViewController {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handlePlaceUpdated),
-            name: NSNotification.Name("PlaceDataUpdated"),
+            name: NSNotification.Name("PlaceUpdated"),
             object: nil
         )
     }

@@ -11,9 +11,9 @@ import Cosmos
 
 final class PreviewSheetView: BaseView {
     private let nameLabel = UILabel()
-    private let addressLabel = UILabel()
     private let ratingView = CosmosView()
     private let thumbImageView = UIImageView()
+    let addressLabel = UILabel()
     let copyButton = UIButton()
     let detailButton = UIButton()
     

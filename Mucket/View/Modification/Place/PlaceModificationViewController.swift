@@ -117,7 +117,7 @@ final class PlaceModificationViewController: BaseViewController {
                 repository.update(updatedEntity)
                 
                 // 알림 발송 (필요하다면)
-                NotificationCenter.default.post(name: NSNotification.Name("PlaceDataUpdated"), object: nil)
+                NotificationCenter.default.post(name: NSNotification.Name("PlaceUpdated"), object: nil)
             }
             
             self.dismiss(animated: true)

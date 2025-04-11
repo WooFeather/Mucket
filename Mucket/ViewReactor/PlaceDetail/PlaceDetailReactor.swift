@@ -5,6 +5,7 @@
 //  Created by 조우현 on 4/12/25.
 //
 
+import Foundation
 import ReactorKit
 
 final class PlaceDetailReactor: Reactor {
@@ -62,7 +63,7 @@ extension PlaceDetailReactor {
             return .just(.ShowDeleteAlert(false))
         case .confirmDeleteTapped:
             repository.delete(id: currentState.place.id)
-            
+            NotificationCenter.default.post(name: .init("PlaceDeleted"), object: nil)
             return .just(.setRoute(.prevView))
         case .refreshData:
             let placeId = currentState.place.id
