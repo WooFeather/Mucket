@@ -24,10 +24,10 @@ enum RecipeRouter: Router {
         switch self {
         case .fetchAll:
             return "/\(apiKey)/COOKRCP01/json/1/1000"
-        case .searchRecipe(let startIndex, let count, _):
-            return "/\(apiKey)/COOKRCP01/json/\(startIndex)/\(count)"
-        case .fetchThemedRecipe(_):
-            return "/\(apiKey)/COOKRCP01/json/1/1000"
+        case .searchRecipe(let startIndex, let count, let name):
+            return "/\(apiKey)/COOKRCP01/json/\(startIndex)/\(count)/RCP_NM=\(name)"
+        case .fetchThemedRecipe(let type):
+            return "/\(apiKey)/COOKRCP01/json/1/1000/RCP_PAT2=\(type)"
         }
     }
 
@@ -43,10 +43,10 @@ enum RecipeRouter: Router {
         switch self {
         case .fetchAll:
             return nil
-        case .searchRecipe(_, _, let name):
-            return [URLQueryItem(name: "RCP_NM", value: name)]
+        case .searchRecipe:
+            return nil
         case .fetchThemedRecipe(let type):
-            return [URLQueryItem(name: "RCP_PAT2", value: type)]
+            return nil
         }
     }
 
