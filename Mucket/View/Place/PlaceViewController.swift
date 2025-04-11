@@ -6,12 +6,15 @@
 //
 
 import UIKit
+import CoreLocation
 import ReactorKit
 import RxCocoa
 import KakaoMapsSDK
 
-final class PlaceViewController: BaseViewController {
+final class PlaceViewController: BaseViewController, CLLocationManagerDelegate {
     private let placeView = PlaceView()
+    private let locationManager = CLLocationManager()
+    
     private var mapContainer: KMViewContainer?
     private var mapController: KMController?
     private var _observerAdded: Bool = false
@@ -42,13 +45,22 @@ final class PlaceViewController: BaseViewController {
     override func loadView() {
         view = placeView
     }
+    
+    override func configureAction() {
+        placeView.currentLocationButton.addTarget(self, action: #selector(currentLocationButtonTapped), for: .touchUpInside)
+    }
+    
+    // MARK: - Actions
+    @objc private func currentLocationButtonTapped() {
+        checkAuthorizationStatus()
+    }
 }
 
 // MARK: - KakaoMap
 extension PlaceViewController: MapControllerDelegate {
     func addViews() {
         //여기에서 그릴 View(KakaoMap, Roadview)들을 추가한다.
-        let defaultPosition: MapPoint = MapPoint(longitude: 126.9137, latitude: 37.5491)
+        let defaultPosition: MapPoint = MapPoint(longitude: 126.972317, latitude: 37.555946)
         //지도(KakaoMap)를 그리기 위한 viewInfo를 생성
         let mapviewInfo: MapviewInfo = MapviewInfo(viewName: "mapview", viewInfoName: "map", defaultPosition: defaultPosition, defaultLevel: 17)
         
@@ -93,6 +105,7 @@ extension PlaceViewController: MapControllerDelegate {
         
         mapController?.prepareEngine() //엔진 초기화. 엔진 내부 객체 생성 및 초기화가 진행된다.
         
+        setupLocationManager()
         addViews()
     }
     
@@ -157,7 +170,6 @@ extension PlaceViewController: MapControllerDelegate {
     func containerDidResized(_ size: CGSize) {
         let mapView: KakaoMap? = mapController?.getView("mapview") as? KakaoMap
         mapView?.viewRect = CGRect(origin: CGPoint(x: 0.0, y: 0.0), size: size)   //지도뷰의 크기를 리사이즈된 크기로 지정한다.
-        
     }
     
     func viewWillDestroyed(_ view: ViewBase) {
@@ -262,5 +274,85 @@ extension PlaceViewController {
                 poi.showBadge(badgeID: "badge\(index)")
             }
         }
+    }
+}
+
+// MARK: - CoreLocation
+extension PlaceViewController {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.last else { return }
+        print("➡️ 현재 위치: \(location.coordinate)")
+        locationManager.stopUpdatingLocation()
+        setRegion(center: location.coordinate)
+    }
+    
+    private func setupLocationManager() {
+        locationManager.delegate = self
+        checkSystemLocation()
+    }
+    
+    private func checkSystemLocation() {
+        DispatchQueue.global().async {
+            if CLLocationManager.locationServicesEnabled() {
+                self.checkAuthorizationStatus()
+            } else {
+                print("❌SYSTEM DENIED")
+                self.setDefaultRegion()
+                
+                DispatchQueue.main.async {
+                    self.showAlert(title: "위치서비스 사용 불가", message: "위치 서비스를 사용할 수 없습니다.\n기기의 '설정->개인정보 보호'에서 위치 서비스를 켜주세요.", button: "설정으로 이동", isCancelButton: true) {
+                        // 설정앱으로 이동
+                        if let appSettings = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(appSettings) {
+                            UIApplication.shared.open(appSettings)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private func checkAuthorizationStatus() {
+        let status = locationManager.authorizationStatus
+        
+        switch status {
+        case .notDetermined:
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            locationManager.requestWhenInUseAuthorization()
+        case .denied:
+            print("❌DENIED")
+            setDefaultRegion()
+            
+            DispatchQueue.main.async {
+                self.showAlert(title: "위치서비스 사용 불가", message: "위치 서비스를 사용할 수 없습니다.\n기기의 '설정->개인정보 보호'에서 위치 서비스를 켜주세요.", button: "설정으로 이동", isCancelButton: true) {
+                    // 설정앱으로 이동
+                    if let appSettings = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(appSettings) {
+                        UIApplication.shared.open(appSettings)
+                    }
+                }
+            }
+        case .authorizedWhenInUse:
+            print("✅AUTHORIZED")
+            locationManager.startUpdatingLocation()
+        default:
+            print("권한 확인 실패")
+        }
+    }
+    
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        checkSystemLocation()
+    }
+    
+    private func setRegion(center: CLLocationCoordinate2D) {
+        // 받아온 현재위치로 카메라 이동
+        guard let mapView = mapController?.getView("mapview") as? KakaoMap else { return }
+        
+        let mapPoint = MapPoint(longitude: center.longitude, latitude: center.latitude)
+        mapView.moveCamera(CameraUpdate.make(target: mapPoint, zoomLevel: 15, mapView: mapView))
+    }
+    
+    private func setDefaultRegion() {
+        // 위치정보를 받아오지 못했을때 기본 좌표(37.555946 / 126.972317)로 카메라 이동
+        let defaultCoordinate = CLLocationCoordinate2D(latitude: 37.555946, longitude: 126.972317)
+        setRegion(center: defaultCoordinate)
     }
 }
