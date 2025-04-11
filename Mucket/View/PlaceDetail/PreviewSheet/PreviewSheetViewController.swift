@@ -8,6 +8,7 @@
 import UIKit
 import ReactorKit
 import SnapKit
+import Toast
 
 // TODO: Reactor로 변경
 final class PreviewSheetViewController: BaseViewController {
@@ -40,11 +41,28 @@ final class PreviewSheetViewController: BaseViewController {
     
     override func configureAction() {
         previewSheetView.detailButton.addTarget(self, action: #selector(detailButtonTapped), for: .touchUpInside)
+        previewSheetView.copyButton.addTarget(self, action: #selector(copyButtonTapped), for: .touchUpInside)
     }
     
+    // MARK: - Action
     @objc
     private func detailButtonTapped() {
         onDetailRequested?(place)
         dismiss(animated: true)
+    }
+    
+    @objc
+    private func copyButtonTapped() {
+        guard let address = previewSheetView.addressLabel.text, !address.isEmpty else {
+            print("📭 주소 없음")
+            return
+        }
+        
+        UIPasteboard.general.string = address
+        
+        if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = scene.windows.first(where: { $0.isKeyWindow }) {
+            window.makeToast("주소가 복사되었습니다.")
+        }
     }
 }

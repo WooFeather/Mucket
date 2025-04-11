@@ -115,6 +115,7 @@ final class PlaceDetailView: BaseView {
             $0.top.equalTo(addressHeaderLabel.snp.bottom).offset(8)
             $0.leading.trailing.equalToSuperview().inset(16)
             $0.height.equalTo(44)
+            $0.bottom.equalToSuperview().offset(-16)
         }
         
 //        copyButton.snp.makeConstraints {
