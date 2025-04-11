@@ -57,25 +57,30 @@ final class AddContentsViewController: BaseViewController {
     }
     
     @objc private func saveButtonTapped() {
-        guard let addCookingVC = dataViewControllers[0] as? AddCookingViewController,
-              let reactor = addCookingVC.reactor else { return }
+        switch currentPage {
+        case 0:
+            guard let addCookingVC = dataViewControllers[0] as? AddCookingViewController,
+                  let reactor = addCookingVC.reactor else { return }
 
-        let trimmedName = addCookingVC.addCookingView.nameTextField.text?.trimmingCharacters(in: .whitespaces)
-        
-        if trimmedName != "" {
-            let name = trimmedName ?? "이름 없음"
+            let trimmedName = addCookingVC.addCookingView.nameTextField.text?.trimmingCharacters(in: .whitespaces)
+            if trimmedName?.isEmpty ?? true {
+                showAlert(title: "요리 이름은 필수 사항입니다!", message: "요리 이름을 다시 한 번 확인해주세요 :)", button: "확인") { }
+                return
+            }
+
+            let name = trimmedName!
             let memo = addCookingVC.addCookingView.memoTextView.text
             let rating = addCookingVC.addCookingView.ratingView.rating
             let image = addCookingVC.addCookingView.previewPhotoView.image ?? .placeholderSmall
             let youtubeLink = addCookingVC.addCookingView.linkTextField.text
-            
+
             if !isValidYoutubeLink(youtubeLink) {
                 showAlert(title: "링크 확인", message: "유효한 유튜브 링크만 입력할 수 있어요 :)", button: "확인") { }
                 return
             }
-            
+
             let imageURL = saveImageToDocumentsDirectory(image: image)
-            
+
             reactor.action.onNext(.saveCooking(
                 name: name,
                 memo: memo,
@@ -83,15 +88,42 @@ final class AddContentsViewController: BaseViewController {
                 imageURL: imageURL,
                 youtubeLink: youtubeLink
             ))
-            
-            if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-               let window = scene.windows.first(where: { $0.isKeyWindow }) {
-                window.makeToast("요리가 저장되었습니다")
+
+            showToastAndDismiss(message: "요리가 저장되었습니다")
+
+        case 1:
+            guard let addPlaceVC = dataViewControllers[1] as? AddPlaceViewController,
+                  let reactor = addPlaceVC.reactor else { return }
+
+            let trimmedName = addPlaceVC.addPlaceView.nameTextField.text?.trimmingCharacters(in: .whitespaces)
+            if trimmedName?.isEmpty ?? true {
+                showAlert(title: "맛집 이름은 필수 사항입니다!", message: "맛집 이름을 다시 한 번 확인해주세요 :)", button: "확인") { }
+                return
             }
-            
-            self.dismiss(animated: true)
-        } else {
-            showAlert(title: "요리 이름은 필수 사항입니다!", message: "요리 이름을 다시 한 번 확인해주세요 :)", button: "확인") { }
+
+            let name = trimmedName!
+            let memo = addPlaceVC.addPlaceView.memoTextView.text
+            let rating = addPlaceVC.addPlaceView.ratingView.rating
+            let image = addPlaceVC.addPlaceView.previewPhotoView.image ?? .placeholderSmall
+            let imageURL = saveImageToDocumentsDirectory(image: image)
+            let address = reactor.currentState.addressContents
+            let latitude = reactor.currentState.latitude
+            let longitude = reactor.currentState.longitude
+
+            reactor.action.onNext(.savePlace(
+                name: name,
+                memo: memo,
+                rating: rating,
+                imageURL: imageURL,
+                address: address,
+                latitude: latitude,
+                longitude: longitude
+            ))
+
+            showToastAndDismiss(message: "맛집이 저장되었습니다")
+
+        default:
+            break
         }
     }
     
@@ -125,6 +157,14 @@ final class AddContentsViewController: BaseViewController {
         }
         
         return link.contains("youtube.com") || link.contains("youtu.be")
+    }
+    
+    private func showToastAndDismiss(message: String) {
+        if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = scene.windows.first(where: { $0.isKeyWindow }) {
+            window.makeToast(message)
+        }
+        self.dismiss(animated: true)
     }
 }
 

@@ -10,7 +10,7 @@ import ReactorKit
 import RxCocoa
 
 final class AddPlaceViewController: BaseViewController {
-    private let addPlaceView = AddPlaceView()
+    let addPlaceView = AddPlaceView()
     var disposeBag = DisposeBag()
     let imagePicker = UIImagePickerController()
     
@@ -88,12 +88,25 @@ extension AddPlaceViewController: View {
             .distinctUntilChanged()
             .observe(on: MainScheduler.asyncInstance)
             .filter { $0 != .none }
-            .bind(with: self) { owner, route in
+            .bind(with: self) {
+                owner,
+                route in
                 switch route {
                 case .searchAddress:
-                    let vc = SearchAddressViewController(reactor: SearchAddressReactor())
-                    owner.present(vc, animated: true)
-                    owner.reactor?.action.onNext(.clearRouting)
+                    let searchVC = SearchAddressViewController(reactor: SearchAddressReactor())
+                    searchVC.onAddressSelected = { [weak self] place in
+                        self?.reactor?.action.onNext(
+                            .setAddressInfo(
+                                address: place.roadAddressName,
+                                latitude: Double(place.y),
+                                longitude: Double(place.x)
+                            )
+                        )
+                    }
+                    
+                    owner.present(searchVC, animated: true) {
+                        owner.reactor?.action.onNext(.clearRouting)
+                    }
                 case .folder:
                     let folderRepo = PlaceFolderRepository()
                     let reactor = PlaceFolderReactor(repository: folderRepo, selectedPlaceId: nil)
@@ -109,6 +122,58 @@ extension AddPlaceViewController: View {
                 default:
                     break
                 }
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.selectedFolder }
+            .distinctUntilChanged()
+            .compactMap { $0 }
+            .bind(with: self) { owner, folder in
+                owner.addPlaceView.folderSelectButton.setTitle(folder.name, for: .normal)
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.nameContents }
+            .distinctUntilChanged()
+            .compactMap { $0 }
+            .bind(to: addPlaceView.nameTextField.rx.text)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.imageURLContents }
+            .distinctUntilChanged()
+            .compactMap { $0 }
+            .bind(with: self) { owner, imageURL in
+                let filePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(imageURL)
+                let savedImage = UIImage(contentsOfFile: filePath.path)
+                
+                
+                owner.addPlaceView.previewPhotoView.image = savedImage ?? .placeholderSmall
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.ratingContents }
+            .distinctUntilChanged()
+            .compactMap { $0 }
+            .bind(to: addPlaceView.ratingView.rx.rating)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.memoContents }
+            .distinctUntilChanged()
+            .compactMap { $0 }
+            .bind(to: addPlaceView.memoTextView.rx.text)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.addressContents }
+            .distinctUntilChanged()
+            .compactMap { $0 }
+            .bind(with: self) { owner, address in
+                owner.addPlaceView.addressButton.setTitle(address, for: .normal)
             }
             .disposed(by: disposeBag)
     }

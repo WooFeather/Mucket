@@ -13,6 +13,7 @@ final class SearchAddressViewController: BaseViewController {
     
     private let searchAddressView = SearchAddressView()
     var disposeBag = DisposeBag()
+    var onAddressSelected: ((PlaceDetail) -> Void)?
     
     init(reactor: SearchAddressReactor) {
         super.init(nibName: nil, bundle: nil)
@@ -62,8 +63,10 @@ extension SearchAddressViewController: View {
             .disposed(by: disposeBag)
         
         searchAddressView.addressTableView.rx.modelSelected(PlaceDetail.self)
-            .map { SearchAddressReactor.Action.searchCellTapped(place: $0) }
-            .bind(to: reactor.action)
+            .bind(with: self) { owner, place in
+                owner.onAddressSelected?(place)
+                owner.reactor?.action.onNext(.searchCellTapped(place: place))
+            }
             .disposed(by: disposeBag)
     }
     

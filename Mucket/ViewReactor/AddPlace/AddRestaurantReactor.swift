@@ -57,6 +57,7 @@ final class AddPlaceReactor: Reactor {
         case clearRouting
         case setSelectedFolder(PlaceFolderEntity)
         case savePlace(name: String, memo: String?, rating: Double?, imageURL: String?, address: String?, latitude: Double?, longitude: Double?)
+        case setAddressInfo(address: String, latitude: Double?, longitude: Double?)
     }
     
     enum Mutation {
@@ -64,6 +65,7 @@ final class AddPlaceReactor: Reactor {
         case presentImagePicker(Bool)
         case setSelectedFolder(PlaceFolderEntity)
         case setSaveCompleted(Bool)
+        case setAddress(address: String, latitude: Double?, longitude: Double?)
     }
     
     struct State {
@@ -76,6 +78,8 @@ final class AddPlaceReactor: Reactor {
         var ratingContents: Double?
         var memoContents: String?
         var addressContents: String?
+        var latitude: Double?
+        var longitude: Double?
     }
 }
 
@@ -97,8 +101,8 @@ extension AddPlaceReactor {
             let entity = MyPlaceEntity(
                 id: "",
                 name: name,
-                latitude: latitude,
-                longitude: longitude,
+                latitude: currentState.latitude,
+                longitude: currentState.longitude,
                 address: address,
                 imageFileURL: imageURL,
                 memo: memo,
@@ -110,6 +114,8 @@ extension AddPlaceReactor {
             return .just(.setSaveCompleted(true))
         case .folderPlaceButtonTapped:
             return .just(.setRoute(.folder))
+        case let .setAddressInfo(address, lat, lng):
+            return .just(.setAddress(address: address, latitude: lat, longitude: lng))
         }
     }
     
@@ -124,6 +130,10 @@ extension AddPlaceReactor {
             newState.selectedFolder = folder
         case .setSaveCompleted(let value):
             newState.isSaveCompleted = value
+        case let .setAddress(address, lat, lng):
+            newState.addressContents = address
+            newState.latitude = lat
+            newState.longitude = lng
         }
         return newState
     }
