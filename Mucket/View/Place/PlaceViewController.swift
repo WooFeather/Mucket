@@ -339,8 +339,21 @@ extension PlaceViewController {
 
         let sheet = PreviewSheetViewController(place: place)
         
+        let entity = MyPlaceEntity(
+            id: place.id,
+            name: place.name,
+            latitude: place.latitude,
+            longitude: place.longitude,
+            address: place.address,
+            imageFileURL: place.imageFileURL,
+            memo: place.memo,
+            rating: place.rating,
+            createdAt: place.createdAt,
+            folderId: place.folderId
+        )
+        
         sheet.onDetailRequested = { [weak self] place in
-            let vc = PlaceDetailViewController()
+            let vc = PlaceDetailViewController(reactor: PlaceDetailReactor(place: entity, repository: MyPlaceRepository()))
             self?.navigationController?.pushViewController(vc, animated: true)
         }
 
