@@ -81,8 +81,20 @@ extension PlaceViewController: MapControllerDelegate {
         
         mapView?.setPoiEnabled(true)
         createLabelLayer(view: mapView, manager: manager)
-//        createPoiStyle(view: mapView, manager: manager, image: image)
+        // createPoiStyle(view: mapView, manager: manager, image: image)
         createPois(view: mapView, manager: manager, image: image)
+        
+        // 지도가 로드된 후 현재 사용자 위치 확인
+        if locationManager.authorizationStatus == .authorizedWhenInUse {
+            // 이미 위치 정보가 있는 경우 바로 적용
+            if let location = locationManager.location {
+                setRegion(center: location.coordinate)
+            } else {
+                // 위치 정보가 없으면 업데이트 요청
+                locationManager.startUpdatingLocation()
+            }
+        }
+
     }
     
     //addView 실패 이벤트 delegate. 실패에 대한 오류 처리를 진행한다.
@@ -93,20 +105,31 @@ extension PlaceViewController: MapControllerDelegate {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // mapContainer 초기화
         mapContainer = placeView.mapView
         guard mapContainer != nil else {
             print("맵 생성 실패")
             return
         }
         
-        //KMController 생성.
+        // 위치 관리자 설정
+        setupLocationManager()
+        
+        // 컨트롤러 초기화 및 엔진 준비
         mapController = KMController(viewContainer: mapContainer!)
         mapController!.delegate = self
+        mapController?.prepareEngine()
         
-        mapController?.prepareEngine() //엔진 초기화. 엔진 내부 객체 생성 및 초기화가 진행된다.
-        
-        setupLocationManager()
+        // 지도 추가 - 여기서는 기본 위치로 초기화하고, 위치 정보가 확인되면 이동시킬 예정
         addViews()
+        
+        // 앱 실행 시 이미 권한이 있는 경우 자동으로 위치 찾도록 즉시 요청
+        if locationManager.authorizationStatus == .authorizedWhenInUse {
+            locationManager.startUpdatingLocation()
+        } else {
+            checkAuthorizationStatus() // 권한 없으면 요청 프로세스 시작
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -283,7 +306,11 @@ extension PlaceViewController {
         guard let location = locations.last else { return }
         print("➡️ 현재 위치: \(location.coordinate)")
         locationManager.stopUpdatingLocation()
-        setRegion(center: location.coordinate)
+        
+        // 지도가 초기화된 후에만 카메라 이동
+        if let mapView = mapController?.getView("mapview") as? KakaoMap {
+            setRegion(center: location.coordinate)
+        }
     }
     
     private func setupLocationManager() {
