@@ -89,8 +89,8 @@ extension AddCookingViewController: View {
                 case .folder:
                     // 폴더 선택 화면으로 이동
                     let folderRepo = CookingFolderRepository()
-                    let reactor = SelectFolderReactor(repository: folderRepo, selectedCookingId: nil)
-                    let folderVC = SelectFolderViewController(reactor: reactor)
+                    let reactor = CookingFolderReactor(repository: folderRepo, selectedCookingId: nil)
+                    let folderVC = CookingFolderViewController(reactor: reactor)
                     
                     // 폴더 선택 콜백 설정
                     folderVC.onFolderSelected = { [weak self] selectedFolder in

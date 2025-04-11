@@ -36,7 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private func migration() {
         // 현재 version이 아니라, 최종 업데이트될 version을 입력
-        let config = Realm.Configuration(schemaVersion: 2) { migration, oldSchemaVersion in
+        let config = Realm.Configuration(schemaVersion: 3) { migration, oldSchemaVersion in
             
             // 0 -> 1: Place의 folder 칼럼 타입 변경
             // 기존: @Persisted var folder: PlaceFolderObject?
@@ -45,11 +45,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 // 단순한 칼럼 삭제로 간주
             }
             
-            // 0 -> 2: PlaceFolder의 places 칼럼명 변경
+            // 1 -> 2: PlaceFolder의 places 칼럼명 변경
             // 기존: @Persisted var places: List<PlaceObject>
             // 변경: @Persisted var places: List<MyPlaceObject>
             if oldSchemaVersion < 2 {
                 // 단순한 칼럼 삭제로 간주
+            }
+            
+            // 2 -> 3: Place에 address 칼럼 추가
+            if oldSchemaVersion < 3 {
+                // 칼럼 추가
             }
         }
         

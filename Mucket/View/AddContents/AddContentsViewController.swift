@@ -13,7 +13,7 @@ final class AddContentsViewController: BaseViewController {
     
     private lazy var dataViewControllers: [UIViewController] = [
         AddCookingViewController(reactor: AddCookingReactor()),
-        AddRestaurantViewController(reactor: AddRestaurantReactor())
+        AddPlaceViewController(reactor: AddPlaceReactor())
     ]
     
     private var currentPage: Int = 0 {

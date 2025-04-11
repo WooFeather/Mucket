@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 import Cosmos
 
-final class AddRestaurantView: BaseView {
+final class AddPlaceView: BaseView {
     let scrollView = UIScrollView()
     private let contentView = UIView()
     private let stackView = UIStackView()

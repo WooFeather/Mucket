@@ -9,12 +9,12 @@ import UIKit
 import ReactorKit
 import RxCocoa
 
-final class AddRestaurantViewController: BaseViewController {
-    private let addRestaurantView = AddRestaurantView()
+final class AddPlaceViewController: BaseViewController {
+    private let addPlaceView = AddPlaceView()
     var disposeBag = DisposeBag()
     let imagePicker = UIImagePickerController()
     
-    init(reactor: AddRestaurantReactor) {
+    init(reactor: AddPlaceReactor) {
         super.init(nibName: nil, bundle: nil)
         self.reactor = reactor
     }
@@ -25,7 +25,7 @@ final class AddRestaurantViewController: BaseViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        enableKeyboardHandling(for: addRestaurantView.scrollView)
+        enableKeyboardHandling(for: addPlaceView.scrollView)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -34,7 +34,7 @@ final class AddRestaurantViewController: BaseViewController {
     }
     
     override func loadView() {
-        view = addRestaurantView
+        view = addPlaceView
     }
     
     override func configureView() {
@@ -48,27 +48,32 @@ final class AddRestaurantViewController: BaseViewController {
 }
 
 // MARK: - Reactor
-extension AddRestaurantViewController: View {
-    func bind(reactor: AddRestaurantReactor) {
+extension AddPlaceViewController: View {
+    func bind(reactor: AddPlaceReactor) {
         bindAction(reactor)
         bindState(reactor)
     }
     
-    private func bindAction(_ reactor: AddRestaurantReactor) {
-        addRestaurantView.addPhotoButton.rx.tap
-            .map { AddRestaurantReactor.Action.addPhotoButtonTapped }
+    private func bindAction(_ reactor: AddPlaceReactor) {
+        addPlaceView.addPhotoButton.rx.tap
+            .map { AddPlaceReactor.Action.addPhotoButtonTapped }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        addRestaurantView.addressButton.rx.tap
+        addPlaceView.folderSelectButton.rx.tap
+            .map {AddPlaceReactor.Action.folderPlaceButtonTapped }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        addPlaceView.addressButton.rx.tap
             .map {
-                AddRestaurantReactor.Action.searchAddressButtonTapped
+                AddPlaceReactor.Action.searchAddressButtonTapped
             }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
     }
     
-    private func bindState(_ reactor: AddRestaurantReactor) {
+    private func bindState(_ reactor: AddPlaceReactor) {
         reactor.state
             .map { $0.isPresent }
             .distinctUntilChanged()
@@ -90,7 +95,17 @@ extension AddRestaurantViewController: View {
                     owner.present(vc, animated: true)
                     owner.reactor?.action.onNext(.clearRouting)
                 case .folder:
-                    print("폴더뷰로 이동")
+                    let folderRepo = PlaceFolderRepository()
+                    let reactor = PlaceFolderReactor(repository: folderRepo, selectedPlaceId: nil)
+                    let folderVC = PlaceFolderViewController(reactor: reactor)
+                    folderVC.onFolderSelected = { [weak self] selectedFolder in
+                        self?.reactor?.action.onNext(.setSelectedFolder(selectedFolder))
+                    }
+                    
+                    self.present(folderVC, animated: true) {
+                        self.reactor?.action.onNext(.clearRouting)
+                    }
+                    
                 default:
                     break
                 }
@@ -100,16 +115,16 @@ extension AddRestaurantViewController: View {
 }
 
 // MARK: - ImagePicker
-extension AddRestaurantViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension AddPlaceViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         print(#function)
         
         let image = info[UIImagePickerController.InfoKey.originalImage]
         
         if let result = image as? UIImage {
-            addRestaurantView.previewPhotoView.image = result
+            addPlaceView.previewPhotoView.image = result
         } else {
-            addRestaurantView.previewPhotoView.image = .xmarkOctagon
+            addPlaceView.previewPhotoView.image = .xmarkOctagon
         }
         
         dismiss(animated: true)

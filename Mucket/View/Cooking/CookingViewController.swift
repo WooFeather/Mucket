@@ -44,7 +44,7 @@ final class CookingViewController: BaseViewController {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(updateFolderMenu),
-            name: NSNotification.Name("FolderListUpdated"),
+            name: NSNotification.Name("CookingFolderListUpdated"),
             object: nil
         )
     }

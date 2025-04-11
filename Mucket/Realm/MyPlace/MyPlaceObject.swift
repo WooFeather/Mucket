@@ -14,6 +14,7 @@ final class MyPlaceObject: Object {
     @Persisted var name: String
     @Persisted var latitude: Double?
     @Persisted var longitude: Double?
+    @Persisted var address: String?
     @Persisted var imageFileURL: String?
     @Persisted var memo: String?
     @Persisted var rating: Double?
@@ -28,6 +29,7 @@ struct MyPlaceEntity: Equatable {
     let name: String
     let latitude: Double?
     let longitude: Double?
+    let address: String?
     let imageFileURL: String?
     let memo: String?
     let rating: Double?
@@ -43,6 +45,7 @@ extension MyPlaceEntity {
         object.name = name
         object.latitude = latitude
         object.longitude = longitude
+        object.address = address
         object.imageFileURL = imageFileURL
         object.memo = memo
         object.rating = rating
@@ -58,6 +61,7 @@ extension MyPlaceObject {
             name: self.name,
             latitude: self.latitude,
             longitude: self.longitude,
+            address: self.address,
             imageFileURL: self.imageFileURL,
             memo: self.memo,
             rating: self.rating,

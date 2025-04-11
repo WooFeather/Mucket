@@ -1,15 +1,16 @@
 //
-//  SelectFolderReactor.swift
+//  PlaceFolderReactor.swift
 //  Mucket
 //
-//  Created by 조우현 on 4/4/25.
+//  Created by 조우현 on 4/11/25.
 //
 
+import Foundation
 import ReactorKit
 
-final class SelectFolderReactor: Reactor {
-    private let repository: CookingFolderRepositoryType
-    private let selectedCookingId: String?
+final class PlaceFolderReactor: Reactor {
+    private let repository: PlaceFolderRepositoryType
+    private let selectedPlaceId: String?
     var initialState: State
 
     enum Action {
@@ -20,24 +21,24 @@ final class SelectFolderReactor: Reactor {
     }
 
     enum Mutation {
-        case setFolderList([CookingFolderEntity], selectedFolderId: String?)
+        case setFolderList([PlaceFolderEntity], selectedFolderId: String?)
         case updateFolderList
     }
 
     struct State {
-        var folderList: [CookingFolderEntity] = []
+        var folderList: [PlaceFolderEntity] = []
         var selectedFolderId: String?
     }
 
-    init(repository: CookingFolderRepositoryType, selectedCookingId: String?) {
+    init(repository: PlaceFolderRepositoryType, selectedPlaceId: String?) {
         self.repository = repository
-        self.selectedCookingId = selectedCookingId
+        self.selectedPlaceId = selectedPlaceId
 
         // 초기 상태는 selectedCookingId로 폴더 찾아서 설정
         let folderId: String? = {
-            guard let id = selectedCookingId,
-                  let cookingObject = repository.getCookingObject(by: id),
-                  let folder = cookingObject.folder.first else {
+            guard let id = selectedPlaceId,
+                  let placeObject = repository.getPlaceObject(by: id),
+                  let folder = placeObject.folder.first else {
                 return repository.getDefaultFolder().id
             }
             return folder.id.stringValue

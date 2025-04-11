@@ -9,12 +9,12 @@ import UIKit
 import ReactorKit
 import RxCocoa
 
-final class SelectFolderViewController: BaseViewController {
+final class CookingFolderViewController: BaseViewController {
     private let selectFolderView = SelectFolderView()
     var disposeBag = DisposeBag()
     var onFolderSelected: ((CookingFolderEntity) -> Void)?
 
-    init(reactor: SelectFolderReactor) {
+    init(reactor: CookingFolderReactor) {
         super.init(nibName: nil, bundle: nil)
         self.reactor = reactor
     }
@@ -29,7 +29,7 @@ final class SelectFolderViewController: BaseViewController {
         guard let reactor = self.reactor else { return }
 
         Observable.just(())
-            .map { SelectFolderReactor.Action.viewWillAppear }
+            .map { CookingFolderReactor.Action.viewWillAppear }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
     }
@@ -44,18 +44,18 @@ final class SelectFolderViewController: BaseViewController {
     }
 
     override func configureData() {
-        selectFolderView.folderTableView.register(UITableViewCell.self, forCellReuseIdentifier: "folderTableViewCell")
+        selectFolderView.folderTableView.register(UITableViewCell.self, forCellReuseIdentifier: "cookingFolderTableViewCell")
     }
 }
 
 // MARK: - Reactor
-extension SelectFolderViewController: View {
-    func bind(reactor: SelectFolderReactor) {
+extension CookingFolderViewController: View {
+    func bind(reactor: CookingFolderReactor) {
         bindAction(reactor)
         bindState(reactor)
     }
     
-    private func bindAction(_ reactor: SelectFolderReactor) {
+    private func bindAction(_ reactor: CookingFolderReactor) {
         selectFolderView.folderTableView.rx.modelSelected(CookingFolderEntity.self)
             .bind(with: self) { owner, folder in
                 reactor.action.onNext(.setSelectedFolder(folderId: folder.id))
@@ -88,19 +88,19 @@ extension SelectFolderViewController: View {
                 } else {
                     owner.showAlert(title: "폴더 삭제", message: "해당 폴더에 속한 요리는 '기본 폴더'로 이동하게 됩니다. 폴더를 삭제하시겠습니까?", button: "삭제", style: .destructive, isCancelButton: true) {
                         reactor.action.onNext(.deleteFolder(id: folder.id))
-                        NotificationCenter.default.post(name: NSNotification.Name("FolderListUpdated"), object: nil)
+                        NotificationCenter.default.post(name: NSNotification.Name("CookingFolderListUpdated"), object: nil)
                     }
                 }
             }
             .disposed(by: disposeBag)
     }
     
-    private func bindState(_ reactor: SelectFolderReactor) {
+    private func bindState(_ reactor: CookingFolderReactor) {
         reactor.state
             .map { $0.folderList }
             .distinctUntilChanged()
             .bind(to: selectFolderView.folderTableView.rx.items(
-                cellIdentifier: "folderTableViewCell",
+                cellIdentifier: "cookingFolderTableViewCell",
                 cellType: UITableViewCell.self
             )) { [weak self] _, entity, cell in
                 guard let self = self else { return }
@@ -142,7 +142,7 @@ extension SelectFolderViewController: View {
             reactor.action.onNext(.addFolder(name: text))
             
             // 폴더 추가 알림 발송
-            NotificationCenter.default.post(name: NSNotification.Name("FolderListUpdated"), object: nil)
+            NotificationCenter.default.post(name: NSNotification.Name("CookingFolderListUpdated"), object: nil)
         }
         
         alert.addAction(cancelAction)
