@@ -356,6 +356,7 @@ extension PlaceViewController {
         
         sheet.onDetailRequested = { [weak self] place in
             let vc = PlaceDetailViewController(reactor: PlaceDetailReactor(place: entity, repository: MyPlaceRepository()))
+            vc.hidesBottomBarWhenPushed = true
             self?.navigationController?.pushViewController(vc, animated: true)
         }
 
