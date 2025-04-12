@@ -34,7 +34,9 @@ final class AddPlaceReactor: Reactor {
                 imageURLContents: placeObject.imageFileURL,
                 ratingContents: placeObject.rating,
                 memoContents: placeObject.memo,
-                addressContents: placeObject.address
+                addressContents: placeObject.address,
+                latitude: placeObject.latitude,
+                longitude: placeObject.longitude
             )
         } else {
             // 새 맛집 생성 → 기본 폴더 선택
