@@ -68,6 +68,18 @@ extension SearchAddressViewController: View {
                 owner.reactor?.action.onNext(.searchCellTapped(place: place))
             }
             .disposed(by: disposeBag)
+        
+        // 페이지네이션
+        searchAddressView.addressTableView.rx.willDisplayCell
+            .map { (cell, indexPath) -> Bool in
+                let itemCount = reactor.currentState.searchResult.count
+                return indexPath.row == itemCount - 1
+            }
+            .distinctUntilChanged()
+            .filter { $0 }
+            .map { _ in SearchAddressReactor.Action.loadNextPage }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     }
     
     private func bindState(_ rector: SearchAddressReactor) {

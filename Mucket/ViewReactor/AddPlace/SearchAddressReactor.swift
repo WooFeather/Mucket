@@ -18,7 +18,7 @@ final class SearchAddressReactor: Reactor {
         case closeButtonTapped
         case searchButtonTapped(query: String)
         case searchCellTapped(place: PlaceDetail)
-        case loadNextPage(page: Int)
+        case loadNextPage
         case clearAlert
     }
     
@@ -31,6 +31,7 @@ final class SearchAddressReactor: Reactor {
         case setLoadingIndicator(Bool)
         case setQuery(String)
         case setPage(Int)
+        case setIsEnd(Bool)
         case showAlert(message: String)
         case clearAlertMessage
     }
@@ -43,6 +44,7 @@ final class SearchAddressReactor: Reactor {
         var isLoading = false
         var currentQuery: String = ""
         var currentPage: Int = 1
+        var isEnd: Bool = false
         var alertMessage: String? = nil
     }
 }
@@ -61,21 +63,42 @@ extension SearchAddressReactor {
             return .concat([
                 .just(.setQuery(trimmedQuery)),
                 .just(.setPage(1)),
+                .just(.setIsEnd(false)),
                 .just(.setLoadingIndicator(true)),
-                fetchSearchData(query: trimmedQuery, page: 1)
-                    .flatMap{ result in
+                fetchSearchEntity(query: trimmedQuery, page: 1)
+                    .flatMap { entity in
                         Observable.from([
-                            .setSearchResult(result),
-                            .setEmptyStateHidden(result.isEmpty == false),
-                            .setSearchTableViewHidden(result.isEmpty)
+                            .setSearchResult(entity.details),
+                            .setEmptyStateHidden(!entity.details.isEmpty),
+                            .setSearchTableViewHidden(entity.details.isEmpty),
+                            .setIsEnd(entity.info.isEnd)
                         ])
                     },
                 .just(.setLoadingIndicator(false))
             ])
         case .searchCellTapped(_):
-            return .just(.popToPrevView) // TODO: 해당 cell의 roadAddressName넘기기
-        case .loadNextPage(_):
-            return .empty() // TODO: 페이지네이션 구현
+            return .just(.popToPrevView)
+        case .loadNextPage:
+            guard !currentState.isEnd else {
+                return .empty()
+            }
+            
+            let nextPage = currentState.currentPage + 1
+            return .concat([
+                .just(.setLoadingIndicator(true)),
+                fetchSearchEntity(query: currentState.currentQuery, page: nextPage)
+                    .flatMap { entity in
+                        Observable.from([
+                            .appendSearchResult(entity.details),
+                            .setEmptyStateHidden(!entity.details.isEmpty),
+                            .setSearchTableViewHidden(entity.details.isEmpty),
+                            .setIsEnd(entity.info.isEnd),
+                            .setPage(nextPage)
+                        ])
+                    },
+                .just(.setLoadingIndicator(false))
+            ])
+            
         case .clearAlert:
             return .just(.clearAlertMessage)
         }
@@ -104,29 +127,29 @@ extension SearchAddressReactor {
             newState.alertMessage = message
         case .clearAlertMessage:
             newState.alertMessage = nil
+        case .setIsEnd(let isEnd):
+            newState.isEnd = isEnd
         }
         return newState
     }
 }
 
-// TODO: 페이지네이션 구현
 extension SearchAddressReactor {
-    private func fetchSearchData(query: String, page: Int) -> Observable<[PlaceDetail]> {
+    private func fetchSearchEntity(query: String, page: Int) -> Observable<PlaceEntity> {
         return Observable.create { [weak self] observer in
             Task {
                 do {
-                    let result = try await self?.repository.search(query: query, page: page).details ?? []
-                    observer.onNext(result)
+                    guard let entity = try await self?.repository.search(query: query, page: page)
+                    else {
+                        observer.onNext(PlaceEntity(details: [], info: SearchInfo(isEnd: true)))
+                        observer.onCompleted()
+                        return
+                    }
+                    observer.onNext(entity)
                     observer.onCompleted()
                 } catch {
                     print("❌ 검색 실패: \(error)")
-                    if let networkError = error as? NetworkError {
-                        observer.onNext([])
-                        print(networkError.localizedDescription)
-                    } else {
-                        observer.onNext([])
-                        print("알 수 없는 오류가 발생했습니다.")
-                    }
+                    observer.onNext(PlaceEntity(details: [], info: SearchInfo(isEnd: true)))
                     observer.onCompleted()
                 }
             }
