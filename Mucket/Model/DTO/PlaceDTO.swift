@@ -14,8 +14,8 @@ struct PlaceDTO: Decodable {
 
 struct Document: Decodable {
     let addressName: String
-    let categoryGroupCode: CategoryGroupCode
-    let categoryGroupName: CategoryGroupName
+    let categoryGroupCode: String?
+    let categoryGroupName: String?
     let categoryName, distance, id, phone: String
     let placeName: String
     let placeURL: String
@@ -32,14 +32,6 @@ struct Document: Decodable {
         case roadAddressName = "road_address_name"
         case x, y
     }
-}
-
-enum CategoryGroupCode: String, Codable {
-    case fd6 = "FD6"
-}
-
-enum CategoryGroupName: String, Codable {
-    case 음식점 = "음식점"
 }
 
 struct Meta: Decodable {

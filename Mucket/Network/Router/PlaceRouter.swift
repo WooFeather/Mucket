@@ -39,7 +39,7 @@ enum PlaceRouter: Router {
         case .search(let query, let page):
             return [
                 URLQueryItem(name: "query", value: query),
-                URLQueryItem(name: "category_group_code", value: "FD6"),
+                // URLQueryItem(name: "category_group_code", value: "FD6"), 1.1.1 카테고리제한 해제
                 URLQueryItem(name: "page", value: String(page))
             ]
         }
