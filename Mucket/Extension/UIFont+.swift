@@ -8,11 +8,6 @@
 import UIKit
 
 extension UIFont {
-    enum CustomTitle {
-        static let customTitle1: UIFont = .init(name: "Pretendard-ExtraBold", size: 34)!
-        static let customTitle2: UIFont = .init(name: "Pretendard-SemiBold", size: 28)!
-    }
-    
     enum Head {
         static let head1: UIFont = .init(name: "Pretendard-SemiBold", size: 28)!
         static let head2: UIFont = .init(name: "Pretendard-SemiBold", size: 24)!
