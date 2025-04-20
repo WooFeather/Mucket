@@ -12,7 +12,7 @@ enum NetworkError: Error {
     case invalidURLError
     case networkError(Error)
     case invalidResponse
-    case encodingError
+    case decodingError
 
     // API 응답 에러 (에러 코드 기반)
     case noDataError // ERROR-300
@@ -37,7 +37,7 @@ enum NetworkError: Error {
             return "네트워크 오류: \(error.localizedDescription)"
         case .invalidResponse:
             return "잘못된 응답입니다."
-        case .encodingError:
+        case .decodingError:
             return "데이터 디코딩에 실패했습니다."
         case .noDataError:
             return "필수 값이 누락되었습니다. 요청값을 참고하세요."

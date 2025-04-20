@@ -71,7 +71,6 @@ final class AddContentsViewController: BaseViewController {
             let name = trimmedName!
             let memo = addCookingVC.addCookingView.memoTextView.text
             let rating = addCookingVC.addCookingView.ratingView.rating
-            let image = addCookingVC.addCookingView.previewPhotoView.image ?? .placeholderSmall
             let youtubeLink = addCookingVC.addCookingView.linkTextField.text
 
             if !isValidYoutubeLink(youtubeLink) {
@@ -79,7 +78,13 @@ final class AddContentsViewController: BaseViewController {
                 return
             }
 
-            let imageURL = saveImageToDocumentsDirectory(image: image)
+            let selectedImage = addCookingVC.addCookingView.previewPhotoView.image
+            let imageURL: String?
+            if let image = selectedImage {
+                imageURL = saveImageToDocumentsDirectory(image: image)
+            } else {
+                imageURL = nil
+            }
 
             reactor.action.onNext(.saveCooking(
                 name: name,
@@ -104,11 +109,17 @@ final class AddContentsViewController: BaseViewController {
             let name = trimmedName!
             let memo = addPlaceVC.addPlaceView.memoTextView.text
             let rating = addPlaceVC.addPlaceView.ratingView.rating
-            let image = addPlaceVC.addPlaceView.previewPhotoView.image ?? .placeholderSmall
-            let imageURL = saveImageToDocumentsDirectory(image: image)
             let address = reactor.currentState.addressContents
             let latitude = reactor.currentState.latitude
             let longitude = reactor.currentState.longitude
+            
+            let selectedImage = addPlaceVC.addPlaceView.previewPhotoView.image
+            let imageURL: String?
+            if let image = selectedImage {
+                imageURL = saveImageToDocumentsDirectory(image: image)
+            } else {
+                imageURL = nil
+            }
 
             reactor.action.onNext(.savePlace(
                 name: name,
