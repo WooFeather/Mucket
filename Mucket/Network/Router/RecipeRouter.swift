@@ -45,7 +45,7 @@ enum RecipeRouter: Router {
             return nil
         case .searchRecipe:
             return nil
-        case .fetchThemedRecipe(let type):
+        case .fetchThemedRecipe(_):
             return nil
         }
     }
