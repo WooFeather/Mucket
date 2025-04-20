@@ -1,8 +1,10 @@
 # 🍕 먹캣 Mucket
+[![Download on the App Store](https://img.shields.io/badge/App%20Store-Download-blue?logo=apple&logoColor=white)](https://apps.apple.com/kr/app/%EB%A8%B9%EC%BA%A3-mucket/id6744285478)
 
 ### 레시피, 요리 기록, 맛집을 한 곳에 담다.
 
 ![image](https://github.com/user-attachments/assets/67bbc902-3d4c-4232-add7-2034d337ae5f)
+
 
 ---
 
