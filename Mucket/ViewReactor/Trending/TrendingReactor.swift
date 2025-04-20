@@ -120,7 +120,12 @@ extension TrendingReactor {
         return Observable.create { [weak self] observer in
             Task {
                 do {
-                    let theme = try await self?.repository.fetchTheme(type: type) ?? []
+//                    let theme = try await self?.repository.fetchTheme(type: type) ?? []
+                    
+                    // TODO: theme 요청하는 파라미터 문제 있어서 일단 이렇게 수정 -> 추후 답변 오면 원래 코드 쓸 예정
+                    let all = try await self?.repository.fetchAll() ?? []
+                    let theme = all.filter { $0.type?.contains(type) ?? true }
+                    
                     observer.onNext(Array(theme.shuffled().prefix(10)))
                     observer.onCompleted()
                 } catch {
