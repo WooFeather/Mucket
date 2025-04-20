@@ -31,18 +31,17 @@ final class DiskCache: Cacheable {
         guard let filePath = checkPath(url),
               !fileManager.fileExists(atPath: filePath) else { return }
         
-        await withCheckedContinuation { continuation in
-            DispatchQueue.global(qos: .background).async {
-                if self.fileManager.createFile(atPath: filePath,
-                                               contents: image.jpegData(compressionQuality: 1.0),
-                                               attributes: nil) {
-                    print("💾 Disk에 저장했습니다.")
-                } else {
-                    print("⚠️ Disk 공간이 부족합니다.")
-                }
-                continuation.resume()
+        let imageData = image.jpegData(compressionQuality: 1.0)
+        
+        await Task {
+            if fileManager.createFile(atPath: filePath,
+                                    contents: imageData,
+                                    attributes: nil) {
+                print("💾 Disk에 저장했습니다.")
+            } else {
+                print("⚠️ Disk 공간이 부족합니다.")
             }
-        }
+        }.value
     }
     
     // URL로 fileManager 내에서 데이터를 찾을 fileURL 생성
