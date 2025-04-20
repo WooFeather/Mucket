@@ -44,11 +44,16 @@ final class NetworkManager: NetworkManagerType {
 
         // RecipeAPI를 위한 메서드
         try router.decodeErrorIfNeeded(from: data)
-
+        
         do {
             return try JSONDecoder().decode(T.self, from: data)
         } catch {
-            throw NetworkError.encodingError
+            // 디코딩 에러 내용과, 서버가 준 원본 JSON을 그대로 출력
+            print("❌ Decode error:", error)
+            if let json = String(data: data, encoding: .utf8) {
+                print("❌ Response JSON:\n", json)
+            }
+            throw NetworkError.decodingError
         }
     }
 }
