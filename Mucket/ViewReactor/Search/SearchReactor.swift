@@ -5,6 +5,7 @@
 //  Created by 조우현 on 3/29/25.
 //
 
+import FirebaseAnalytics
 import ReactorKit
 
 final class SearchReactor: Reactor {
@@ -71,6 +72,12 @@ extension SearchReactor {
                 .just(.setPage(1)),
                 .just(.setLoadingIndicator(true)),
                 fetchSearchData(query: trimmedQuery, page: 1)
+                    .do(onNext: { list in
+                        Analytics.logEvent(Event.Load.searchResult, parameters: [
+                            "query": trimmedQuery,
+                            "count": list.count
+                        ])
+                    })
                     .flatMap { result in
                         Observable.from([
                             .setSearchResult(result),

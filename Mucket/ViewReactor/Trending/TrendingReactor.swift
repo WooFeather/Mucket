@@ -50,7 +50,7 @@ extension TrendingReactor {
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .searchViewTapped:
-            Analytics.logEvent("navigate_search", parameters: [
+            Analytics.logEvent(Event.Navigate.search, parameters: [
                 "form": "trending"
             ])
             return .just(.setRoute(.searchView))
@@ -65,7 +65,7 @@ extension TrendingReactor {
 
                 fetchRecommendedList()
                     .do(onNext: { list in
-                        Analytics.logEvent("load_recommended_success", parameters: [
+                        Analytics.logEvent(Event.Load.recommended, parameters: [
                             "count": list.count
                         ])
                     })
@@ -83,7 +83,7 @@ extension TrendingReactor {
                 .just(.setLoadingTheme(true)),
                 fetchThemeList(type: type)
                     .do(onNext: { list in
-                        Analytics.logEvent("load_theme_success", parameters: [
+                        Analytics.logEvent(Event.Load.theme, parameters: [
                             "theme": type,
                             "count": list.count
                         ])
