@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseCore
 import KakaoMapsSDK
 import RealmSwift
 
@@ -15,6 +16,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        FirebaseApp.configure()
         
         SDKInitializer.InitSDK(appKey: APIKeys.kakaoAppKey)
         

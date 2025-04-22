@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseAnalytics
 import Toast
 
 final class AddContentsViewController: BaseViewController {
@@ -25,6 +26,10 @@ final class AddContentsViewController: BaseViewController {
             addContentsView.segmentedControl.selectedSegmentIndex = currentPage
         }
     }
+
+    private lazy var currentType = currentPage == 0 ? "cooking" : "place"
+    
+    private var didLogType: Set<String> = []
     
     override func loadView() {
         view = addContentsView
@@ -39,6 +44,8 @@ final class AddContentsViewController: BaseViewController {
         addContentsView.pageViewController.delegate = self
         addContentsView.pageViewController.setViewControllers([self.dataViewControllers[0]], direction: .forward, animated: true)
         addContentsView.segmentedControl.selectedSegmentIndex = 0
+        
+        logEnterAddContentIfNeeded(type: "cooking")
     }
     
     override func configureAction() {
@@ -47,12 +54,27 @@ final class AddContentsViewController: BaseViewController {
         addContentsView.cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
     }
     
+    private func logEnterAddContentIfNeeded(type: String) {
+        guard !didLogType.contains(type) else { return }
+        didLogType.insert(type)
+
+        Analytics.logEvent(Event.Enter.addContents, parameters: [
+            "type": type
+        ])
+    }
+    
     // MARK: - Actions
     @objc private func changeValue(control: UISegmentedControl) {
         self.currentPage = control.selectedSegmentIndex
+
+        logEnterAddContentIfNeeded(type: currentType)
     }
     
     @objc private func cancelButtonTapped() {
+        Analytics.logEvent(Event.Tap.addContentsCanceled, parameters: [
+            "type": currentType
+        ])
+        
         dismiss(animated: true)
     }
     
@@ -137,6 +159,10 @@ final class AddContentsViewController: BaseViewController {
         default:
             break
         }
+        
+        Analytics.logEvent(Event.Tap.addContentsSaved, parameters: [
+            "type": currentType
+        ])
     }
     
     private func saveImageToDocumentsDirectory(image: UIImage) -> String? {
