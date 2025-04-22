@@ -12,8 +12,13 @@ enum Event {
         static let search = "navigate_search"
     }
     
-    enum Tab {
-        
+    enum Tap {
+        static let addContentsCanceled = "tab_add_contents_canceled"
+        static let addContentsSaved = "tab_add_contents_saved"
+    }
+    
+    enum Enter {
+        static let addContents = "enter_add_contents"
     }
     
     enum Load {
