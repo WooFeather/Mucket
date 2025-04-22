@@ -5,6 +5,7 @@
 //  Created by 조우현 on 3/29/25.
 //
 
+import FirebaseAnalytics
 import ReactorKit
 
 final class TrendingReactor: Reactor {
@@ -49,6 +50,9 @@ extension TrendingReactor {
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .searchViewTapped:
+            Analytics.logEvent("navigate_search", parameters: [
+                "form": "trending"
+            ])
             return .just(.setRoute(.searchView))
         case .recipeCellTapped(let recipe):
             return .just(.setRoute(.detail(recipe: recipe)))
@@ -60,6 +64,11 @@ extension TrendingReactor {
                 .just(.setLoadingTheme(true)),
 
                 fetchRecommendedList()
+                    .do(onNext: { list in
+                        Analytics.logEvent("load_recommended_success", parameters: [
+                            "count": list.count
+                        ])
+                    })
                     .map { .setRecommendedList($0) },
 
                 fetchThemeList(type: type)
@@ -72,7 +81,14 @@ extension TrendingReactor {
         case .loadTheme(let type):
             return .concat([
                 .just(.setLoadingTheme(true)),
-                fetchThemeList(type: type).map { .setThemeList($0) },
+                fetchThemeList(type: type)
+                    .do(onNext: { list in
+                        Analytics.logEvent("load_theme_success", parameters: [
+                            "theme": type,
+                            "count": list.count
+                        ])
+                    })
+                    .map { .setThemeList($0) },
                 .just(.setLoadingTheme(false))
             ])
         }
