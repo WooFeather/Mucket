@@ -30,6 +30,6 @@ struct RandomFoodWidget: Widget {
 #Preview(as: .systemSmall) {
     RandomFoodWidget()
 } timeline: {
-    SimpleEntry(date: .now)
-    SimpleEntry(date: .now)
+    SimpleEntry(date: .now, food: "파스타")
+    SimpleEntry(date: .now, food: "족발")
 }

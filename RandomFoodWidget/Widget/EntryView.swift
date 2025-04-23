@@ -11,14 +11,14 @@ struct RandomFoodWidgetEntryView : View {
     var entry: Provider.Entry
     
     var body: some View {
-        let randomFood = entry.foods.randomElement() ?? "파스타"
-        let encoded = randomFood.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        let food = entry.food
+        let encoded = food.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
         let url = URL(string: "mucket://search?query=\(encoded)")!
         
         VStack {
             titleView()
             Spacer()
-            randomFoodView(randomFood)
+            randomFoodView(food)
             Spacer()
             linkView(url)
         }
