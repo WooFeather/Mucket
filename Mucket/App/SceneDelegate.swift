@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import WidgetKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -35,23 +36,37 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     // 공통 딥링크 핸들러
     private func handleDeepLink(_ url: URL) {
-        // URL 검증
         guard url.scheme == "mucket", url.host == "search" else { return }
+        // url에서 쿼리 꺼내기
+        let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        let query = components?
+          .queryItems?
+          .first(where: { $0.name == "query" })?
+          .value?
+          .removingPercentEncoding ?? ""
         
-        // 루트가 TabBarController 라는 가정
-        guard let tabBar = window?.rootViewController as? UITabBarController else { return }
-        
-        // TrendingView 탭으로 전환
+        // 첫 번째 탭(TrendingVC)으로 전환
+        guard
+          let tabBar = window?.rootViewController as? UITabBarController,
+          let nav = tabBar.viewControllers?.first as? UINavigationController
+        else { return }
         tabBar.selectedIndex = 0
         
-        // 그 탭의 네비게이션 컨트롤러 가져오기
-        guard let nav = tabBar.viewControllers?.first as? UINavigationController else { return }
+        // 스택 리셋 (중복 push 방지)
+        nav.popToRootViewController(animated: false)
         
-        // SearchViewController 푸시
+        // Reactor 생성 & 쿼리를 통해 바로 검색 액션 보내기
         let reactor = SearchReactor()
-        let searchVC = SearchViewController(reactor: reactor)
-        searchVC.hidesBottomBarWhenPushed = true
-        nav.pushViewController(searchVC, animated: true)
+        reactor.action.onNext(.searchButtonTapped(query: query))
+        
+        // VC 생성 & push
+        let vc = SearchViewController(reactor: reactor)
+        vc.searchView.searchBar.textField.text = query
+        vc.hidesBottomBarWhenPushed = true
+        nav.pushViewController(vc, animated: true)
+        
+        // 위젯 리로드
+        WidgetCenter.shared.reloadTimelines(ofKind: "RandomFoodWidget")
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

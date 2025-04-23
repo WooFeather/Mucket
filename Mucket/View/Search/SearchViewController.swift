@@ -12,7 +12,7 @@ import RxGesture
 
 final class SearchViewController: BaseViewController {
     
-    private let searchView = SearchView()
+    let searchView = SearchView()
     var disposeBag = DisposeBag()
     
     init(reactor: SearchReactor) {
@@ -38,6 +38,11 @@ final class SearchViewController: BaseViewController {
         searchView.searchTableView.register(
             SearchTableViewCell.self, forCellReuseIdentifier: SearchTableViewCell.id)
         searchView.searchTableView.prefetchDataSource = self
+    }
+    
+    override func configureView() {
+        super.configureView()
+        searchView.searchTableView.keyboardDismissMode = .onDrag
     }
 }
 

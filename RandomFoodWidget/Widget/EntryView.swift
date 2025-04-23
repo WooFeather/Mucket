@@ -9,14 +9,18 @@ import SwiftUI
 
 struct RandomFoodWidgetEntryView : View {
     var entry: Provider.Entry
-
+    
     var body: some View {
+        let randomFood = entry.foods.randomElement() ?? "파스타"
+        let encoded = randomFood.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        let url = URL(string: "mucket://search?query=\(encoded)")!
+        
         VStack {
             titleView()
             Spacer()
-            randomFoodView()
+            randomFoodView(randomFood)
             Spacer()
-            linkView()
+            linkView(url)
         }
     }
     
@@ -27,14 +31,14 @@ struct RandomFoodWidgetEntryView : View {
             .foregroundStyle(.textPrimary)
     }
     
-    private func randomFoodView() -> some View {
-        Text(entry.foods.randomElement() ?? "파스타")
+    private func randomFoodView(_ food: String) -> some View {
+        Text(food)
             .foregroundStyle(.textPrimary)
             .font(.title.bold())
     }
     
-    private func linkView() -> some View {
-        Link(destination: URL(string: "mucket://search")!) {
+    private func linkView(_ url: URL) -> some View {
+        Link(destination: url) {
             Capsule()
                 .fill(.themePrimary)
                 .overlay {
