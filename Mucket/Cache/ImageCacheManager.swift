@@ -20,7 +20,7 @@ final class ImageCacheManager {
     
     private init() { }
     
-    func load(url: URL?, saveOption: SaveOption) async throws -> UIImage? {
+    func load(url: URL?, saveOption: SaveOption, thumbSize: CGSize) async throws -> UIImage? {
         guard let url else {
             throw CacheError.invalidURL
         }
@@ -38,23 +38,25 @@ final class ImageCacheManager {
             return cachedImage
         }
         
-        // 서버에서 데이터 요청 (비동기 URLSession 사용)
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            guard let image = UIImage(data: data) else {
-                print("❌ 서버로부터 이미지 로드 실패 (데이터 변환 오류)")
-                return nil
-            }
-            
-            // 캐시에 저장 (비동기 처리)
-            await memoryCache.saveImage(image: image, url: url, option: saveOption)
-            await diskCache.saveImage(image: image, url: url, option: saveOption)
-            // print("🌐 서버에서 로드", url)
-            
-            return image
-        } catch {
-            print("❌ 서버로부터 이미지 로드 실패: \(error.localizedDescription)")
-            throw CacheError.loadFail
+        // 서버에서 데이터 요청
+        let (data, _) = try await URLSession.shared.data(from: url)
+
+        // 다운샘플링 우선 시도
+        if let down = await UIImage.downsampled(
+            from: data,
+            to: thumbSize,
+            scale: UIScreen.main.scale
+        ) {
+            // 캐시에 저장
+            await memoryCache.saveImage(image: down, url: url, option: saveOption)
+            await diskCache.saveImage(image: down, url: url, option: saveOption)
+            return down
         }
+
+        // 다운샘플링 실패 시에는 기본 디코딩
+        guard let full = UIImage(data: data) else { return nil }
+        await memoryCache.saveImage(image: full, url: url, option: saveOption)
+        await diskCache.saveImage(image: full, url: url, option: saveOption)
+        return full
     }
 }

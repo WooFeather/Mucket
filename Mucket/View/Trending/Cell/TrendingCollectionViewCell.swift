@@ -9,8 +9,16 @@ import UIKit
 import SnapKit
 
 final class TrendingCollectionViewCell: BaseCollectionViewCell, ReusableIdentifier {
+    private var imageLoadTask: Task<Void, Never>?
     private let thumbImageView = UIImageView()
     private let nameLabel = UILabel()
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        imageLoadTask?.cancel()
+        imageLoadTask = nil
+        thumbImageView.image = .placeholderSmall
+    }
     
     override func configureHierarchy() {
         [thumbImageView, nameLabel].forEach {
@@ -42,21 +50,39 @@ final class TrendingCollectionViewCell: BaseCollectionViewCell, ReusableIdentifi
     }
     
     func configureData(entity: RecipeEntity) {
-        if let url = entity.imageURL {
-            let imageURL = URL(string: url.toHTTPS())
-            Task {
-                do {
-                    let image = try await ImageCacheManager.shared.load(url: imageURL, saveOption: .onlyMemory)
-                    thumbImageView.image = image
-                } catch {
-                    print("이미지 로드 실패")
-                    thumbImageView.image = .placeholderSmall
-                }
-            }
-        } else {
-            thumbImageView.image = .placeholderSmall
-        }
+        imageLoadTask?.cancel()
         
         nameLabel.text = entity.name
+        
+        guard let urlString = entity.imageURL,
+              let url = URL(string: urlString.toHTTPS())
+        else {
+            thumbImageView.image = .placeholderSmall
+            return
+        }
+
+        let thumbSize = thumbImageView.bounds.size == .zero ? CGSize(width: 110, height: 78) : thumbImageView.bounds.size
+
+        imageLoadTask = Task { [weak self] in
+            do {
+                let img = try await ImageCacheManager
+                    .shared
+                    .load(
+                      url: url,
+                      saveOption: .onlyMemory,
+                      thumbSize: thumbSize
+                    )
+                
+                guard !Task.isCancelled else { return }
+                await MainActor.run {
+                    self?.thumbImageView.image = img ?? .placeholderSmall
+                }
+            } catch {
+                guard !Task.isCancelled else { return }
+                await MainActor.run {
+                    self?.thumbImageView.image = .placeholderSmall
+                }
+            }
+        }
     }
 }

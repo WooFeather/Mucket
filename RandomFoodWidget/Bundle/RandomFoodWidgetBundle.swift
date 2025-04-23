@@ -12,6 +12,5 @@ import SwiftUI
 struct RandomFoodWidgetBundle: WidgetBundle {
     var body: some Widget {
         RandomFoodWidget()
-        RandomFoodWidgetControl()
     }
 }

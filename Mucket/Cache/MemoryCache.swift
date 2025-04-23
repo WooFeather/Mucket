@@ -9,7 +9,7 @@ import UIKit
 
 final class MemoryCache: Cacheable {
     static let shared = MemoryCache()
-    private let cache = NSCache<NSString, UIImage>()
+    let cache = NSCache<NSString, UIImage>()
     
     private init() { }
     
