@@ -16,7 +16,7 @@ struct Provider: TimelineProvider {
       "치킨", "샌드위치", "김치찌개", "된장찌개", "스테이크",
       "불고기", "해장국", "죽", "국수", "전골", 
       "리조또", "주먹밥", "카레", "부대찌개", "돈가스",
-      "빵", "초밥", "떡갈비", "스프", "덮밥"
+      "초밥", "떡갈비", "스프", "덮밥"
     ]
     
     func placeholder(in context: Context) -> SimpleEntry {

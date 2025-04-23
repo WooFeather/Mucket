@@ -14,6 +14,8 @@ final class SearchReactor: Reactor {
     
     private let repository: RecipeRepositoryType = RecipeRepository.shared
     
+    private var isPaging = false
+    
     enum Route: Equatable {
         case none
         case detail(recipe: RecipeEntity)
@@ -93,19 +95,21 @@ extension SearchReactor {
             return .just(.setRoute(.none))
         case .loadNextPageIfNeeded(let index):
             guard !currentState.isLoading,
+                  !isPaging,
                   index >= currentState.searchResult.count - 3,
-                  !currentState.searchResult.isEmpty,
                   !currentState.currentQuery.isEmpty else {
-                return .empty()
+              return .empty()
             }
 
-            let nextPage = currentState.currentPage + 1
+            isPaging = true
+            let next = currentState.currentPage + 1
             return .concat([
-                .just(.setLoadingIndicator(true)),
-                .just(.setPage(nextPage)),
-                fetchSearchData(query: currentState.currentQuery, page: nextPage)
-                    .map { .appendSearchResult($0) },
-                .just(.setLoadingIndicator(false))
+              .just(.setLoadingIndicator(true)),
+              .just(.setPage(next)),
+              fetchSearchData(query: currentState.currentQuery, page: next)
+                .map { .appendSearchResult($0) },
+              .just(.setLoadingIndicator(false))
+                .do(onNext: { _ in self.isPaging = false })
             ])
         case .clearAlert:
             return .just(.clearAlertMessage)

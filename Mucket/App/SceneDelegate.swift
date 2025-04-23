@@ -27,6 +27,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let urlContext = connectionOptions.urlContexts.first {
             handleDeepLink(urlContext.url)
         }
+        
+        MemoryCache.shared.cache.totalCostLimit = 50 * 1024 * 1024
+        MemoryCache.shared.cache.countLimit = 100
     }
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {

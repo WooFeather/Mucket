@@ -40,3 +40,23 @@ extension UIImage {
         return self.resize(to: size).withRenderingMode(.alwaysTemplate)
     }
 }
+
+import ImageIO
+
+extension UIImage {
+  static func downsampled(from data: Data, to pointSize: CGSize, scale: CGFloat) -> UIImage? {
+    let maxDimensionInPixels = max(pointSize.width, pointSize.height) * scale
+    let options: [CFString: Any] = [
+      kCGImageSourceCreateThumbnailFromImageAlways: true,
+      kCGImageSourceShouldCacheImmediately: true,
+      kCGImageSourceCreateThumbnailWithTransform: true,
+      kCGImageSourceThumbnailMaxPixelSize: maxDimensionInPixels
+    ]
+    guard let src = CGImageSourceCreateWithData(data as CFData, nil),
+          let img = CGImageSourceCreateThumbnailAtIndex(src, 0, options as CFDictionary)
+    else {
+      return nil
+    }
+    return UIImage(cgImage: img)
+  }
+}

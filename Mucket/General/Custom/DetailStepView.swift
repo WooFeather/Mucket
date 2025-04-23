@@ -60,11 +60,12 @@ final class DetailStepView: BaseView {
     }
     
     func configureData(step: RecipeManualStep) {
+        let thumbSize = thumbImageView.bounds.size == .zero ? CGSize(width: 110, height: 78) : thumbImageView.bounds.size
         if let url = step.imageURL {
             let imageURL = URL(string: url.toHTTPS())
             Task {
                 do {
-                    let image = try await ImageCacheManager.shared.load(url: imageURL, saveOption: .onlyMemory)
+                    let image = try await ImageCacheManager.shared.load(url: imageURL, saveOption: .onlyMemory, thumbSize: thumbSize)
                     thumbImageView.image = image
                 } catch {
                     print("이미지 로드 실패")

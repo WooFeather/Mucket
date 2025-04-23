@@ -82,18 +82,16 @@ extension RecipeDetailViewController: View {
             .disposed(by: disposeBag)
         
         reactor.state
-            .map { $0.recipe.imageURL }
+            .compactMap { $0.recipe.imageURL }
             .distinctUntilChanged()
-            .compactMap { $0 }
-            .bind(with: self) { owner, urlString in
-                let imageURL = URL(string: urlString.toHTTPS())
+            .map { $0.toHTTPS() }
+            .compactMap(URL.init(string:))
+            .bind(with: self) { [weak self] owner, url in
                 Task {
-                    do {
-                        let image = try await ImageCacheManager.shared.load(url: imageURL, saveOption: .onlyMemory)
+                    let image = try await ImageCacheManager.shared
+                        .load(url: url, saveOption: .onlyMemory, thumbSize: self?.recipeDetailView.thumbImageView.bounds.size ?? CGSize(width: 110, height: 78))
+                    await MainActor.run {
                         owner.recipeDetailView.thumbImageView.image = image
-                    } catch {
-                        print("이미지 로드 실패")
-                        owner.recipeDetailView.thumbImageView.image = .placeholderSmall
                     }
                 }
             }
