@@ -21,6 +21,37 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.makeKeyAndVisible()
         
         NetworkMonitor.shared.startMonitoring()
+        
+        // 앱이 완전히 꺼진 상태에서 위젯으로 실행될때도 딥링크를 처리
+        if let urlContext = connectionOptions.urlContexts.first {
+            handleDeepLink(urlContext.url)
+        }
+    }
+    
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        guard let url = URLContexts.first?.url else { return }
+        handleDeepLink(url)
+    }
+    
+    // 공통 딥링크 핸들러
+    private func handleDeepLink(_ url: URL) {
+        // URL 검증
+        guard url.scheme == "mucket", url.host == "search" else { return }
+        
+        // 루트가 TabBarController 라는 가정
+        guard let tabBar = window?.rootViewController as? UITabBarController else { return }
+        
+        // TrendingView 탭으로 전환
+        tabBar.selectedIndex = 0
+        
+        // 그 탭의 네비게이션 컨트롤러 가져오기
+        guard let nav = tabBar.viewControllers?.first as? UINavigationController else { return }
+        
+        // SearchViewController 푸시
+        let reactor = SearchReactor()
+        let searchVC = SearchViewController(reactor: reactor)
+        searchVC.hidesBottomBarWhenPushed = true
+        nav.pushViewController(searchVC, animated: true)
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

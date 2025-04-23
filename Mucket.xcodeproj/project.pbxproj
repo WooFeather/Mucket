@@ -82,6 +82,13 @@
 			);
 			target = 795698D12DB7F6E700F59A09 /* RandomFoodWidgetExtension */;
 		};
+		795699502DB8AE1200F59A09 /* Exceptions for "Mucket" folder in "RandomFoodWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Resource/Assets/Color.xcassets,
+			);
+			target = 795698D12DB7F6E700F59A09 /* RandomFoodWidgetExtension */;
+		};
 		798E36162D96F51800EDCF49 /* Exceptions for "Mucket" folder in "Mucket" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -104,6 +111,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				798E36162D96F51800EDCF49 /* Exceptions for "Mucket" folder in "Mucket" target */,
+				795699502DB8AE1200F59A09 /* Exceptions for "Mucket" folder in "RandomFoodWidgetExtension" target */,
 			);
 			path = Mucket;
 			sourceTree = "<group>";

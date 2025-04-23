@@ -15,11 +15,11 @@ struct RandomFoodWidget: Widget {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             if #available(iOS 17.0, *) {
                 RandomFoodWidgetEntryView(entry: entry)
-                    .containerBackground(.fill.tertiary, for: .widget)
+                    .containerBackground(.backgroundPrimary, for: .widget)
             } else {
                 RandomFoodWidgetEntryView(entry: entry)
                     .padding()
-                    .background()
+                    .background(.backgroundPrimary)
             }
         }
         .configurationDisplayName("My Widget")
@@ -30,6 +30,6 @@ struct RandomFoodWidget: Widget {
 #Preview(as: .systemSmall) {
     RandomFoodWidget()
 } timeline: {
-    SimpleEntry(date: .now, emoji: "😀")
-    SimpleEntry(date: .now, emoji: "🤩")
+    SimpleEntry(date: .now)
+    SimpleEntry(date: .now)
 }

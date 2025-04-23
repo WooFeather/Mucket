@@ -12,11 +12,37 @@ struct RandomFoodWidgetEntryView : View {
 
     var body: some View {
         VStack {
-            Text("Time:")
-            Text(entry.date, style: .time)
-
-            Text("Emoji:")
-            Text(entry.emoji)
+            titleView()
+            Spacer()
+            randomFoodView()
+            Spacer()
+            linkView()
+        }
+    }
+    
+    
+    // MARK: - Function
+    private func titleView() -> some View {
+        Text("오늘 뭐먹지?")
+            .foregroundStyle(.textPrimary)
+    }
+    
+    private func randomFoodView() -> some View {
+        Text(entry.foods.randomElement() ?? "파스타")
+            .foregroundStyle(.textPrimary)
+            .font(.title.bold())
+    }
+    
+    private func linkView() -> some View {
+        Link(destination: URL(string: "mucket://search")!) {
+            Capsule()
+                .fill(.themePrimary)
+                .overlay {
+                    Text("레시피 검색하기")
+                        .foregroundStyle(.white)
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: 40)
         }
     }
 }
