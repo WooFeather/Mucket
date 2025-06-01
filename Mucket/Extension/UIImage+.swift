@@ -41,8 +41,6 @@ extension UIImage {
     }
 }
 
-import ImageIO
-
 extension UIImage {
   static func downsampled(from data: Data, to pointSize: CGSize, scale: CGFloat) -> UIImage? {
     let maxDimensionInPixels = max(pointSize.width, pointSize.height) * scale

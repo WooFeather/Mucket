@@ -28,13 +28,18 @@ final class DropdownButton: BaseView {
     }
     
     override func configureView() {
-        button.setTitleColor(.textSecondary, for: .normal)
-        button.setImage(.arrowtriangleDownFill?.resizedAndTemplated(to: CGSize(width: 10, height: 10)), for: .normal)
-        button.tintColor = .textSecondary
-        button.semanticContentAttribute = .forceRightToLeft
+        let arrowImage = UIImage.arrowtriangleDownFill?.resizedAndTemplated(to: CGSize(width: 10, height: 10))
+        
+        var config = UIButton.Configuration.plain()
+        config.baseForegroundColor = .textSecondary
+        config.image = arrowImage
+        config.imagePlacement = .trailing
+        config.imagePadding = 8
+        config.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
+        
+        button.configuration = config
+        
         button.contentHorizontalAlignment = .leading
-        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -4)
-        button.titleEdgeInsets = .zero
         button.titleLabel?.font = .Body.body2
     }
     
